@@ -1,9 +1,9 @@
 package org.parc.restes.query.aggregations;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dbapp.cpsysportal.elasticsearch.query.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.histogram.ExtendedBounds;
 import org.joda.time.DateTimeZone;
+import org.parc.restes.query.Aggregation;
 
 public class DateHistogram extends Aggregation {
     private static final String agg_operator="date_histogram";

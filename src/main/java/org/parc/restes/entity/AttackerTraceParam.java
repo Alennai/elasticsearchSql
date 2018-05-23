@@ -6,22 +6,17 @@
  */
 package org.parc.restes.entity;
 
-import io.swagger.annotations.ApiParam;
-
-import javax.ws.rs.QueryParam;
-
 public class AttackerTraceParam {
-	@QueryParam("startTime")
-	@ApiParam("开始时间 eg:2017-05-27 00:00:00")
+//	@ApiParam("开始时间 eg:2017-05-27 00:00:00")
 	private String startTime;
-	@QueryParam("endTime")
-	@ApiParam("结束时间 eg:2017-05-28 00:00:00")
+//	@QueryParam("endTime")
+//	@ApiParam("结束时间 eg:2017-05-28 00:00:00")
 	private String endTime;
-	@QueryParam("ip")
-	@ApiParam("only support ipv4")
+//	@QueryParam("ip")
+//	@ApiParam("only support ipv4")
 	private String ip;
-	@QueryParam("timeStr")
-	@ApiParam("当日0d 最近7天7d 本月0m 最近3个月3m 本周0w 最近一周 1w")
+//	@QueryParam("timeStr")
+//	@ApiParam("当日0d 最近7天7d 本月0m 最近3个月3m 本周0w 最近一周 1w")
 	private String timeStr;
 	private int ipSize = 10;
 	private int hostTop = 1;

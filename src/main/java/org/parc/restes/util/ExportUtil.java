@@ -6,11 +6,9 @@
 package org.parc.restes.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.csvreader.CsvWriter;
-import com.dbapp.cpsysportal.cache.DictionaryCache;
-import com.dbapp.cpsysportal.entity.jaxb.Field;
-import com.dbapp.cpsysportal.service.IEsService;
-import com.dbapp.elasticsearch.ElasticDate;
+import org.parc.restes.entity.ElasticDate;
+import org.parc.restes.entity.Field;
+import org.parc.restes.service.IEsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +50,8 @@ public class ExportUtil {
             colNamesArr = new String[size];
             mapKeyArr = new String[size];
             for (int i = 0; i < size; i++) {
-                String t_tmp = DictionaryCache.field(columns.get(i));
+//                String t_tmp = DictionaryCache.field(columns.get(i));
+                String t_tmp="";
                 Field field = IEsService.categories(type, columns.get(i));
                 if (field != null) {
                     t_tmp = field.getName();
@@ -62,8 +60,8 @@ public class ExportUtil {
                 mapKeyArr[i] = columns.get(i);
             }
 
-            CsvWriter writer = new CsvWriter(os, ',', Charset.forName("gbk"));
-            writer.writeRecord(colNamesArr);
+//            CsvWriter writer = new CsvWriter(os, ',', Charset.forName("gbk"));
+//            writer.writeRecord(colNamesArr);
 
             if (null != dataList) { // 输出数据
                 for (int i = 0; i < dataList.size(); i++) {
@@ -79,10 +77,10 @@ public class ExportUtil {
                             column[j] = data;
                         }
                     }
-                    writer.writeRecord(column);
+//                    writer.writeRecord(column);
                 }
             }
-            writer.flush();
+//            writer.flush();
             os.flush();
             return true;
         } catch (Exception e) {

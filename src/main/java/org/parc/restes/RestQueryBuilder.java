@@ -2,13 +2,13 @@ package org.parc.restes;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.dbapp.cpsysportal.elasticsearch.query.AggregationFactory;
-import com.dbapp.cpsysportal.elasticsearch.query.Aggregation;
-import com.dbapp.cpsysportal.elasticsearch.query.aggregations.DateHistogram;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTimeZone;
+import org.parc.restes.query.Aggregation;
+import org.parc.restes.query.AggregationFactory;
+import org.parc.restes.query.aggregations.DateHistogram;
 
 /**
  * Created by xusiao on 2018/5/11.

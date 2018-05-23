@@ -1,5 +1,7 @@
 package org.parc.restes.util;
 
+import org.parc.restes.entity.Index;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,13 +11,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static com.dbapp.cpsysportal.elasticsearch.util.ESConstant.ptn1;
+import static org.parc.restes.util.ESConstant.ptn1;
+
 
 /**
  * Created by xusiao on 2018/5/10.
  */
 public class CurlUtil {
-    public static List<Index> indexList(String ip,String restPort) {
+
+    public static List<Index> indexList(String ip, String restPort) {
         List<Index> indexList = new ArrayList<>();
         String []cmds = {"curl", ip+":"+restPort+"/_cat/indices?v"};
         ProcessBuilder pb=new ProcessBuilder(cmds);

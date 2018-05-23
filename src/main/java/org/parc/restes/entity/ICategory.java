@@ -6,7 +6,6 @@
 package org.parc.restes.entity;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 
 public class ICategory {
 	private String key;

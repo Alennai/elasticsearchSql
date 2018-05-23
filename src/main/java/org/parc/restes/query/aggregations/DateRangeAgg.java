@@ -2,7 +2,7 @@ package org.parc.restes.query.aggregations;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.dbapp.cpsysportal.elasticsearch.query.Aggregation;
+import org.parc.restes.query.Aggregation;
 
 public class DateRangeAgg extends Aggregation {
     private static final String agg_operator="date_range";

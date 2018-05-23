@@ -1,6 +1,7 @@
 package org.parc.sqlrestes.query.join;
 
 
+import org.parc.restes.RestQueryBuilder;
 import org.parc.sqlrestes.domain.Field;
 import org.parc.sqlrestes.domain.Select;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * Created by Eliran on 28/8/2015.
  */
 public class TableInJoinRequestBuilder {
-    private SearchRequestBuilder requestBuilder;
+    private RestQueryBuilder requestBuilder;
     private String alias;
     private List<Field> returnedFields;
     private Select originalSelect;
@@ -19,11 +20,11 @@ public class TableInJoinRequestBuilder {
     public TableInJoinRequestBuilder() {
     }
 
-    public SearchRequestBuilder getRequestBuilder() {
+    public RestQueryBuilder getRequestBuilder() {
         return requestBuilder;
     }
 
-    public void setRequestBuilder(SearchRequestBuilder requestBuilder) {
+    public void setRequestBuilder(RestQueryBuilder requestBuilder) {
         this.requestBuilder = requestBuilder;
     }
 

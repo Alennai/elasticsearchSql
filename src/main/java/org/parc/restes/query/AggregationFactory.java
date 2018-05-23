@@ -1,6 +1,7 @@
 package org.parc.restes.query;
 
-import com.dbapp.cpsysportal.elasticsearch.query.aggregations.*;
+
+import org.parc.restes.query.aggregations.*;
 
 public class AggregationFactory {
 

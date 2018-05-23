@@ -5,7 +5,6 @@
  */
 package org.parc.restes.util;
 
-import com.dbapp.cpsysportal.entity.jaxb.Categories;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +28,7 @@ public class XmlPaser {
 		return null;
 	}
 
-	public static Categories categories(File source) {
-		return paser(source, Categories.class);
-	}
+//	public static Categories categories(File source) {
+//		return paser(source, Categories.class);
+//	}
 }

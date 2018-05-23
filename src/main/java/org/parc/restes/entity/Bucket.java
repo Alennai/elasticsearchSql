@@ -6,10 +6,9 @@
  */
 package org.parc.restes.entity;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.dbapp.cpsysportal.cache.DictionaryCache;
 
 public class Bucket {
 	private String field;
@@ -115,7 +114,7 @@ public class Bucket {
 	public Bucket(String field, String key, int docCount, Integer total) {
 		super();
 		this.key = key;
-		this.name = DictionaryCache.fieldByCategory(field, key);
+//		this.name = DictionaryCache.fieldByCategory(field, key);
 		this.docCount = docCount;
 		this.value = docCount + "";
 		this.total = total;
@@ -131,7 +130,7 @@ public class Bucket {
 		this.field = field;
 		this.key = key;
 		this.docCount = docCount;
-		this.name = DictionaryCache.fieldByCategory(field, key);
+//		this.name = DictionaryCache.fieldByCategory(field, key);
 	}
 
 	/**

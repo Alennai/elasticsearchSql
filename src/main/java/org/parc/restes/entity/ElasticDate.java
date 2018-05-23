@@ -1,8 +1,7 @@
 package org.parc.restes.entity;
 
-import com.dbapp.cpsysportal.entity.ElasticDateR;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

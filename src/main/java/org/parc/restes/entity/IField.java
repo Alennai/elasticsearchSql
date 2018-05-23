@@ -6,12 +6,10 @@
  */
 package org.parc.restes.entity;
 
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.alibaba.fastjson.JSONObject;
-import com.dbapp.cpsysportal.cache.DictionaryCache;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 public class IField {
 	private String alias;
@@ -74,14 +72,14 @@ public class IField {
 
 	public IField(String name, JSONObject mt) {
 		this.name = name;
-		this.alias = DictionaryCache.field(name);
+//		this.alias = DictionaryCache.field(name);
 		this.meta = mt;
 	}
 
 	public IField(String name, String alias, JSONObject mt) {
 		this.name = name;
 		if (StringUtils.isBlank(alias)) {
-			this.alias = DictionaryCache.field(name);
+//			this.alias = DictionaryCache.field(name);
 		} else {
 			this.alias = alias;
 		}

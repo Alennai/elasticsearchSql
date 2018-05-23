@@ -5,11 +5,8 @@
  */
 package org.parc.restes.service;
 
-import com.dbapp.cpsysportal.elasticsearch.entity.Bucket;
-import com.dbapp.cpsysportal.elasticsearch.entity.TraceParam;
-import com.dbapp.cpsysportal.entity.ESResult;
-import com.dbapp.cpsysportal.entity.jaxb.Field;
-import com.dbapp.cpsysportal.utils.Index;
+
+import org.parc.restes.entity.*;
 
 import java.util.List;
 import java.util.Map;

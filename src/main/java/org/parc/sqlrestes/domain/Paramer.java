@@ -1,7 +1,5 @@
 package org.parc.sqlrestes.domain;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -10,8 +8,9 @@ import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
-import org.nlpcn.es4sql.exception.SqlParseException;
+import org.parc.sqlrestes.exception.SqlParseException;
 
+import java.util.List;
 
 
 public class Paramer {

@@ -8,27 +8,9 @@ package org.parc.restes.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.dbapp.cpsysportal.elasticsearch.adapter.DataAdapter;
-import com.dbapp.cpsysportal.elasticsearch.entity.Bucket;
-import com.dbapp.cpsysportal.elasticsearch.entity.ICategory;
-import com.dbapp.cpsysportal.elasticsearch.entity.IField;
-import com.dbapp.cpsysportal.elasticsearch.entity.TraceParam;
-import com.dbapp.cpsysportal.elasticsearch.util.XmlPaser;
-import com.dbapp.cpsysportal.entity.ESResult;
-import com.dbapp.cpsysportal.entity.jaxb.Categories;
-import com.dbapp.cpsysportal.entity.jaxb.Field;
-import com.dbapp.cpsysportal.service.IEsService;
-import com.dbapp.cpsysportal.utils.CurlUtil;
-import com.dbapp.cpsysportal.utils.Index;
-import com.dbapp.elasticsearch.ElasticDate;
-import com.dbapp.oplog.OPLogContext;
-import com.dbapp.oplog.OpLog;
-import com.dbapp.oplog.OpModule;
-import com.dbapp.oplog.OpType;
-import com.dbapp.utils.SystemProperUtil;
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.entity.ContentType;
@@ -36,26 +18,23 @@ import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.util.EntityUtils;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
+import org.parc.restes.adapter.DataAdapter;
+import org.parc.restes.entity.*;
+import org.parc.restes.service.IEsService;
+import org.parc.restes.util.CurlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.dbapp.cpsysportal.elasticsearch.util.ESConstant.*;
-import static com.dbapp.cpsysportal.elasticsearch.util.ESConstant.ALERT_INDEX_MAPPING_POINT;
-import static com.dbapp.cpsysportal.elasticsearch.util.ESConstant.ALL_INDEX_MAPPING_POINT;
-import static com.dbapp.cpsysportal.elasticsearch.util.ESConstant.INCIDENT_INDEX_MAPPING_POINT;
-import static com.dbapp.cpsysportal.elasticsearch.util.ESConstant.SCENES_INDEX_MAPPING_POINT;
+import static org.parc.restes.util.ESConstant.ALERT_INDEX_MAPPING_POINT;
+import static org.parc.restes.util.ESConstant.ALL_INDEX_MAPPING_POINT;
 
-@Component
+
 public class IEsServiceImpl implements IEsService {
     private Map<String, Map<String, Field>> FIELD_GROUP_MAP = new ConcurrentHashMap<>();
     private RestClient client;
@@ -68,35 +47,17 @@ public class IEsServiceImpl implements IEsService {
     private static long oneHourTime = 60 * 60 * 1000L;
     private static long oneMinuteTime = 60 * 1000L;
 
-    public IEsServiceImpl() {
-        load();
-        String global_path = SystemProperUtil.getConfPath() + SystemProperUtil.getFileSeparator() + "gloal.properties";
-        Properties props = new Properties();
-        try {
-            props.load(new FileInputStream(global_path));
-        } catch (Exception e) {
-            logger.error("{}", e);
+    public IEsServiceImpl(String jdbcUrl) {
+        String hostAndPortArrayStr = jdbcUrl.split("/")[2];
+        String[] hostAndPortArray = hostAndPortArrayStr.split(",");
+        HttpHost[] hosts = new HttpHost[hostAndPortArray.length];
+        for ( int i=0;i<hostAndPortArray.length;i++) {
+            String hostAndPort=hostAndPortArray[i];
+            String host = hostAndPort.split(":")[i];
+            String port = hostAndPort.split(":")[i];
+            hosts[i] = new HttpHost(host, Integer.parseInt(port), "http");
         }
-        String[] ips = props.getProperty("es.server.ip").split(",");
-        String[] portArr = props.getProperty("es.server.restPort").split(",");
-        HttpHost[] hosts = new HttpHost[ips.length];
-        ip=ips[0];
-        restPort=portArr[0];
-        for (int i = 0; i < ips.length; i++) {
-            if (i < portArr.length)
-                hosts[i] = new HttpHost(ips[i], Integer.parseInt(portArr[i]), "http");
-            else hosts[i] = new HttpHost(ips[i], Integer.parseInt(portArr[0]), "http");
-
-        }
-        client = RestClient.builder(hosts).build();
-    }
-
-    private synchronized void load() {
-        String flood_path = SystemProperUtil.getConfPath() + SystemProperUtil.getFileSeparator() + "field_category.xml";
-        File category_file = Paths.get(flood_path).toFile();
-        Categories categories = XmlPaser.categories(category_file);
-        FIELD_GROUP_MAP = categories.reverseDataSerializeLocalC();
-
+        client = RestClient.builder(hosts).setMaxRetryTimeoutMillis(10000).build();
     }
 
     /*
@@ -202,12 +163,13 @@ public class IEsServiceImpl implements IEsService {
             } else if ("alert".equals(type)) {
                 return ALERT_INDEX_MAPPING_POINT;
             } else if ("scenes".equals(type)) {
-                return SCENES_INDEX_MAPPING_POINT;
+//                return SCENES_INDEX_MAPPING_POINT;
             } else if ("incident".equals(type)) {
-                return INCIDENT_INDEX_MAPPING_POINT;
+//                return INCIDENT_INDEX_MAPPING_POINT;
             } else {
-                return ALL_INDEX_MAPPING_POINT;
+//                return ALL_INDEX_MAPPING_POINT;
             }
+            return null;
         }
     }
 
@@ -298,13 +260,10 @@ public class IEsServiceImpl implements IEsService {
     }
 
     @Override
-    @OpLog(module = OpModule.CONGIG_MANAGEMENT, describe = "删除索引", message = "{message}", op_Type = OpType.DELETE)
     public String delete(String index) throws Exception {
         logger.info("Index should been deleted:");
         Response resp = client.performRequest("DELETE", "/" + index);
-        OPLogContext.put("message", "删除 索引" + index + "成功");
         System.out.println("删除 索引" + index + "成功");
-        OPLogContext.put("op_result", true);
         logger.info(" deleted Index" + index);
         return EntityUtils.toString(resp.getEntity());
     }
@@ -320,11 +279,8 @@ public class IEsServiceImpl implements IEsService {
     }
 
     @Override
-    @OpLog(module = OpModule.CONGIG_MANAGEMENT, describe = "关闭索引", message = "{message}", op_Type = OpType.CLOSE)
     public boolean indexClose(String indexes) throws Exception {
         if (!indexes.isEmpty()) {
-            OPLogContext.put("message", "关闭 索引" + indexes + "成功");
-            OPLogContext.put("op_result", true);
             String index[] = indexes.split(",");
             for (int i = 0; i < index.length; i++) {
                 if (indexExists(index[i])) {
@@ -447,7 +403,7 @@ public class IEsServiceImpl implements IEsService {
 
     @Override
     public void refresh(String type) {
-        load();
+//        load();
         fields.remove(type);
         try {
             get_field_by_type(type);

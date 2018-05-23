@@ -5,7 +5,6 @@
 package org.parc.restes.entity;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dbapp.cpsysportal.entity.ESResult;
 
 import java.util.List;
 import java.util.Stack;

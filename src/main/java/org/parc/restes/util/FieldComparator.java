@@ -5,10 +5,11 @@
  */
 package org.parc.restes.util;
 
+
+import org.parc.restes.entity.IField;
+
 import java.text.Collator;
 import java.util.Comparator;
-
-import com.dbapp.cpsysportal.elasticsearch.entity.IField;
 
 public class FieldComparator implements Comparator<IField> {
 	Comparator<Object> c = Collator.getInstance(java.util.Locale.CHINA);
