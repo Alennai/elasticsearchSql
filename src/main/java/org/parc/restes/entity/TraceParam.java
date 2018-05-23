@@ -7,52 +7,50 @@
 package org.parc.restes.entity;
 
 import com.alibaba.fastjson.JSON;
-import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import javax.ws.rs.QueryParam;
 import java.util.List;
 
 public class TraceParam {
-	@ApiParam("保存类型:[search,scenes,alert,incident]")
+//	@ApiParam("保存类型:[search,scenes,alert,incident]")
 	private String saveType;
-	@QueryParam("start")
-	@ApiParam("开始时间 eg:2017-05-27 00:00:00")
+//	@QueryParam("start")
+//	@ApiParam("开始时间 eg:2017-05-27 00:00:00")
 	private String start;
-	@QueryParam("end")
-	@ApiParam("结束时间 eg:2017-05-28 00:00:00")
+//	@QueryParam("end")
+//	@ApiParam("结束时间 eg:2017-05-28 00:00:00")
 	private String end;
-	@ApiParam("保存名称")
+//	@ApiParam("保存名称")
 	private String name;
-	@ApiParam("保存列名")
+//	@ApiParam("保存列名")
 	private List<String> columns;
-	@ApiParam("聚合参数")
+//	@ApiParam("聚合参数")
 	private List<Param> params;
 	private int size;
 	private int from;
-	@ApiParam("query模版")
+//	@ApiParam("query模版")
 	private String template;
 	private List<String> sorts;
-	@ApiParam("聚合字段")
+//	@ApiParam("聚合字段")
 	private String field;
-	@ApiParam("条件数组")
+//	@ApiParam("条件数组")
 	private List<String> conditions;
-	@QueryParam("uuid")
-	@ApiParam("UUID")
+//	@QueryParam("uuid")
+//	@ApiParam("UUID")
 	private String uuid;
-	@QueryParam("processingMethod")
-	@ApiParam("处理方式")
+//	@QueryParam("processingMethod")
+//	@ApiParam("处理方式")
 	private String processingMethod;
-	@QueryParam("handlingComments")
-	@ApiParam("处理意见")
+//	@QueryParam("handlingComments")
+//	@ApiParam("处理意见")
 	private String handlingComments;
-	@QueryParam("type")
-	@ApiParam("es内置分组")
+//	@QueryParam("type")
+//	@ApiParam("es内置分组")
 	private String type;
-	@QueryParam("falsePositives")
-	@ApiParam("是否误报")
+//	@QueryParam("falsePositives")
+//	@ApiParam("是否误报")
 	private String falsePositives;
-	@ApiParam("时间轴跨度")
+//	@ApiParam("时间轴跨度")
 	private String interval;
 
 	public String getFalsePositives() {

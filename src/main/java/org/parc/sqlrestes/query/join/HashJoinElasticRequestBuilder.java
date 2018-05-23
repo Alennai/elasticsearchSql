@@ -1,6 +1,6 @@
 package org.parc.sqlrestes.query.join;
 
-import org.nlpcn.es4sql.domain.Field;
+import org.parc.sqlrestes.domain.Field;
 
 import java.util.List;
 import java.util.Map;

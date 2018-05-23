@@ -1,6 +1,5 @@
 package org.parc.sqlrestes.query.maker;
 
-import org.elasticsearch.join.aggregations.JoinAggregationBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;

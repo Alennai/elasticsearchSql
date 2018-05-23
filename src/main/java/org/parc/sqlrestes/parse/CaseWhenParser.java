@@ -3,12 +3,10 @@ package org.parc.sqlrestes.parse;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.google.common.base.Joiner;
-import org.elasticsearch.common.inject.internal.Join;
-import org.nlpcn.es4sql.SQLFunctions;
-import org.nlpcn.es4sql.Util;
-import org.nlpcn.es4sql.domain.Condition;
-import org.nlpcn.es4sql.domain.Where;
-import org.nlpcn.es4sql.exception.SqlParseException;
+import org.parc.sqlrestes.Util;
+import org.parc.sqlrestes.domain.Condition;
+import org.parc.sqlrestes.domain.Where;
+import org.parc.sqlrestes.exception.SqlParseException;
 
 import java.util.ArrayList;
 import java.util.List;

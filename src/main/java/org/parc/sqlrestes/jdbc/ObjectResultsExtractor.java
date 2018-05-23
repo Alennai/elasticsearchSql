@@ -13,7 +13,7 @@ import org.elasticsearch.search.aggregations.metrics.percentiles.Percentiles;
 import org.elasticsearch.search.aggregations.metrics.stats.Stats;
 import org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats;
 import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
-import org.nlpcn.es4sql.Util;
+import org.parc.sqlrestes.Util;
 
 import java.util.*;
 

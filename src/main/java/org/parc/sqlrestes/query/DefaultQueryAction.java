@@ -3,8 +3,6 @@ package org.parc.sqlrestes.query;
 import com.alibaba.fastjson.JSONObject;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.seart.sort.SearchType;
-import org.elasticsearch.seart.sort.SortOrder;
 import org.parc.sqlrestes.domain.*;
 import org.parc.sqlrestes.domain.hints.Hint;
 import org.parc.sqlrestes.domain.hints.HintType;

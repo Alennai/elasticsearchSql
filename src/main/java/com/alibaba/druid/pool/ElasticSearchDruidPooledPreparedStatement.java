@@ -10,9 +10,6 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
 
-/**
- * Created by allwefantasy on 8/30/16.
- */
 public class ElasticSearchDruidPooledPreparedStatement extends DruidPooledPreparedStatement {
 
 

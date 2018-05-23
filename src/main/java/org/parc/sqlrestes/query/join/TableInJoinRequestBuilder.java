@@ -7,9 +7,6 @@ import org.parc.sqlrestes.domain.Select;
 
 import java.util.List;
 
-/**
- * Created by Eliran on 28/8/2015.
- */
 public class TableInJoinRequestBuilder {
     private RestQueryBuilder requestBuilder;
     private String alias;

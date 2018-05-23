@@ -3,17 +3,16 @@ package org.parc.sqlrestes.domain.hints;
 
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
+import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.yaml.YamlXContentParser;
-import org.nlpcn.es4sql.exception.SqlParseException;
+import org.parc.sqlrestes.exception.SqlParseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Eliran on 5/9/2015.
- */
+
 public class HintFactory {
 
     public static Hint getHintFromString(String hintAsString) throws SqlParseException {
@@ -97,7 +96,7 @@ public class HintFactory {
                 YAMLParser yamlParser = null;
                 try {
                 yamlParser = yamlFactory.createParser(heighlightParam.toCharArray());
-                YamlXContentParser yamlXContentParser = new YamlXContentParser(yamlParser);
+                YamlXContentParser yamlXContentParser = new YamlXContentParser(NamedXContentRegistry.EMPTY, yamlParser);
                 Map<String, Object> map = yamlXContentParser.map();
                 hintParams.add(map);
                 } catch (IOException e) {

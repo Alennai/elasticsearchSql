@@ -2,6 +2,11 @@ package org.parc.sqlrestes.query;
 
 
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 import org.parc.sqlrestes.domain.Delete;
 import org.parc.sqlrestes.domain.Where;
 import org.parc.sqlrestes.exception.SqlParseException;

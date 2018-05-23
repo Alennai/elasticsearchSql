@@ -1,6 +1,14 @@
 package org.parc.sqlrestes.query;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.support.IndicesOptions;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.common.xcontent.NamedXContentRegistry;
+import org.elasticsearch.common.xcontent.json.JsonXContentParser;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.collapse.CollapseBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.parc.sqlrestes.domain.Query;
 import org.parc.sqlrestes.domain.Select;
 import org.parc.sqlrestes.domain.hints.Hint;
