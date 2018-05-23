@@ -1,5 +1,9 @@
 package org.parc.sqlrestes.query.maker;
 
+import org.apache.lucene.search.join.ScoreMode;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.parc.sqlrestes.domain.Condition;
 import org.parc.sqlrestes.domain.Where;
 import org.parc.sqlrestes.exception.SqlParseException;
@@ -65,11 +69,12 @@ public class QueryMaker extends Maker {
 
                 subQuery = QueryBuilders.nestedQuery(condition.getNestedPath(), subQuery, ScoreMode.None);
             } else if(condition.isChildren()) {
+
             	subQuery = JoinQueryBuilders.hasChildQuery(condition.getChildType(), subQuery, ScoreMode.None);
             }
         }
 
-		if (where.getConn() == CONN.AND) {
+		if (where.getConn() == Where.CONN.AND) {
 			boolQuery.must(subQuery);
 		} else {
 			boolQuery.should(subQuery);

@@ -1,9 +1,5 @@
 package org.parc.sqlrestes.query.maker;
 
-import java.math.BigDecimal;
-import java.time.ZoneOffset;
-import java.util.*;
-
 import org.elasticsearch.join.aggregations.JoinAggregationBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
@@ -12,11 +8,13 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.BucketOrder;
 import org.elasticsearch.search.aggregations.bucket.geogrid.GeoGridAggregationBuilder;
-
-import org.elasticsearch.search.aggregations.bucket.histogram.*;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramAggregationBuilder;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
+import org.elasticsearch.search.aggregations.bucket.histogram.ExtendedBounds;
+import org.elasticsearch.search.aggregations.bucket.histogram.HistogramAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.nested.ReverseNestedAggregationBuilder;
-import org.elasticsearch.search.aggregations.bucket.range.RangeAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.DateRangeAggregationBuilder;
+import org.elasticsearch.search.aggregations.bucket.range.RangeAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.geobounds.GeoBoundsAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.percentiles.PercentilesAggregationBuilder;
@@ -25,14 +23,18 @@ import org.elasticsearch.search.aggregations.metrics.tophits.TopHitsAggregationB
 import org.elasticsearch.search.aggregations.support.ValuesSourceAggregationBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTimeZone;
-import org.nlpcn.es4sql.Util;
-import org.nlpcn.es4sql.domain.Field;
-import org.nlpcn.es4sql.domain.KVValue;
-import org.nlpcn.es4sql.domain.MethodField;
-import org.nlpcn.es4sql.domain.Where;
-import org.nlpcn.es4sql.exception.SqlParseException;
-import org.nlpcn.es4sql.parse.ChildrenType;
-import org.nlpcn.es4sql.parse.NestedType;
+import org.parc.sqlrestes.Util;
+import org.parc.sqlrestes.domain.Field;
+import org.parc.sqlrestes.domain.KVValue;
+import org.parc.sqlrestes.domain.MethodField;
+import org.parc.sqlrestes.domain.Where;
+import org.parc.sqlrestes.exception.SqlParseException;
+import org.parc.sqlrestes.parse.ChildrenType;
+import org.parc.sqlrestes.parse.NestedType;
+
+import java.math.BigDecimal;
+import java.time.ZoneOffset;
+import java.util.*;
 
 public class AggMaker {
 
