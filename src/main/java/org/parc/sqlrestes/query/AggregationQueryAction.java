@@ -1,17 +1,22 @@
 package org.parc.sqlrestes.query;
 
 import com.google.common.collect.Lists;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.parc.restes.RestQueryBuilder;
 import org.parc.sqlrestes.domain.Field;
+import org.parc.sqlrestes.domain.Select;
+import org.parc.sqlrestes.domain.Where;
+import org.parc.sqlrestes.domain.hints.Hint;
+import org.parc.sqlrestes.domain.hints.HintType;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.maker.AggMaker;
-import org.parc.sqlrestes.domain.Select;
+import org.parc.sqlrestes.query.maker.QueryMaker;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static com.alibaba.druid.stat.TableStat.Mode.Select;
 
 /**
  * Transform SQL query to Elasticsearch aggregations query
@@ -20,7 +25,7 @@ public class AggregationQueryAction extends QueryAction {
 
     private final Select select;
     private AggMaker aggMaker = new AggMaker();
-    private SearchRequestBuilder request;
+    private RestQueryBuilder request;
 
     public AggregationQueryAction(RestClient client, Select select) {
         super(client, select);
@@ -29,7 +34,7 @@ public class AggregationQueryAction extends QueryAction {
 
     @Override
     public SqlElasticSearchRequestBuilder explain() throws SqlParseException {
-        this.request = new SearchRequestBuilder(client, SearchAction.INSTANCE);
+        this.request = new RestQueryBuilder();
 
         setIndicesAndTypes();
 

@@ -2,6 +2,7 @@ package org.parc.restes;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -10,11 +11,14 @@ import org.parc.restes.query.Aggregation;
 import org.parc.restes.query.AggregationFactory;
 import org.parc.restes.query.aggregations.DateHistogram;
 
+import static org.parc.restes.util.ESConstant.TYPE_SEARCH;
+
 /**
  * Created by xusiao on 2018/5/11.
  */
 public class RestQueryBuilder {
     private JSONObject restJson = new JSONObject();
+    private String indies = "", types = "";
 
     public void setQuery(QueryBuilder query) {
         restJson.put("query", JSONObject.parse(query.toString()));
@@ -65,7 +69,7 @@ public class RestQueryBuilder {
     }
 
     public void addAggregations(Aggregation aggregation) {
-        restJson.put("aggregations", JSONObject.parseObject( aggregation.toString()));
+        restJson.put("aggregations", JSONObject.parseObject(aggregation.toString()));
     }
 
 
@@ -84,12 +88,31 @@ public class RestQueryBuilder {
     }
 
     public void addSort(String rangeTime, SortOrder sortOrder) {
-        JSONObject orderJson=new JSONObject();
-        orderJson.put("order",sortOrder);
-        JSONObject fieldJson=new JSONObject();;
-        fieldJson.put(rangeTime,orderJson);
-        JSONArray sortArr=new JSONArray();
+        JSONObject orderJson = new JSONObject();
+        orderJson.put("order", sortOrder);
+        JSONObject fieldJson = new JSONObject();
+        ;
+        fieldJson.put(rangeTime, orderJson);
+        JSONArray sortArr = new JSONArray();
         sortArr.add(fieldJson);
-        restJson.put("sort",sortArr);
+        restJson.put("sort", sortArr);
+    }
+
+    public void setIndices(String[] indices) {
+        if (indices != null)
+            indies = "/" + StringUtils.join(indices, ",");
+        else
+            indies = "";
+    }
+
+    public void setTypes(String[] typeArr) {
+        if (typeArr != null)
+            types = "/" + StringUtils.join(typeArr, ",");
+        else
+            indies = "";
+    }
+
+    public String getPath() {
+        return indies+types+TYPE_SEARCH;
     }
 }
