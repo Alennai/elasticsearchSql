@@ -19,6 +19,7 @@ import static org.parc.restes.util.ESConstant.TYPE_SEARCH;
 public class RestQueryBuilder {
     private JSONObject restJson = new JSONObject();
     private String indies = "", types = "";
+    private int from;
 
     public void setQuery(QueryBuilder query) {
         restJson.put("query", JSONObject.parse(query.toString()));
@@ -114,5 +115,13 @@ public class RestQueryBuilder {
 
     public String getPath() {
         return indies+types+TYPE_SEARCH;
+    }
+
+    public void setFrom(int from) {
+        this.from = from;
+    }
+
+    public void addStoredField(String alias) {
+
     }
 }

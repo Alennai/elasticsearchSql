@@ -2,7 +2,9 @@ package com.alibaba.druid.pool;
 
 import org.elasticsearch.client.RestClient;
 import org.parc.sqlrestes.SearchDao;
+import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.jdbc.ObjectResult;
+import org.parc.sqlrestes.jdbc.ObjectResultsExtractor;
 import org.parc.sqlrestes.query.QueryAction;
 
 import java.sql.ResultSet;

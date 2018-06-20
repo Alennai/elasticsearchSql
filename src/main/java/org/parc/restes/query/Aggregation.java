@@ -1,6 +1,7 @@
 package org.parc.restes.query;
 
 import com.alibaba.fastjson.JSONObject;
+import org.elasticsearch.search.aggregations.BucketOrder;
 
 public abstract class Aggregation {
     protected String aggName;
@@ -41,4 +42,10 @@ public abstract class Aggregation {
     }
 
     public abstract Aggregation subAggregation(Aggregation aggregation);
+
+    public abstract void order(BucketOrder key);
+
+    public static Aggregation nested(String nestedAggName, String nestedPath) {
+        return null;
+    }
 }

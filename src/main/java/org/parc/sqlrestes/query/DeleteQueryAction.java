@@ -4,7 +4,6 @@ package org.parc.sqlrestes.query;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 import org.parc.sqlrestes.domain.Delete;
@@ -24,7 +23,7 @@ public class DeleteQueryAction extends QueryAction {
 
 	@Override
 	public SqlElasticDeleteByQueryRequestBuilder explain() throws SqlParseException {
-		this.request = new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE);
+//		this.request = new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE);
 
 		setIndicesAndTypes();
 		setWhere(delete.getWhere());

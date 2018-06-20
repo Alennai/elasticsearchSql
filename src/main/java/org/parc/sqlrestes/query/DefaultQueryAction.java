@@ -1,16 +1,19 @@
 package org.parc.sqlrestes.query;
 
-import com.alibaba.fastjson.JSONObject;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
+import org.parc.restes.RestQueryBuilder;
 import org.parc.sqlrestes.domain.*;
 import org.parc.sqlrestes.domain.hints.Hint;
 import org.parc.sqlrestes.domain.hints.HintType;
+import org.parc.sqlrestes.entity.Script;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.maker.QueryMaker;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,20 +22,20 @@ import java.util.List;
 public class DefaultQueryAction extends QueryAction {
 
 	private final Select select;
-	private JSONObject request;
+	private RestQueryBuilder request;
 
 	public DefaultQueryAction(RestClient client, Select select) {
 		super(client, select);
 		this.select = select;
 	}
 
-	public void intialize(JSONObject request) throws SqlParseException {
+	public void intialize(RestQueryBuilder request) throws SqlParseException {
 		this.request = request;
 	}
 
 	@Override
 	public SqlElasticSearchRequestBuilder explain() throws SqlParseException {
-		this.request = new JSONObject();
+		this.request = new RestQueryBuilder();
 		setIndicesAndTypes();
 
 		setFields(select.getFields());
@@ -43,7 +46,7 @@ public class DefaultQueryAction extends QueryAction {
 
 		boolean usedScroll = useScrollIfNeeded(select.isOrderdSelect());
 		if (!usedScroll) {
-			request.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+//			request.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 		}
 		updateRequestWithIndexAndRoutingOptions(select, request);
 		updateRequestWithHighlight(select, request);
@@ -67,7 +70,8 @@ public class DefaultQueryAction extends QueryAction {
 			int timeoutInMilli = (Integer) scrollHint.getParams()[1];
 			if (!existsOrderBy)
 				request.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC);
-			request.setScroll(new TimeValue(timeoutInMilli)).setSize(scrollSize);
+			request.setScroll(new TimeValue(timeoutInMilli));
+			request.setSize(scrollSize);
 		}
 		return scrollHint != null;
 	}
@@ -121,9 +125,9 @@ public class DefaultQueryAction extends QueryAction {
 	private void handleScriptField(MethodField method) throws SqlParseException {
 		List<KVValue> params = method.getParams();
 		if (params.size() == 2) {
-			request.addScriptField(params.get(0).value.toString(), new Script(params.get(1).value.toString()));
+			request.addScriptField(params.get(0).value.toString(), (new Script(params.get(1).value.toString())).toString());
 		} else if (params.size() == 3) {
-			request.addScriptField(params.get(0).value.toString(), new Script(ScriptType.INLINE, params.get(1).value.toString(), params.get(2).value.toString(), Collections.emptyMap()));
+//			request.addScriptField(params.get(0).value.toString(), (new Script(ScriptType.INLINE, params.get(1).value.toString(), params.get(2).value.toString(), Collections.emptyMap())).toString());
 		} else {
 			throw new SqlParseException("scripted_field only allows script(name,script) or script(name,lang,script)");
 		}
@@ -152,7 +156,7 @@ public class DefaultQueryAction extends QueryAction {
 	private void setSorts(List<Order> orderBys) {
 		for (Order order : orderBys) {
             if (order.getNestedPath() != null) {
-                request.addSort(SortBuilders.fieldSort(order.getName()).order(SortOrder.valueOf(order.getType())).setNestedSort(new NestedSortBuilder(order.getNestedPath())));
+//                request.addSort(SortBuilders.fieldSort(order.getName()).order(SortOrder.valueOf(order.getType())).setNestedSort(new NestedSortBuilder(order.getNestedPath())));
             } else {
                 request.addSort(order.getName(), SortOrder.valueOf(order.getType()));
             }
@@ -175,7 +179,7 @@ public class DefaultQueryAction extends QueryAction {
 		}
 	}
 
-	public SearchRequestBuilder getRequestBuilder() {
+	public RestQueryBuilder getRequestBuilder() {
 		return request;
 	}
 }

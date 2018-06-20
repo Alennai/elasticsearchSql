@@ -3,7 +3,6 @@ package org.parc.sqlrestes.parse;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import org.elasticsearch.script.ScriptService;
 import org.parc.sqlrestes.Util;
 import org.parc.sqlrestes.exception.SqlParseException;
 
@@ -17,18 +16,18 @@ import java.util.Map;
 public class ScriptFilter {
     private String script;
     private Map<String,Object> args;
-    private ScriptService.ScriptType scriptType;
+//    private ScriptService.ScriptType scriptType;
     public ScriptFilter() {
 
         args = null;
-        scriptType = ScriptService.ScriptType.INLINE;
+//        scriptType = ScriptService.ScriptType.INLINE;
     }
 
-    public ScriptFilter(String script, Map<String, Object> args, ScriptService.ScriptType scriptType) {
-        this.script = script;
-        this.args = args;
-        this.scriptType = scriptType;
-    }
+//    public ScriptFilter(String script, Map<String, Object> args, ScriptService.ScriptType scriptType) {
+//        this.script = script;
+//        this.args = args;
+//        this.scriptType = scriptType;
+//    }
 
     public boolean tryParseFromMethodExpr(SQLMethodInvokeExpr expr) throws SqlParseException {
         if (!expr.getMethodName().toLowerCase().equals("script")) {
@@ -74,13 +73,13 @@ public class ScriptFilter {
         String scriptTypeUpper = scriptType.toUpperCase();
         switch(scriptTypeUpper){
             case "INLINE":
-                this.scriptType = ScriptService.ScriptType.INLINE;
+//                this.scriptType = ScriptService.ScriptType.INLINE;
                 break;
             case "INDEXED":
-                this.scriptType = ScriptService.ScriptType.INDEXED;
+//                this.scriptType = ScriptService.ScriptType.INDEXED;
                 break;
             case "FILE":
-                this.scriptType = ScriptService.ScriptType.FILE;
+//                this.scriptType = ScriptService.ScriptType.FILE;
                 break;
         }
     }
@@ -93,9 +92,9 @@ public class ScriptFilter {
         return script;
     }
 
-    public ScriptService.ScriptType getScriptType() {
-        return scriptType;
-    }
+//    public ScriptService.ScriptType getScriptType() {
+//        return scriptType;
+//    }
 
     public Map<String, Object> getArgs() {
         return args;

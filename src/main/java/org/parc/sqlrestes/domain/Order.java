@@ -8,6 +8,7 @@ package org.parc.sqlrestes.domain;
 public class Order {
 	private String name;
 	private String type;
+	private String nestedPath;
 
 	public Order(String name, String type) {
 		this.name = name;
@@ -30,4 +31,7 @@ public class Order {
 		this.type = type;
 	}
 
+	public String getNestedPath() {
+		return nestedPath;
+	}
 }

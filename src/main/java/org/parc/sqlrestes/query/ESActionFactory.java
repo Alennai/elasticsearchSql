@@ -92,9 +92,9 @@ public class ESActionFactory {
 
     private static void executeAndFillSubQuery(RestClient client , SubQueryExpression subQueryExpression,QueryAction queryAction) throws SqlParseException {
         List<Object> values = new ArrayList<>();
-        Object queryResult;
+        Object queryResult=null;
         try {
-            queryResult = QueryActionElasticExecutor.executeAnyAction(client,queryAction);
+//            queryResult = QueryActionElasticExecutor.executeAnyAction(client,queryAction);
         } catch (Exception e) {
             throw new SqlParseException("could not execute SubQuery: " +  e.getMessage());
         }
@@ -103,7 +103,7 @@ public class ESActionFactory {
         if(queryResult instanceof SearchHits) {
             SearchHits hits = (SearchHits) queryResult;
             for (SearchHit hit : hits) {
-                values.add(ElasticResultHandler.getFieldValue(hit,returnField));
+//                values.add(ElasticResultHandler.getFieldValue(hit,returnField));
             }
         }
         else {

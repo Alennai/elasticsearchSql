@@ -1,14 +1,11 @@
 package org.parc.sqlrestes.query;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.support.IndicesOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.json.JsonXContentParser;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.collapse.CollapseBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.parc.restes.RestQueryBuilder;
 import org.parc.sqlrestes.domain.Query;
 import org.parc.sqlrestes.domain.Select;
 import org.parc.sqlrestes.domain.hints.Hint;
@@ -33,12 +30,12 @@ public abstract class QueryAction {
 		this.query = query;
 	}
 
-    protected void updateRequestWithCollapse(Select select, SearchRequestBuilder request) throws SqlParseException {
+    protected void updateRequestWithCollapse(Select select, RestQueryBuilder request) throws SqlParseException {
         JsonFactory jsonFactory = new JsonFactory();
         for (Hint hint : select.getHints()) {
             if (hint.getType() == HintType.COLLAPSE && hint.getParams() != null && 0 < hint.getParams().length) {
                 try (JsonXContentParser parser = new JsonXContentParser(NamedXContentRegistry.EMPTY, jsonFactory.createParser(hint.getParams()[0].toString()))) {
-                    request.setCollapse(CollapseBuilder.fromXContent(parser));
+//                    request.setCollapse(CollapseBuilder.fromXContent(parser));
                 } catch (IOException e) {
                     throw new SqlParseException("could not parse collapse hint: " + e.getMessage());
                 }
@@ -46,19 +43,19 @@ public abstract class QueryAction {
         }
     }
 
-    protected void updateRequestWithPostFilter(Select select, SearchRequestBuilder request) {
+    protected void updateRequestWithPostFilter(Select select, RestQueryBuilder request) {
         for (Hint hint : select.getHints()) {
             if (hint.getType() == HintType.POST_FILTER && hint.getParams() != null && 0 < hint.getParams().length) {
-                request.setPostFilter(QueryBuilders.wrapperQuery(hint.getParams()[0].toString()));
+//                request.setPostFilter(QueryBuilders.wrapperQuery(hint.getParams()[0].toString()));
             }
         }
     }
 
-    protected void updateRequestWithIndexAndRoutingOptions(Select select, SearchRequestBuilder request) {
+    protected void updateRequestWithIndexAndRoutingOptions(Select select, RestQueryBuilder request) {
         for(Hint hint : select.getHints()){
             if(hint.getType() == HintType.IGNORE_UNAVAILABLE){
                 //saving the defaults from TransportClient search
-                request.setIndicesOptions(IndicesOptions.fromOptions(true, false, true, false, IndicesOptions.strictExpandOpenAndForbidClosed()));
+//                request.setIndicesOptions(IndicesOptions.fromOptions(true, false, true, false, IndicesOptions.strictExpandOpenAndForbidClosed()));
             }
             if(hint.getType() == HintType.ROUTINGS){
                 Object[] routings = hint.getParams();
@@ -66,12 +63,12 @@ public abstract class QueryAction {
                 for(int i=0;i<routings.length;i++){
                     routingsAsStringArray[i]=routings[i].toString();
                 }
-                request.setRouting(routingsAsStringArray);
+//                request.setRouting(routingsAsStringArray);
             }
         }
     }
 
-    protected void updateRequestWithHighlight(Select select, SearchRequestBuilder request) {
+    protected void updateRequestWithHighlight(Select select, RestQueryBuilder request) {
         boolean foundAnyHighlights = false;
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         for(Hint hint : select.getHints()){
@@ -84,7 +81,7 @@ public abstract class QueryAction {
             }
         }
         if(foundAnyHighlights){
-            request.highlighter(highlightBuilder);
+//            request.highlighter(highlightBuilder);
         }
     }
 

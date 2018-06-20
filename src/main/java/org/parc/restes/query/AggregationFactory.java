@@ -36,4 +36,7 @@ public class AggregationFactory {
         return new OperatorAgg(aggName,operator);
     }
 
+    public static Aggregation nested(String s, String nestedPath) {
+        return null;
+    }
 }
