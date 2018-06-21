@@ -2,11 +2,11 @@ package org.parc.plugin.executors;
 
 import com.google.common.base.Joiner;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.plugin.nlpcn.QueryActionElasticExecutor;
 import org.elasticsearch.rest.BytesRestResponse;
 import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestStatus;
-import org.nlpcn.es4sql.query.QueryAction;
+import org.parc.plugin.QueryActionElasticExecutor;
+import org.parc.sqlrestes.query.QueryAction;
 
 import java.util.Map;
 

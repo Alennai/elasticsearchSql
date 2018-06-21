@@ -9,9 +9,13 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.parc.sqlrestes.domain.Field;
+import org.parc.sqlrestes.domain.Select;
+import org.parc.sqlrestes.domain.Where;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.join.HashJoinElasticRequestBuilder;
 import org.parc.sqlrestes.query.join.TableInJoinRequestBuilder;
+import org.parc.sqlrestes.query.maker.QueryMaker;
 
 import java.io.IOException;
 import java.util.*;
@@ -104,12 +108,14 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
         SearchResponse searchResponse;
         boolean finishedScrolling;
         if (hintLimit != null && hintLimit < MAX_RESULTS_ON_ONE_FETCH) {
-            searchResponse = secondTableRequest.getRequestBuilder().setSize(hintLimit).get();
+//            searchResponse = secondTableRequest.getRequestBuilder().setSize(hintLimit).get();
+            searchResponse = null;
             finishedScrolling = true;
         } else {
-            searchResponse = secondTableRequest.getRequestBuilder()
-                    .setScroll(new TimeValue(60000))
-                    .setSize(MAX_RESULTS_ON_ONE_FETCH).get();
+//            searchResponse = secondTableRequest.getRequestBuilder()
+//                    .setScroll(new TimeValue(60000))
+//                    .setSize(MAX_RESULTS_ON_ONE_FETCH).get();
+            searchResponse = null;
             //es5.0 no need to scroll again!
 //            searchResponse = client.prepareSearchScroll(searchResponse.getScrollId()).setScroll(new TimeValue(600000)).get();
             finishedScrolling = false;
@@ -211,7 +217,8 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
 
     private List<SearchHit> fetchAllHits(TableInJoinRequestBuilder tableInJoinRequest) {
         Integer hintLimit = tableInJoinRequest.getHintLimit();
-        SearchRequestBuilder requestBuilder = tableInJoinRequest.getRequestBuilder();
+//        SearchRequestBuilder requestBuilder = tableInJoinRequest.getRequestBuilder();
+        SearchRequestBuilder requestBuilder = null;
         if (hintLimit != null && hintLimit < MAX_RESULTS_ON_ONE_FETCH) {
             requestBuilder.setSize(hintLimit);
             SearchResponse searchResponse = requestBuilder.get();

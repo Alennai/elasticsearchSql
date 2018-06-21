@@ -2,12 +2,12 @@ package org.parc.plugin;
 
 import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.plugin.nlpcn.executors.ActionRequestRestExecuterFactory;
-import org.elasticsearch.plugin.nlpcn.executors.RestExecutor;
 import org.elasticsearch.rest.*;
-import org.nlpcn.es4sql.SearchDao;
-import org.nlpcn.es4sql.exception.SqlParseException;
-import org.nlpcn.es4sql.query.QueryAction;
+import org.parc.plugin.executors.ActionRequestRestExecuterFactory;
+import org.parc.plugin.executors.RestExecutor;
+import org.parc.sqlrestes.SearchDao;
+import org.parc.sqlrestes.exception.SqlParseException;
+import org.parc.sqlrestes.query.QueryAction;
 
 import java.io.IOException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -40,7 +40,8 @@ public class RestSqlAction extends BaseRestHandler {
             sql = request.content().utf8ToString();
         }
         try {
-        SearchDao searchDao = new SearchDao(client);
+//        SearchDao searchDao = new SearchDao(client);
+            SearchDao searchDao =null;
         QueryAction queryAction= null;
 
             queryAction = searchDao.explain(sql);
