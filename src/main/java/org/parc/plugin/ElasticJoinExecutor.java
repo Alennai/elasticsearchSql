@@ -1,4 +1,4 @@
-package org.parc.plugin.executors;
+package org.parc.plugin;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -12,10 +12,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.parc.plugin.ElasticHitsExecutor;
-import org.parc.plugin.ElasticUtils;
-import org.parc.plugin.HashJoinElasticExecutor;
-import org.parc.plugin.MetaSearchResult;
 import org.parc.sqlrestes.domain.Field;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.SqlElasticRequestBuilder;
@@ -29,7 +25,7 @@ import java.util.*;
 /**
  * Created by xusiao on 2018/6/20.
  */
-public abstract class ElasticJoinExecutor implements ElasticHitsExecutor {
+public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
     protected SearchHits results ;
     protected MetaSearchResult metaResults;
     protected final int MAX_RESULTS_ON_ONE_FETCH = 10000;
