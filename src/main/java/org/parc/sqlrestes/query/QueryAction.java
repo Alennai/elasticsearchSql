@@ -1,7 +1,7 @@
 package org.parc.sqlrestes.query;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.json.JsonXContentParser;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
@@ -23,9 +23,9 @@ import java.util.Map;
 public abstract class QueryAction {
 
 	protected org.parc.sqlrestes.domain.Query query;
-	protected RestClient client;
+	protected Client client;
 
-	public QueryAction(RestClient client, Query query) {
+	public QueryAction(Client client, Query query) {
 		this.client = client;
 		this.query = query;
 	}

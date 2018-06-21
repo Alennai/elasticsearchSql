@@ -5,7 +5,6 @@ import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.search.MultiSearchRequest;
-import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -40,18 +39,20 @@ public  class JoinRequestBuilder implements SqlElasticRequestBuilder {
 
     private void buildMulti() {
         multi = new MultiSearchRequest();
-        multi.add(firstTable.getRequestBuilder());
-        multi.add(secondTable.getRequestBuilder());
+//        multi.add(firstTable.getRequestBuilder());
+//        multi.add(secondTable.getRequestBuilder());
     }
 
     @Override
     public String explain() {
         try {
             XContentBuilder firstBuilder = XContentFactory.contentBuilder(XContentType.JSON).prettyPrint();
-            firstTable.getRequestBuilder().request().source().toXContent(firstBuilder, ToXContent.EMPTY_PARAMS);
+//            firstTable.getRequestBuilder().request().source().toXContent(firstBuilder, ToXContent.EMPTY_PARAMS);
+            firstTable.getRequestBuilder().toString();
 
             XContentBuilder secondBuilder = XContentFactory.contentBuilder(XContentType.JSON).prettyPrint();
-            secondTable.getRequestBuilder().request().source().toXContent(secondBuilder, ToXContent.EMPTY_PARAMS);
+//            secondTable.getRequestBuilder().request().source().toXContent(secondBuilder, ToXContent.EMPTY_PARAMS);
+            secondTable.getRequestBuilder().toString();
             String explained = String.format(" first query:\n%s\n second query:\n%s", firstBuilder.string(), secondBuilder.string());
 
             return explained;
@@ -68,7 +69,8 @@ public  class JoinRequestBuilder implements SqlElasticRequestBuilder {
 
     @Override
     public ActionRequestBuilder getBuilder() {
-        return this.firstTable.getRequestBuilder();
+//        return this.firstTable.getRequestBuilder();
+        return null;
     }
 
     public MultiSearchRequest getMulti() {

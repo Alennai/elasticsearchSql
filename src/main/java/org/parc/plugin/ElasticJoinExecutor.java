@@ -1,23 +1,20 @@
 package org.parc.plugin;
 
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.text.Text;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.rest.BytesRestResponse;
 import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.sort.FieldSortBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.parc.sqlrestes.domain.Field;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.SqlElasticRequestBuilder;
 import org.parc.sqlrestes.query.join.HashJoinElasticRequestBuilder;
 import org.parc.sqlrestes.query.join.JoinRequestBuilder;
 import org.parc.sqlrestes.query.join.NestedLoopsElasticRequestBuilder;
+import org.parc.sqlrestes.query.join.TableInJoinRequestBuilder;
 
 import java.io.IOException;
 import java.util.*;
@@ -191,12 +188,13 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
     }
 
     protected SearchResponse scrollOneTimeWithMax(Client client,TableInJoinRequestBuilder tableRequest) {
-        SearchResponse responseWithHits;SearchRequestBuilder scrollRequest = tableRequest.getRequestBuilder()
-                .setScroll(new TimeValue(60000))
-                .setSize(MAX_RESULTS_ON_ONE_FETCH);
+        SearchResponse responseWithHits=null;
+//        SearchRequestBuilder scrollRequest = tableRequest.getRequestBuilder()
+//                .setScroll(new TimeValue(60000))
+//                .setSize(MAX_RESULTS_ON_ONE_FETCH);
         boolean ordered = tableRequest.getOriginalSelect().isOrderdSelect();
-        if(!ordered) scrollRequest.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC);
-        responseWithHits = scrollRequest.get();
+//        if(!ordered) scrollRequest.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC);
+//        responseWithHits = scrollRequest.get();
         //on ordered select - not using SCAN , elastic returns hits on first scroll
         //es5.0 elastic always return docs on scan
 //        if(!ordered)

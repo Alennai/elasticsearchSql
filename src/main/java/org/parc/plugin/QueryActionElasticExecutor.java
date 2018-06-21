@@ -5,7 +5,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregations;
-import org.parc.plugin.executors.ElasticJoinExecutor;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.*;
 import org.parc.sqlrestes.query.join.ESJoinQueryAction;
@@ -61,6 +60,4 @@ public class QueryActionElasticExecutor {
     }
 
 
-}
-{
 }

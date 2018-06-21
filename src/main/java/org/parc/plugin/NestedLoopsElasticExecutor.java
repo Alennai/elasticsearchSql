@@ -3,24 +3,24 @@ package org.parc.plugin;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import org.elasticsearch.action.search.MultiSearchRequest;
 import org.elasticsearch.action.search.MultiSearchResponse;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.nlpcn.es4sql.domain.Condition;
-import org.nlpcn.es4sql.domain.Select;
-import org.nlpcn.es4sql.domain.Where;
-import org.nlpcn.es4sql.exception.SqlParseException;
-import org.nlpcn.es4sql.query.DefaultQueryAction;
-import org.nlpcn.es4sql.query.join.NestedLoopsElasticRequestBuilder;
-import org.nlpcn.es4sql.query.join.TableInJoinRequestBuilder;
+import org.parc.sqlrestes.domain.Condition;
+import org.parc.sqlrestes.domain.Select;
+import org.parc.sqlrestes.domain.Where;
+import org.parc.sqlrestes.exception.SqlParseException;
+import org.parc.sqlrestes.query.DefaultQueryAction;
+import org.parc.sqlrestes.query.join.NestedLoopsElasticRequestBuilder;
+import org.parc.sqlrestes.query.join.TableInJoinRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Created by Eliran on 15/9/2015.
@@ -47,7 +47,9 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
         orderConditions(nestedLoopsRequest.getFirstTable().getAlias(),nestedLoopsRequest.getSecondTable().getAlias());
 
 
-        FetchWithScrollResponse fetchWithScrollResponse = firstFetch(this.nestedLoopsRequest.getFirstTable());
+        FetchWithScrollResponse fetchWithScrollResponse = firstFetch(
+                this.nestedLoopsRequest.getFirstTable()
+        );
         SearchResponse firstTableResponse = fetchWithScrollResponse.getResponse();
         boolean needScrollForFirstTable = fetchWithScrollResponse.isNeedScrollForFirstTable();
 
@@ -155,11 +157,11 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
             }
             DefaultQueryAction action = new DefaultQueryAction(this.client , secondTableSelect);
             action.explain();
-            SearchRequestBuilder secondTableRequest = action.getRequestBuilder();
+//            SearchRequestBuilder secondTableRequest = action.getRequestBuilder();
             Integer secondTableHintLimit = this.nestedLoopsRequest.getSecondTable().getHintLimit();
-            if(secondTableHintLimit != null && secondTableHintLimit <= MAX_RESULTS_ON_ONE_FETCH)
-                secondTableRequest.setSize(secondTableHintLimit);
-            multiSearchRequest.add(secondTableRequest);
+            if(secondTableHintLimit != null && secondTableHintLimit <= MAX_RESULTS_ON_ONE_FETCH);
+//                secondTableRequest.setSize(secondTableHintLimit);
+//            multiSearchRequest.add(secondTableRequest);
         }
         return multiSearchRequest;
     }
@@ -178,10 +180,11 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
     private FetchWithScrollResponse firstFetch(TableInJoinRequestBuilder tableRequest) {
             Integer hintLimit = tableRequest.getHintLimit();
             boolean needScrollForFirstTable = false;
-            SearchResponse responseWithHits;
+            SearchResponse responseWithHits=null;
             if(hintLimit != null && hintLimit < MAX_RESULTS_ON_ONE_FETCH){
 
-                responseWithHits = tableRequest.getRequestBuilder().setSize(hintLimit).get();
+//                responseWithHits = tableRequest.getRequestBuilder().setSize(hintLimit).get();
+//                responseWithHits = tableRequest.getRequestBuilder().setSize(hintLimit).get();
                 needScrollForFirstTable=false;
             }
             else {
