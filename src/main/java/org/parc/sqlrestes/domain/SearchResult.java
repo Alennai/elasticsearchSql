@@ -32,12 +32,12 @@ public class SearchResult {
 		this.total = hits.getTotalHits();
 		results = new ArrayList<>(hits.getHits().length);
 		for (SearchHit searchHit : hits.getHits()) {
-			if (searchHit.getSource() != null) {
-				results.add(searchHit.getSource());
-			} else if (searchHit.getFields() != null) {
-				Map<String, SearchHitField> fields = searchHit.getFields();
-				results.add(toFieldsMap(fields));
-			}
+//			if (searchHit.getSource() != null) {
+//				results.add(searchHit.getSource());
+//			} else if (searchHit.getFields() != null) {
+//				Map<String, SearchHitField> fields = searchHit.getFields();
+//				results.add(toFieldsMap(fields));
+//			}
 
 		}
 	}
@@ -76,18 +76,18 @@ public class SearchResult {
 	 * @param fields
 	 * @return
 	 */
-	private Map<String, Object> toFieldsMap(Map<String, SearchHitField> fields) {
-		Map<String, Object> result = new HashMap<>();
-		for (Entry<String, SearchHitField> entry : fields.entrySet()) {
-			if (entry.getValue().values().size() > 1) {
-				result.put(entry.getKey(), entry.getValue().values());
-			} else {
-				result.put(entry.getKey(), entry.getValue().value());
-			}
-
-		}
-		return result;
-	}
+//	private Map<String, Object> toFieldsMap(Map<String, SearchHitField> fields) {
+//		Map<String, Object> result = new HashMap<>();
+//		for (Entry<String, SearchHitField> entry : fields.entrySet()) {
+//			if (entry.getValue().values().size() > 1) {
+//				result.put(entry.getKey(), entry.getValue().values());
+//			} else {
+//				result.put(entry.getKey(), entry.getValue().value());
+//			}
+//
+//		}
+//		return result;
+//	}
 
 	/**
 	 * 讲es的field域转换为你Object

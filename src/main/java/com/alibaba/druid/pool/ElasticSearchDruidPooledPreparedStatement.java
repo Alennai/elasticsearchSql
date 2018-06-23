@@ -1,6 +1,8 @@
 package com.alibaba.druid.pool;
 
 import org.elasticsearch.client.RestClient;
+import org.parc.plugin.QueryActionElasticExecutor;
+import org.parc.plugin.executors.CsvExtractorException;
 import org.parc.sqlrestes.SearchDao;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.jdbc.ObjectResult;

@@ -2,6 +2,7 @@ package org.parc.plugin;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.rest.BytesRestResponse;
 import org.elasticsearch.rest.RestChannel;
@@ -65,7 +66,7 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
         return results;
     }
 
-    public static ElasticJoinExecutor createJoinExecutor(Client client, SqlElasticRequestBuilder requestBuilder){
+    public static ElasticJoinExecutor createJoinExecutor(RestClient client, SqlElasticRequestBuilder requestBuilder){
         if(requestBuilder instanceof HashJoinElasticRequestBuilder) {
             HashJoinElasticRequestBuilder hashJoin = (HashJoinElasticRequestBuilder) requestBuilder;
             return new HashJoinElasticExecutor(client, hashJoin);

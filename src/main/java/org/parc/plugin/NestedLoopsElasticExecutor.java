@@ -4,9 +4,8 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import org.elasticsearch.action.search.MultiSearchRequest;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.common.text.Text;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.parc.sqlrestes.domain.Condition;
@@ -28,9 +27,9 @@ import java.util.Map;
 public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
 
     private final NestedLoopsElasticRequestBuilder nestedLoopsRequest;
-    private final Client client;
+    private final RestClient client;
 
-    public NestedLoopsElasticExecutor(Client client, NestedLoopsElasticRequestBuilder nestedLoops) {
+    public NestedLoopsElasticExecutor(RestClient client, NestedLoopsElasticRequestBuilder nestedLoops) {
         super(nestedLoops);
         this.client = client;
         this.nestedLoopsRequest = nestedLoops;
@@ -75,7 +74,8 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
             if(!finishedWithFirstTable)
             {
                 if(needScrollForFirstTable)
-                    firstTableResponse = client.prepareSearchScroll(firstTableResponse.getScrollId()).setScroll(new TimeValue(600000)).get();
+//                    firstTableResponse = client.prepareSearchScroll(firstTableResponse.getScrollId()).setScroll(new TimeValue(600000)).get();
+                firstTableResponse = null;
                 else finishedWithFirstTable = true;
             }
 
@@ -84,7 +84,8 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
     }
 
     private int combineResultsFromMultiResponses(List<SearchHit> combinedResults, int totalLimit, int currentCombinedResults, SearchHit[] hits, int currentIndex, MultiSearchRequest multiSearchRequest) {
-        MultiSearchResponse.Item[] responses = client.multiSearch(multiSearchRequest).actionGet().getResponses();
+//        MultiSearchResponse.Item[] responses = client.multiSearch(multiSearchRequest).actionGet().getResponses();
+        MultiSearchResponse.Item[] responses = null;
         String t1Alias = nestedLoopsRequest.getFirstTable().getAlias();
         String t2Alias = nestedLoopsRequest.getSecondTable().getAlias();
 
@@ -189,7 +190,8 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
             }
             else {
                 //scroll request with max.
-                responseWithHits = scrollOneTimeWithMax(client,tableRequest);
+//                responseWithHits = scrollOneTimeWithMax(client,tableRequest);
+                responseWithHits = null;
                 if(responseWithHits.getHits().getTotalHits() < MAX_RESULTS_ON_ONE_FETCH)
                     needScrollForFirstTable = true;
             }

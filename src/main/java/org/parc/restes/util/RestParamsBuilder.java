@@ -8,12 +8,12 @@ package org.parc.restes.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.dbapp.cpsysportal.elasticsearch.entity.Param;
-import com.dbapp.cpsysportal.elasticsearch.entity.TraceParam;
-import com.dbapp.utils.DateUtil;
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.parc.restes.entity.DateUtil;
+import org.parc.restes.entity.Param;
+import org.parc.restes.entity.TraceParam;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -287,7 +287,7 @@ public class RestParamsBuilder {
 				String k = condition.substring(0, pos);
 				String v = condition.substring(pos + 1, condition.length());
 				if ("@timestamp".equals(k)){
-					this.timeRange("@timestamp",DateUtil.str2Long(v) - 1,DateUtil.str2Long(v) + 999);
+					this.timeRange("@timestamp", DateUtil.str2Long(v) - 1,DateUtil.str2Long(v) + 999);
 					continue;
 				}
 				if ("uuid".equals(k)){

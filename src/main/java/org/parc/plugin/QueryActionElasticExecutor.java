@@ -3,6 +3,7 @@ package org.parc.plugin;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.parc.sqlrestes.exception.SqlParseException;
@@ -22,7 +23,7 @@ public class QueryActionElasticExecutor {
         return ((SearchResponse) builder.get()).getHits();
     }
 
-    public static SearchHits executeJoinSearchAction(Client client , ESJoinQueryAction joinQueryAction) throws IOException, SqlParseException {
+    public static SearchHits executeJoinSearchAction(RestClient client , ESJoinQueryAction joinQueryAction) throws IOException, SqlParseException {
         SqlElasticRequestBuilder joinRequestBuilder = joinQueryAction.explain();
         ElasticJoinExecutor executor = ElasticJoinExecutor.createJoinExecutor(client,joinRequestBuilder);
         executor.run();
@@ -38,14 +39,15 @@ public class QueryActionElasticExecutor {
         return deleteQueryAction.explain().get();
     }
 
-    public static SearchHits executeMultiQueryAction(Client client, MultiQueryAction queryAction) throws SqlParseException, IOException {
+    public static SearchHits executeMultiQueryAction(RestClient client, MultiQueryAction queryAction) throws SqlParseException, IOException {
         SqlElasticRequestBuilder multiRequestBuilder = queryAction.explain();
+//        ElasticHitsExecutor executor = MultiRequestExecutorFactory.createExecutor(client, (MultiQueryRequestBuilder) multiRequestBuilder);
         ElasticHitsExecutor executor = MultiRequestExecutorFactory.createExecutor(client, (MultiQueryRequestBuilder) multiRequestBuilder);
         executor.run();
         return executor.getHits();
     }
 
-    public static Object executeAnyAction(Client client , QueryAction queryAction) throws SqlParseException, IOException {
+    public static Object executeAnyAction(RestClient client , QueryAction queryAction) throws SqlParseException, IOException {
         if(queryAction instanceof DefaultQueryAction)
             return executeSearchAction((DefaultQueryAction) queryAction);
         if(queryAction instanceof AggregationQueryAction)

@@ -1,6 +1,7 @@
 package org.parc.sqlrestes.query.multi;
 
 import org.elasticsearch.client.RestClient;
+import org.parc.restes.RestQueryBuilder;
 import org.parc.sqlrestes.domain.Field;
 import org.parc.sqlrestes.domain.Select;
 import org.parc.sqlrestes.exception.SqlParseException;
@@ -28,8 +29,8 @@ public class MultiQueryAction extends QueryAction {
             throw new SqlParseException("on multi query fields/aliases of one table should be subset of other");
         }
         MultiQueryRequestBuilder requestBuilder = new MultiQueryRequestBuilder(this.multiQuerySelect);
-        requestBuilder.setFirstSearchRequest(createRequestBuilder(this.multiQuerySelect.getFirstSelect()));
-        requestBuilder.setSecondSearchRequest(createRequestBuilder(this.multiQuerySelect.getSecondSelect()));
+//        requestBuilder.setFirstSearchRequest(createRequestBuilder(this.multiQuerySelect.getFirstSelect()));
+//        requestBuilder.setSecondSearchRequest(createRequestBuilder(this.multiQuerySelect.getSecondSelect()));
         requestBuilder.fillTableAliases(this.multiQuerySelect.getFirstSelect().getFields(),this.multiQuerySelect.getSecondSelect().getFields());
 
         return requestBuilder;
@@ -67,7 +68,7 @@ public class MultiQueryAction extends QueryAction {
         return fieldName;
     }
 
-    protected SearchRequestBuilder createRequestBuilder(Select select) throws SqlParseException {
+    protected RestQueryBuilder createRequestBuilder(Select select) throws SqlParseException {
         DefaultQueryAction queryAction = new DefaultQueryAction(client,select);
         queryAction.explain();
         return queryAction.getRequestBuilder();

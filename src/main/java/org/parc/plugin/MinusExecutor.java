@@ -1,10 +1,9 @@
 package org.parc.plugin;
 
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.common.text.Text;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.parc.sqlrestes.Util;
@@ -25,7 +24,7 @@ import java.util.*;
  * Created by Eliran on 26/8/2016.
  */
 public class MinusExecutor implements ElasticHitsExecutor {
-    private Client client;
+    private RestClient client;
     private MultiQueryRequestBuilder builder;
     private SearchHits minusHits;
     private boolean useTermsOptimization;
@@ -37,7 +36,7 @@ public class MinusExecutor implements ElasticHitsExecutor {
     private String[] fieldsOrderFirstTable;
     private String[] fieldsOrderSecondTable;
     private String seperator;
-    public MinusExecutor(Client client, MultiQueryRequestBuilder builder) {
+    public MinusExecutor(RestClient client, MultiQueryRequestBuilder builder) {
         this.client = client;
         this.builder = builder;
         this.useTermsOptimization = false;
@@ -171,7 +170,8 @@ public class MinusExecutor implements ElasticHitsExecutor {
             if(totalDocsFetchedFromFirstTable > this.maxDocsToFetchOnFirstTable){
                 break;
             }
-            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
+//            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
+            scrollResp = null;
             hits = scrollResp.getHits().getHits();
         }
 //         scrollResp = ElasticUtils.scrollOneTimeWithHits(this.client, this.builder.getSecondSearchRequest(),
@@ -189,7 +189,8 @@ public class MinusExecutor implements ElasticHitsExecutor {
             if(totalDocsFetchedFromSecondTable > this.maxDocsToFetchOnSecondTable){
                 break;
             }
-            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
+//            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
+            scrollResp =null;
             hits = scrollResp.getHits().getHits();
         }
 
@@ -291,7 +292,8 @@ public class MinusExecutor implements ElasticHitsExecutor {
                 if(totalDocsFetchedFromSecondTable > this.maxDocsToFetchOnSecondTable){
                     break;
                 }
-                responseForSecondTable = client.prepareSearchScroll(responseForSecondTable.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
+//                responseForSecondTable = client.prepareSearchScroll(responseForSecondTable.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
+                responseForSecondTable = null;
                 secondQueryHits = responseForSecondTable.getHits().getHits();
             }
             results.addAll(currentSetFromResults);
@@ -300,7 +302,8 @@ public class MinusExecutor implements ElasticHitsExecutor {
                 break;
             }
 
-            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
+//            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
+            scrollResp =null;
             hits = scrollResp.getHits().getHits();
         }
         return new MinusOneFieldAndOptimizationResult(results,someHit);

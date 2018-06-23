@@ -3,7 +3,6 @@ package org.parc.sqlrestes.query;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.action.ActionResponse;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.parc.restes.RestQueryBuilder;
 
 /**
@@ -18,7 +17,8 @@ public class SqlElasticSearchRequestBuilder implements SqlElasticRequestBuilder 
 
     @Override
     public ActionRequest request() {
-        return requestBuilder.request();
+//        return requestBuilder.request();
+        return null;
     }
 
     @Override
@@ -28,12 +28,14 @@ public class SqlElasticSearchRequestBuilder implements SqlElasticRequestBuilder 
 
     @Override
     public ActionResponse get() {
-        return requestBuilder.get();
+//        return requestBuilder.get();
+        return null;
     }
 
     @Override
     public ActionRequestBuilder getBuilder() {
-        return requestBuilder;
+     return null;
+//        return requestBuilder;
     }
 
     @Override

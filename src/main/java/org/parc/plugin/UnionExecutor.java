@@ -2,6 +2,7 @@ package org.parc.plugin;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -25,7 +26,7 @@ public class UnionExecutor implements ElasticHitsExecutor {
     private Client client;
     private int currentId;
 
-    public UnionExecutor(Client client,MultiQueryRequestBuilder builder) {
+    public UnionExecutor(RestClient client, MultiQueryRequestBuilder builder) {
         multiQueryBuilder = builder;
         client = client;
         currentId = 0;

@@ -1,6 +1,5 @@
 package org.parc.sqlrestes.query;
 
-import org.elasticsearch.client.Client;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -25,7 +24,7 @@ public class DefaultQueryAction extends QueryAction {
 	private final Select select;
 	private RestQueryBuilder request;
 
-	public DefaultQueryAction(Client client, Select select) {
+	public DefaultQueryAction(RestClient client, Select select) {
 		super(client, select);
 		this.select = select;
 	}

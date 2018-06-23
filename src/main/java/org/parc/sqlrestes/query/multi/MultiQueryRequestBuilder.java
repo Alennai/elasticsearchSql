@@ -1,6 +1,14 @@
 package org.parc.sqlrestes.query.multi;
 
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
+import org.elasticsearch.action.ActionRequest;
+import org.elasticsearch.action.ActionRequestBuilder;
+import org.elasticsearch.action.ActionResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.common.xcontent.XContentType;
+import org.parc.restes.RestQueryBuilder;
 import org.parc.sqlrestes.domain.Field;
 import org.parc.sqlrestes.domain.Select;
 import org.parc.sqlrestes.query.SqlElasticRequestBuilder;
@@ -15,8 +23,8 @@ import java.util.Map;
  */
 public class MultiQueryRequestBuilder implements SqlElasticRequestBuilder {
 
-    private SearchRequestBuilder firstSearchRequest;
-    private SearchRequestBuilder secondSearchRequest;
+    private RestQueryBuilder firstSearchRequest;
+    private RestQueryBuilder secondSearchRequest;
     private Map<String,String> firstTableFieldToAlias;
     private Map<String,String> secondTableFieldToAlias;
     private MultiQuerySelect multiQuerySelect;
@@ -41,10 +49,10 @@ public class MultiQueryRequestBuilder implements SqlElasticRequestBuilder {
 
         try {
             XContentBuilder firstBuilder = XContentFactory.contentBuilder(XContentType.JSON).prettyPrint();
-            this.firstSearchRequest.request().source().toXContent(firstBuilder, ToXContent.EMPTY_PARAMS);
+//            this.firstSearchRequest.request().source().toXContent(firstBuilder, ToXContent.EMPTY_PARAMS);
 
             XContentBuilder secondBuilder = XContentFactory.contentBuilder(XContentType.JSON).prettyPrint();
-            this.secondSearchRequest.request().source().toXContent(secondBuilder, ToXContent.EMPTY_PARAMS);
+//            this.secondSearchRequest.request().source().toXContent(secondBuilder, ToXContent.EMPTY_PARAMS);
             String explained = String.format("performing %s on :\n left query:\n%s\n right query:\n%s", this.relation.name,firstBuilder.string(), secondBuilder.string());
 
             return explained;
@@ -65,11 +73,11 @@ public class MultiQueryRequestBuilder implements SqlElasticRequestBuilder {
     }
 
 
-    public SearchRequestBuilder getFirstSearchRequest() {
+    public RestQueryBuilder getFirstSearchRequest() {
         return firstSearchRequest;
     }
 
-    public SearchRequestBuilder getSecondSearchRequest() {
+    public RestQueryBuilder getSecondSearchRequest() {
         return secondSearchRequest;
     }
 
@@ -77,12 +85,12 @@ public class MultiQueryRequestBuilder implements SqlElasticRequestBuilder {
         return relation;
     }
 
-    public void setFirstSearchRequest(SearchRequestBuilder firstSearchRequest) {
+    public void setFirstSearchRequest(RestQueryBuilder firstSearchRequest) {
         this.firstSearchRequest = firstSearchRequest;
     }
 
     public void setSecondSearchRequest(SearchRequestBuilder secondSearchRequest) {
-        this.secondSearchRequest = secondSearchRequest;
+//        this.secondSearchRequest = secondSearchRequest;
     }
 
     public void fillTableAliases(List<Field> firstTableFields, List<Field> secondTableFields) {

@@ -1,24 +1,22 @@
 package org.parc.plugin.executors;
 
-import com.google.common.collect.Maps;
 import org.elasticsearch.action.ActionFuture;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.index.reindex.BulkIndexByScrollResponseContentListener;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
-import org.elasticsearch.plugin.nlpcn.*;
 import org.elasticsearch.rest.BytesRestResponse;
 import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.rest.action.RestStatusToXContentListener;
 import org.elasticsearch.search.SearchHits;
-import org.nlpcn.es4sql.query.QueryAction;
-import org.nlpcn.es4sql.query.SqlElasticRequestBuilder;
-import org.nlpcn.es4sql.query.join.JoinRequestBuilder;
-import org.nlpcn.es4sql.query.multi.MultiQueryRequestBuilder;
+import org.parc.plugin.*;
+import org.parc.sqlrestes.query.QueryAction;
+import org.parc.sqlrestes.query.SqlElasticRequestBuilder;
+import org.parc.sqlrestes.query.join.JoinRequestBuilder;
+import org.parc.sqlrestes.query.multi.MultiQueryRequestBuilder;
 
 import java.io.IOException;
 import java.util.Map;
@@ -49,7 +47,7 @@ public class ElasticDefaultRestExecutor implements RestExecutor {
         } else if (request instanceof SearchRequest) {
             client.search((SearchRequest) request, new RestStatusToXContentListener<SearchResponse>(channel));
         } else if (request instanceof DeleteByQueryRequest) {
-            requestBuilder.getBuilder().execute(new BulkIndexByScrollResponseContentListener(channel, Maps.newHashMap()));
+//            requestBuilder.getBuilder().execute(new BulkIndexByScrollResponseContentListener(channel, Maps.newHashMap()));
         } else if (request instanceof GetIndexRequest) {
             requestBuilder.getBuilder().execute(new GetIndexRequestRestListener(channel, (GetIndexRequest) request));
         } else {
