@@ -3,6 +3,7 @@ package org.parc.sqlrestes.parse;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import org.elasticsearch.script.ScriptType;
 import org.parc.sqlrestes.Util;
 import org.parc.sqlrestes.exception.SqlParseException;
 
@@ -100,4 +101,7 @@ public class ScriptFilter {
         return args;
     }
 
+    public ScriptType getScriptType() {
+        return null;
+    }
 }

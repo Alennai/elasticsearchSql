@@ -2,6 +2,7 @@ package org.parc.plugin.executors;
 
 import com.google.common.base.Joiner;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.rest.BytesRestResponse;
 import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestStatus;
@@ -17,7 +18,7 @@ public class CSVResultRestExecutor implements RestExecutor {
 
     @Override
     public void execute(Client client, Map<String, String> params, QueryAction queryAction, RestChannel channel) throws Exception {
-        Object queryResult = QueryActionElasticExecutor.executeAnyAction(client, queryAction);
+        Object queryResult = QueryActionElasticExecutor.executeAnyAction((RestClient) client, queryAction);
 
         boolean flat = getBooleanOrDefault(params,"flat",false);
         String separator = ",";
@@ -39,7 +40,7 @@ public class CSVResultRestExecutor implements RestExecutor {
 
     @Override
     public String execute(Client client, Map<String, String> params, QueryAction queryAction) throws Exception {
-        Object queryResult = QueryActionElasticExecutor.executeAnyAction(client, queryAction);
+        Object queryResult = QueryActionElasticExecutor.executeAnyAction((RestClient) client, queryAction);
 
         boolean flat = getBooleanOrDefault(params,"flat",false);
         String separator = ",";

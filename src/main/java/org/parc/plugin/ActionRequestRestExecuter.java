@@ -55,7 +55,8 @@ public class ActionRequestRestExecuter {
 	}
 
     private void executeJoinRequestAndSendResponse() throws IOException, SqlParseException {
-        ElasticJoinExecutor executor = ElasticJoinExecutor.createJoinExecutor(client,requestBuilder);
+//        ElasticJoinExecutor executor = ElasticJoinExecutor.createJoinExecutor(client,requestBuilder);
+		ElasticJoinExecutor executor = null;
         executor.run();
         executor.sendResponse(channel);
     }

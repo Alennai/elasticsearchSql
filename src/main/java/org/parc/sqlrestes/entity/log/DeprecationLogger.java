@@ -23,7 +23,7 @@ public class DeprecationLogger {
     private final Logger logger;
     private static final CopyOnWriteArraySet<ThreadContext> THREAD_CONTEXT = new CopyOnWriteArraySet();
     private Set<String> keys = Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap() {
-        public boolean removeEldestEntry(Entry eldest) {
+        protected boolean removeEldestEntry( ) {
             return this.size() > 128;
         }
     }));

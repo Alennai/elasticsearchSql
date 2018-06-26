@@ -1,6 +1,7 @@
 package org.parc.sqlrestes.entity;
 
 
+import org.elasticsearch.common.Strings;
 import org.parc.sqlrestes.entity.log.DeprecationLogger;
 import org.parc.sqlrestes.entity.log.Loggers;
 

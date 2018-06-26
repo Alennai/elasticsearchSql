@@ -70,7 +70,7 @@ public class QueryMaker extends Maker {
                 subQuery = QueryBuilders.nestedQuery(condition.getNestedPath(), subQuery, ScoreMode.None);
             } else if(condition.isChildren()) {
 
-            	subQuery = JoinQueryBuilders.hasChildQuery(condition.getChildType(), subQuery, ScoreMode.None);
+//            	subQuery = JoinQueryBuilders.hasChildQuery(condition.getChildType(), subQuery, ScoreMode.None);
             }
         }
 

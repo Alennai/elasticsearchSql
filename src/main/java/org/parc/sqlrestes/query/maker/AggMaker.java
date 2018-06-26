@@ -193,9 +193,9 @@ public class AggMaker {
 
             String childrenAggName = childrenType.field + "@CHILDREN";
 
-            childrenBuilder = JoinAggregationBuilders.children(childrenAggName,childrenType.childType);
+//            childrenBuilder = JoinAggregationBuilders.children(childrenAggName,childrenType.childType);
 
-            return childrenBuilder;
+            return null;
         }
 
         return builder.field(kvValue.toString());

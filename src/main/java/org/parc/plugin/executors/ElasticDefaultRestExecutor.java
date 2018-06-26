@@ -6,6 +6,7 @@ import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.rest.BytesRestResponse;
 import org.elasticsearch.rest.RestChannel;
@@ -37,11 +38,11 @@ public class ElasticDefaultRestExecutor implements RestExecutor {
         ActionRequest request = requestBuilder.request();
 
         if (requestBuilder instanceof JoinRequestBuilder) {
-            ElasticJoinExecutor executor = ElasticJoinExecutor.createJoinExecutor(client, requestBuilder);
+            ElasticJoinExecutor executor = ElasticJoinExecutor.createJoinExecutor((RestClient) client, requestBuilder);
             executor.run();
             executor.sendResponse(channel);
         } else if (requestBuilder instanceof MultiQueryRequestBuilder) {
-            ElasticHitsExecutor executor = MultiRequestExecutorFactory.createExecutor(client, (MultiQueryRequestBuilder) requestBuilder);
+            ElasticHitsExecutor executor = MultiRequestExecutorFactory.createExecutor((RestClient) client, (MultiQueryRequestBuilder) requestBuilder);
             executor.run();
             sendDefaultResponse(executor.getHits(), channel);
         } else if (request instanceof SearchRequest) {
@@ -62,11 +63,11 @@ public class ElasticDefaultRestExecutor implements RestExecutor {
         ActionRequest request = requestBuilder.request();
 
         if (requestBuilder instanceof JoinRequestBuilder) {
-            ElasticJoinExecutor executor = ElasticJoinExecutor.createJoinExecutor(client, requestBuilder);
+            ElasticJoinExecutor executor = ElasticJoinExecutor.createJoinExecutor((RestClient) client, requestBuilder);
             executor.run();
             return ElasticUtils.hitsAsStringResult(executor.getHits(), new MetaSearchResult());
         } else if (requestBuilder instanceof MultiQueryRequestBuilder) {
-            ElasticHitsExecutor executor = MultiRequestExecutorFactory.createExecutor(client, (MultiQueryRequestBuilder) requestBuilder);
+            ElasticHitsExecutor executor = MultiRequestExecutorFactory.createExecutor((RestClient) client, (MultiQueryRequestBuilder) requestBuilder);
             executor.run();
             return ElasticUtils.hitsAsStringResult(executor.getHits(), new MetaSearchResult());
         } else if (request instanceof SearchRequest) {

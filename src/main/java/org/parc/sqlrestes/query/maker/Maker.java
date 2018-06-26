@@ -17,8 +17,11 @@ import org.elasticsearch.script.Script;
 import org.parc.sqlrestes.domain.Condition;
 import org.parc.sqlrestes.domain.Condition.OPEAR;
 import org.parc.sqlrestes.domain.Paramer;
+import org.parc.sqlrestes.domain.Where;
 import org.parc.sqlrestes.exception.SqlParseException;
+import org.parc.sqlrestes.parse.ScriptFilter;
 import org.parc.sqlrestes.parse.SubQueryExpression;
+import org.parc.sqlrestes.spatial.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -31,7 +34,8 @@ import java.util.Set;
 public abstract class Maker {
 
 
-	private static final Set<OPEAR> NOT_OPEAR_SET = ImmutableSet.of(OPEAR.N, OPEAR.NIN, OPEAR.ISN, OPEAR.NBETWEEN, OPEAR.NLIKE,OPEAR.NIN_TERMS,OPEAR.NTERM);
+//	private static final Set<OPEAR> NOT_OPEAR_SET = ImmutableSet.of(OPEAR.N, OPEAR.NIN, OPEAR.ISN, OPEAR.NBETWEEN, OPEAR.NLIKE,OPEAR.NIN_TERMS,OPEAR.NTERM);
+    private static final Set<OPEAR> NOT_OPEAR_SET = ImmutableSet.of(OPEAR.N, OPEAR.NIN, OPEAR.ISN, OPEAR.NBETWEEN, OPEAR.NLIKE);
 
 
 
@@ -102,7 +106,7 @@ public abstract class Maker {
 		case "matchphrase":
 			paramer = Paramer.parseParamer(value);
 			MatchPhraseQueryBuilder matchPhraseQuery = QueryBuilders.matchPhraseQuery(name, paramer.value);
-			bqb = Paramer.fullParamer(matchPhraseQuery, paramer);
+//			bqb = Paramer.fullParamer(matchPhraseQuery, paramer);
 			break;
 		default:
 			throw new SqlParseException("it did not support this query method " + value.getMethodName());
@@ -142,8 +146,8 @@ public abstract class Maker {
             queryStr = queryStr.replace('%', '*').replace('_', '?');
             queryStr = queryStr.replace("&PERCENT","%").replace("&UNDERSCORE","_");
 			x = QueryBuilders.wildcardQuery(name, queryStr);
-			break;
-        case REGEXP:
+//			break;
+//        case REGEXP:
             Object[] values = (Object[]) value;
             RegexpQueryBuilder regexpQuery = QueryBuilders.regexpQuery(name, values[0].toString());
             if (1 < values.length) {
@@ -220,7 +224,7 @@ public abstract class Maker {
             GeoPolygonQueryBuilder polygonFilterBuilder = QueryBuilders.geoPolygonQuery(cond.getName(),geoPoints);
             x = polygonFilterBuilder;
             break;
-        case NIN_TERMS:
+//        case NIN_TERMS:
         case IN_TERMS:
             Object[] termValues = (Object[]) value;
             if(termValues.length == 1 && termValues[0] instanceof SubQueryExpression)
@@ -231,7 +235,7 @@ public abstract class Maker {
             }
             x = QueryBuilders.termsQuery(name,termValuesObjects);
         break;
-        case NTERM:
+//        case NTERM:
         case TERM:
             Object term  =( (Object[]) value)[0];
             x = QueryBuilders.termQuery(name, parseTermValue(term));
@@ -265,7 +269,7 @@ public abstract class Maker {
             Where whereChildren = (Where) value;
             BoolQueryBuilder childrenFilter = QueryMaker.explan(whereChildren);
             //todo: pass score mode
-            x = JoinQueryBuilders.hasChildQuery(name, childrenFilter,ScoreMode.None);
+//            x = JoinQueryBuilders.hasChildQuery(name, childrenFilter,ScoreMode.None);
 
         break;
         case SCRIPT:

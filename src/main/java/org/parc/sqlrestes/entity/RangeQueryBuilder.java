@@ -2,9 +2,7 @@ package org.parc.sqlrestes.entity;
 
 import org.apache.logging.log4j.util.Strings;
 import org.joda.time.DateTimeZone;
-import org.parc.sqlrestes.domain.Query;
 
-import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -122,7 +120,7 @@ public class RangeQueryBuilder {
     }
 
     public RangeQueryBuilder to(Object to, boolean includeUpper) {
-        this.to = convertToBytesRefIfString(to);
+//        this.to = convertToBytesRefIfString(to);
         this.includeUpper = includeUpper;
         return this;
     }

@@ -1,5 +1,10 @@
 package org.parc.sqlrestes.query;
 
+import org.elasticsearch.action.ActionRequest;
+import org.elasticsearch.action.ActionRequestBuilder;
+import org.elasticsearch.action.ActionResponse;
+import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
+import org.elasticsearch.action.admin.indices.get.GetIndexRequestBuilder;
 import org.elasticsearch.client.RestClient;
 import org.parc.sqlrestes.exception.SqlParseException;
 
@@ -18,15 +23,15 @@ public class ShowQueryAction extends QueryAction {
         String sql = this.sql.replaceAll("\\s+"," ");
         //todo: support indices with space?
         String indexName = sql.split(" ")[1];
-        final GetIndexRequestBuilder  indexRequestBuilder ;
+        final GetIndexRequestBuilder indexRequestBuilder ;
         String type = null;
         if(indexName.contains("/")){
             String[] indexAndType = indexName.split("\\/");
             indexName = indexAndType[0];
             type = indexAndType[1];
         }
-        indexRequestBuilder = client.admin().indices().prepareGetIndex();
-
+//        indexRequestBuilder = client.admin().indices().prepareGetIndex();
+        indexRequestBuilder =null;
         if(!indexName.equals("*")){
             indexRequestBuilder.addIndices(indexName);
             if(type!=null && !type.equals("")){

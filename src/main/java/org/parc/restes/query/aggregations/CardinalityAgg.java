@@ -25,4 +25,5 @@ public class CardinalityAgg extends Aggregation {
         aggContent.put("aggregations", aggregation.getContent());
         return this;
     }
+
 }

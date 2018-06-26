@@ -3,9 +3,6 @@ package org.parc.sqlrestes.query;
 import com.google.common.collect.Lists;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.BucketOrder;
-import org.elasticsearch.search.aggregations.bucket.nested.ReverseNestedAggregationBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.parc.restes.RestQueryBuilder;
 import org.parc.restes.query.Aggregation;
@@ -158,15 +155,15 @@ public class AggregationQueryAction extends QueryAction {
                     TermsAgg termsBuilder = (TermsAgg) temp.value;
                     switch (temp.key) {
                         case "COUNT":
-                            termsBuilder.order(BucketOrder.count(isASC(order)));
+//                            termsBuilder.order(BucketOrder.count(isASC(order)));
                             break;
                         case "KEY":
-                            termsBuilder.order(BucketOrder.key(isASC(order)));
+//                            termsBuilder.order(BucketOrder.key(isASC(order)));
                             // add the sort to the request also so the results get sorted as well
                             request.addSort(order.getName(), SortOrder.valueOf(order.getType()));
                             break;
                         case "FIELD":
-                            termsBuilder.order(BucketOrder.aggregation(order.getName(), isASC(order)));
+//                            termsBuilder.order(BucketOrder.aggregation(order.getName(), isASC(order)));
                             break;
                         default:
                             throw new SqlParseException(order.getName() + " can not to order");
@@ -204,7 +201,7 @@ public class AggregationQueryAction extends QueryAction {
             }
         }
 
-        if (!refrence)
+        if (!refrence);
 //            lastAgg = aggMaker.makeGroupAgg(field);
         
         return lastAgg;
@@ -291,7 +288,7 @@ public class AggregationQueryAction extends QueryAction {
         if (!(filterFieldCandidate instanceof MethodField)) return false;
         MethodField methodField = (MethodField) filterFieldCandidate;
         if (!methodField.getName().toLowerCase().equals("filter")) return false;
-        builder.subAggregation(aggMaker.makeGroupAgg(filterFieldCandidate).subAggregation(agg));
+//        builder.subAggregation(aggMaker.makeGroupAgg(filterFieldCandidate).subAggregation(agg));
         return true;
     }
 
@@ -334,7 +331,8 @@ public class AggregationQueryAction extends QueryAction {
                     continue;
                 }
 
-                Aggregation makeAgg = aggMaker.makeFieldAgg((MethodField) field, groupByAgg);
+//                Aggregation makeAgg = aggMaker.makeFieldAgg((MethodField) field, groupByAgg);
+                Aggregation makeAgg = null;
                 if (groupByAgg != null) {
                     groupByAgg.subAggregation(makeAgg);
                 } else {
