@@ -6,7 +6,6 @@ import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequestBuilder;
 import org.elasticsearch.client.RestClient;
-import org.parc.sqlrestes.exception.SqlParseException;
 
 /**
  * Created by Eliran on 6/10/2015.
@@ -19,7 +18,7 @@ public class ShowQueryAction extends QueryAction {
     }
 
     @Override
-    public SqlElasticRequestBuilder explain() throws SqlParseException {
+    public SqlElasticRequestBuilder explain() {
         String sql = this.sql.replaceAll("\\s+"," ");
         //todo: support indices with space?
         String indexName = sql.split(" ")[1];

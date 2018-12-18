@@ -19,13 +19,11 @@ public class CastParser {
     }
 
     private SQLCastExpr castExpr;
-    private String alias;
-    private String tableAlias;
 
     public CastParser(SQLCastExpr castExpr, String alias, String tableAlias) {
         this.castExpr = castExpr;
-        this.alias = alias;
-        this.tableAlias = tableAlias;
+        String alias1 = alias;
+        String tableAlias1 = tableAlias;
     }
 
     public String parse(boolean isReturn) throws SqlParseException {

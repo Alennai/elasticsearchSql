@@ -27,8 +27,7 @@ public class DeleteQueryAction extends QueryAction {
 
 		setIndicesAndTypes();
 		setWhere(delete.getWhere());
-        SqlElasticDeleteByQueryRequestBuilder deleteByQueryRequestBuilder = new SqlElasticDeleteByQueryRequestBuilder(request);
-		return deleteByQueryRequestBuilder;
+        return new SqlElasticDeleteByQueryRequestBuilder(request);
 	}
 
 

@@ -29,7 +29,6 @@ import com.alibaba.druid.wall.WallProviderStatValue;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 
@@ -54,7 +53,7 @@ import static com.alibaba.druid.util.Utils.getBoolean;
 /**
  * Created by allwefantasy on 8/30/16.
  */
-public class ElasticSearchDruidDataSource extends DruidDataSource {
+class ElasticSearchDruidDataSource extends DruidDataSource {
 
     private final static Log LOG = LogFactory.getLog(DruidDataSource.class);
 
@@ -105,13 +104,13 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
     private volatile boolean closed = false;
     private long closeTimeMillis = -1L;
 
-    protected JdbcDataSourceStat dataSourceStat;
+    private JdbcDataSourceStat dataSourceStat;
 
     private boolean useGlobalDataSourceStat = false;
 
     private boolean mbeanRegistered = false;
 
-    public static ThreadLocal<Long> waitNanosLocal = new ThreadLocal<Long>();
+    private static ThreadLocal<Long> waitNanosLocal = new ThreadLocal<Long>();
 
     private boolean logDifferentThread = true;
 
@@ -119,7 +118,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
         this(false);
     }
 
-    public ElasticSearchDruidDataSource(boolean fairLock) {
+    private ElasticSearchDruidDataSource(boolean fairLock) {
         super(fairLock);
 
         configFromPropety(System.getProperties());
@@ -402,7 +401,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
     }
 
     @Override
-    public void validateConnection(Connection conn) throws SQLException {
+    public void validateConnection(Connection conn) {
 
     }
 
@@ -654,7 +653,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
     }
 
     @Override
-    public Connection createPhysicalConnection(String url, Properties info) throws SQLException {
+    public Connection createPhysicalConnection(String url, Properties info) {
         Connection conn = new RestClientConnection(url);
         createCount.incrementAndGet();
 
@@ -904,7 +903,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
     }
 
     @Override
-    public PooledConnection getPooledConnection(String user, String password) throws SQLException {
+    public PooledConnection getPooledConnection(String user, String password) {
         throw new UnsupportedOperationException("Not supported by DruidDataSource");
     }
 
@@ -1056,8 +1055,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
 
         holder.incrementUseCount();
 
-        DruidPooledConnection poolalbeConnection = new ElasticSearchDruidPooledConnection(holder);
-        return poolalbeConnection;
+        return new ElasticSearchDruidPooledConnection(holder);
     }
 
     public void handleConnectionException(DruidPooledConnection pooledConnection, Throwable t) throws SQLException {
@@ -1113,7 +1111,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
     /**
      * 回收连接
      */
-    protected void recycle(DruidPooledConnection pooledConnection) throws SQLException {
+    protected void recycle(DruidPooledConnection pooledConnection) {
         final DruidConnectionHolder holder = pooledConnection.getConnectionHolder();
 
         if (holder == null) {
@@ -1219,7 +1217,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
         return recycleErrorCount.get();
     }
 
-    public void clearStatementCache() throws SQLException {
+    public void clearStatementCache() {
         lock.lock();
         try {
             for (int i = 0; i < poolingCount; ++i) {
@@ -1438,11 +1436,11 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
-    private final void decrementPoolingCount() {
+    private void decrementPoolingCount() {
         poolingCount--;
     }
 
-    private final void incrementPoolingCount() {
+    private void incrementPoolingCount() {
         poolingCount++;
     }
 
@@ -1672,7 +1670,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
-    public class CreateConnectionTask implements Runnable {
+    class CreateConnectionTask implements Runnable {
 
         private int errorCount = 0;
 
@@ -1757,9 +1755,9 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
-    public class CreateConnectionThread extends Thread {
+    class CreateConnectionThread extends Thread {
 
-        public CreateConnectionThread(String name) {
+        CreateConnectionThread(String name) {
             super(name);
             this.setDaemon(true);
         }
@@ -1835,9 +1833,9 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
-    public class DestroyConnectionThread extends Thread {
+    class DestroyConnectionThread extends Thread {
 
-        public DestroyConnectionThread(String name) {
+        DestroyConnectionThread(String name) {
             super(name);
             this.setDaemon(true);
         }
@@ -1871,7 +1869,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
 
     }
 
-    public class DestroyTask implements Runnable {
+    class DestroyTask implements Runnable {
 
         @Override
         public void run() {
@@ -1884,9 +1882,9 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
 
     }
 
-    public class LogStatsThread extends Thread {
+    class LogStatsThread extends Thread {
 
-        public LogStatsThread(String name) {
+        LogStatsThread(String name) {
             super(name);
             this.setDaemon(true);
         }
@@ -1974,9 +1972,9 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
     /**
      * Instance key
      */
-    protected String instanceKey = null;
+    private String instanceKey = null;
 
-    public Reference getReference() throws NamingException {
+    public Reference getReference() {
         final String className = getClass().getName();
         final String factoryName = className + "Factory"; // XXX: not robust
         Reference ref = new Reference(className, factoryName, null);
@@ -2298,7 +2296,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
         return dataSourceStat;
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         return cloneDruidDataSource();
     }
 
@@ -2638,11 +2636,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
 
     private boolean isFillable(int toCount) {
         int currentCount = this.poolingCount + this.activeCount;
-        if (currentCount >= toCount || currentCount >= this.maxActive) {
-            return false;
-        } else {
-            return true;
-        }
+        return currentCount < toCount && currentCount < this.maxActive;
     }
 
     public boolean isFull() {
@@ -2674,7 +2668,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
     }
 
     @Override
-    public ObjectName preRegister(MBeanServer server, ObjectName name) throws Exception {
+    public ObjectName preRegister(MBeanServer server, ObjectName name) {
         //do nothing
         //return original name to avoid NullPointerException
         return name;
@@ -2686,7 +2680,7 @@ public class ElasticSearchDruidDataSource extends DruidDataSource {
     }
 
     @Override
-    public void preDeregister() throws Exception {
+    public void preDeregister() {
 
     }
 

@@ -3,11 +3,11 @@ package org.parc.restes.query;
 import com.alibaba.fastjson.JSONObject;
 
 public abstract class Aggregation {
-    protected String aggName;
+    private String aggName;
     protected JSONObject aggContent;
-    protected JSONObject content;
+    private JSONObject content;
 
-    public Aggregation(String aggName) {
+    protected Aggregation(String aggName) {
         aggContent = new JSONObject();
         content=new JSONObject();
         this.aggName = aggName;

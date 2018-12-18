@@ -24,13 +24,13 @@ import java.util.*;
  * Created by xusiao on 2018/6/20.
  */
 public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
-    protected SearchHits results ;
-    protected MetaSearchResult metaResults;
-    protected final int MAX_RESULTS_ON_ONE_FETCH = 10000;
+    private SearchHits results ;
+    private MetaSearchResult metaResults;
+    final int MAX_RESULTS_ON_ONE_FETCH = 10000;
     private Set<String> aliasesOnReturn;
     private boolean allFieldsReturn;
 
-    protected ElasticJoinExecutor(JoinRequestBuilder requestBuilder) {
+    ElasticJoinExecutor(JoinRequestBuilder requestBuilder) {
         metaResults = new MetaSearchResult();
         aliasesOnReturn = new HashSet<>();
         List<Field> firstTableReturnedField = requestBuilder.getFirstTable().getReturnedFields();
@@ -60,7 +60,7 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
     }
 
 
-    protected abstract List<SearchHit> innerRun() throws IOException, SqlParseException ;
+    protected abstract List<SearchHit> innerRun() throws SqlParseException ;
 
     public SearchHits getHits(){
         return results;
@@ -80,14 +80,14 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
         }
     }
 
-    protected void mergeSourceAndAddAliases(Map<String,Object> secondTableHitSource, SearchHit searchHit, String t1Alias, String t2Alias) {
+    void mergeSourceAndAddAliases(Map<String, Object> secondTableHitSource, SearchHit searchHit, String t1Alias, String t2Alias) {
         Map<String,Object> results = mapWithAliases(searchHit.getSourceAsMap(), t1Alias);
         results.putAll(mapWithAliases(secondTableHitSource, t2Alias));
         searchHit.getSourceAsMap().clear();
         searchHit.getSourceAsMap().putAll(results);
     }
 
-    protected Map<String,Object> mapWithAliases(Map<String, Object> source, String alias) {
+    private Map<String,Object> mapWithAliases(Map<String, Object> source, String alias) {
         Map<String,Object> mapWithAliases = new HashMap<>();
         for(Map.Entry<String,Object> fieldNameToValue : source.entrySet()) {
             if(!aliasesOnReturn.contains(fieldNameToValue.getKey()))
@@ -97,7 +97,7 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
         return mapWithAliases;
     }
 
-    protected void  onlyReturnedFields(Map<String, Object> fieldsMap, List<Field> required,boolean allRequired) {
+    void  onlyReturnedFields(Map<String, Object> fieldsMap, List<Field> required, boolean allRequired) {
         HashMap<String,Object> filteredMap = new HashMap<>();
         if(allFieldsReturn || allRequired) {
             filteredMap.putAll(fieldsMap);
@@ -118,7 +118,7 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
 
     }
 
-    protected Object deepSearchInMap(Map<String, Object> fieldsMap, String name) {
+    Object deepSearchInMap(Map<String, Object> fieldsMap, String name) {
         if(name.contains(".")){
             String[] path = name.split("\\.");
             Map<String,Object> currentObject = fieldsMap;
@@ -135,7 +135,7 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
     }
 
 
-    protected void addUnmatchedResults(List<SearchHit> combinedResults, Collection<SearchHitsResult> firstTableSearchHits, List<Field> secondTableReturnedFields,int currentNumOfIds, int totalLimit,String t1Alias,String t2Alias) {
+    void addUnmatchedResults(List<SearchHit> combinedResults, Collection<SearchHitsResult> firstTableSearchHits, List<Field> secondTableReturnedFields, int currentNumOfIds, int totalLimit, String t1Alias, String t2Alias) {
         boolean limitReached = false;
         for(SearchHitsResult hitsResult : firstTableSearchHits){
             if(!hitsResult.isMatchedWithOtherTable())
@@ -155,7 +155,7 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
         }
     }
 
-    protected SearchHit createUnmachedResult( List<Field> secondTableReturnedFields, int docId, String t1Alias, String t2Alias, SearchHit hit) {
+    SearchHit createUnmachedResult(List<Field> secondTableReturnedFields, int docId, String t1Alias, String t2Alias, SearchHit hit) {
         String unmatchedId = hit.getId() + "|0";
         Text unamatchedType = new Text(hit.getType() + "|null");
 
@@ -171,7 +171,7 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
         return searchHit;
     }
 
-    protected Map<String, Object> createNullsSource(List<Field> secondTableReturnedFields) {
+    private Map<String, Object> createNullsSource(List<Field> secondTableReturnedFields) {
         Map<String,Object> nulledSource = new HashMap<>();
         for(Field field : secondTableReturnedFields){
             if(!field.getName().equals("*")){
@@ -181,7 +181,7 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
         return nulledSource;
     }
 
-    protected void updateMetaSearchResults( SearchResponse searchResponse) {
+    void updateMetaSearchResults(SearchResponse searchResponse) {
         this.metaResults.addSuccessfulShards(searchResponse.getSuccessfulShards());
         this.metaResults.addFailedShards(searchResponse.getFailedShards());
         this.metaResults.addTotalNumOfShards(searchResponse.getTotalShards());

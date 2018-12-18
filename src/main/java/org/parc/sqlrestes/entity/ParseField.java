@@ -40,11 +40,11 @@ public class ParseField {
         return this.name;
     }
 
-    public String[] getAllNamesIncludedDeprecated() {
+    private String[] getAllNamesIncludedDeprecated() {
         return this.allNames;
     }
 
-    public ParseField withDeprecation(String... deprecatedNames) {
+    private ParseField withDeprecation(String... deprecatedNames) {
         return new ParseField(this.name, deprecatedNames);
     }
 
@@ -91,7 +91,7 @@ public class ParseField {
         return this.deprecatedNames;
     }
 
-    public static class CommonFields {
+    private static class CommonFields {
         public static final ParseField FIELD = new ParseField("field", new String[0]);
         public static final ParseField FIELDS = new ParseField("fields", new String[0]);
         public static final ParseField FORMAT = new ParseField("format", new String[0]);

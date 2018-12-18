@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class Maker {
+abstract class Maker {
 
 
 //	private static final Set<OPEAR> NOT_OPEAR_SET = ImmutableSet.of(OPEAR.N, OPEAR.NIN, OPEAR.ISN, OPEAR.NBETWEEN, OPEAR.NLIKE,OPEAR.NIN_TERMS,OPEAR.NTERM);
@@ -39,7 +39,7 @@ public abstract class Maker {
 
 
 
-	protected Maker(Boolean isQuery) {
+	Maker(Boolean isQuery) {
 
 	}
 
@@ -50,7 +50,7 @@ public abstract class Maker {
 	 * @return
 	 * @throws SqlParseException
 	 */
-	protected ToXContent make(Condition cond) throws SqlParseException {
+    ToXContent make(Condition cond) throws SqlParseException {
 
         String name = cond.getName();
         Object value = cond.getValue();
@@ -90,7 +90,7 @@ public abstract class Maker {
 		case "score":
 		case "scorequery":
 		case "score_query":
-			Float boost = Float.parseFloat(value.getParameters().get(1).toString());
+			float boost = Float.parseFloat(value.getParameters().get(1).toString());
 			Condition subCond = new Condition(cond.getConn(), cond.getName(),null, cond.getOpear(), value.getParameters().get(0),null);
             bqb = QueryBuilders.constantScoreQuery((QueryBuilder) make(subCond)).boost(boost);
 			break;
@@ -221,8 +221,7 @@ public abstract class Maker {
             ArrayList<GeoPoint> geoPoints = new ArrayList<GeoPoint>();
             for(Point p : polygonFilterParams.getPolygon())
                 geoPoints.add(new GeoPoint(p.getLat(), p.getLon()));
-            GeoPolygonQueryBuilder polygonFilterBuilder = QueryBuilders.geoPolygonQuery(cond.getName(),geoPoints);
-            x = polygonFilterBuilder;
+            x = QueryBuilders.geoPolygonQuery(cond.getName(),geoPoints);
             break;
 //        case NIN_TERMS:
         case IN_TERMS:

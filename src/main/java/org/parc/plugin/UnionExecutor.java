@@ -7,10 +7,8 @@ import org.elasticsearch.common.text.Text;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.parc.sqlrestes.Util;
-import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.multi.MultiQueryRequestBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +31,7 @@ public class UnionExecutor implements ElasticHitsExecutor {
     }
 
     @Override
-    public void run() throws IOException, SqlParseException {
+    public void run() {
 //        SearchResponse firstResponse = this.multiQueryBuilder.getFirstSearchRequest().get();
         SearchResponse firstResponse = null;
         SearchHit[] hits = firstResponse.getHits().getHits();

@@ -30,7 +30,7 @@ public class DeprecationLogger {
     private static final String WARNING_FORMAT;
     private static final DateTimeFormatter RFC_7231_DATE_TIME;
     private static final ZoneId GMT;
-    public static Pattern WARNING_HEADER_PATTERN;
+    private static Pattern WARNING_HEADER_PATTERN;
     private static BitSet doesNotNeedEncoding;
     private static final Charset UTF_8;
 
@@ -68,7 +68,7 @@ public class DeprecationLogger {
         this.deprecated(THREAD_CONTEXT, msg, this.keys.add(key), params);
     }
 
-    public static String extractWarningValueFromWarningHeader(String s) {
+    private static String extractWarningValueFromWarningHeader(String s) {
         int firstQuote = s.indexOf(34);
         int lastQuote = s.lastIndexOf(34);
         int penultimateQuote = s.lastIndexOf(34, lastQuote - 1);
@@ -88,14 +88,14 @@ public class DeprecationLogger {
         return matcher.group(1).equals(warningValue);
     }
 
-    void deprecated(Set<ThreadContext> threadContexts, String message, Object... params) {
+    private void deprecated(Set<ThreadContext> threadContexts, String message, Object... params) {
         this.deprecated(threadContexts, message, true, params);
     }
 
     @SuppressLoggerChecks(
             reason = "safely delegates to logger"
     )
-    void deprecated(Set<ThreadContext> threadContexts, String message, boolean log, Object... params) {
+    private void deprecated(Set<ThreadContext> threadContexts, String message, boolean log, Object... params) {
         Iterator iterator = threadContexts.iterator();
         if(iterator.hasNext()) {
             String formattedMessage = LoggerMessageFormat.format(message, params);
@@ -110,7 +110,6 @@ public class DeprecationLogger {
                     ThreadContext next = (ThreadContext)iterator.next();
 //                    next.addResponseHeader("Warning", warningHeaderValue, DeprecationLogger::extractWarningValueFromWarningHeader);
                 } catch (IllegalStateException var9) {
-                    ;
                 }
             }
         }
@@ -121,19 +120,19 @@ public class DeprecationLogger {
 
     }
 
-    public static String formatWarning(String s) {
+    private static String formatWarning(String s) {
         return String.format(Locale.ROOT, WARNING_FORMAT, new Object[]{escapeAndEncode(s), RFC_7231_DATE_TIME.format(ZonedDateTime.now(GMT))});
     }
 
-    public static String escapeAndEncode(String s) {
+    private static String escapeAndEncode(String s) {
         return encode(escapeBackslashesAndQuotes(s));
     }
 
-    static String escapeBackslashesAndQuotes(String s) {
+    private static String escapeBackslashesAndQuotes(String s) {
         return s.replaceAll("([\"\\\\])", "\\\\$1");
     }
 
-    static String encode(String s) {
+    private static String encode(String s) {
         StringBuilder sb = new StringBuilder(s.length());
         boolean encodingNeeded = false;
         int i = 0;

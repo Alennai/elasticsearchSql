@@ -15,7 +15,7 @@ import org.parc.sqlrestes.query.join.JoinRequestBuilder;
 import java.io.IOException;
 
 
-public class ActionRequestRestExecuter {
+class ActionRequestRestExecuter {
 
 	private RestChannel channel;
 	private Client client;

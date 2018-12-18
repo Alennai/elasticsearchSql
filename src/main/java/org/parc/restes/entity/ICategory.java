@@ -63,11 +63,7 @@ public class ICategory {
 			if (StringUtils.isBlank(name)) {
 				return false;
 			}
-			if (ic.getOrder() == this.order && ic.getName().equals(this.name)) {
-				return true;
-			} else {
-				return false;
-			}
+            return ic.getOrder() == this.order && ic.getName().equals(this.name);
 		} else
 			return super.equals(obj);
 	}

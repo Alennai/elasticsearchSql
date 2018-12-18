@@ -12,7 +12,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 
-public class XmlPaser {
+class XmlPaser {
 	private static final Logger logger = LoggerFactory.getLogger(XmlPaser.class);
 
 	public static <T> T paser(File source, Class<T> c) {
@@ -20,8 +20,7 @@ public class XmlPaser {
 		try {
 			jaxbContext = JAXBContext.newInstance(c);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			T unmarshal = (T) unmarshaller.unmarshal(source);
-			return unmarshal;
+            return (T) unmarshaller.unmarshal(source);
 		} catch (Exception e) {
 			logger.error("{}", e);
 		}

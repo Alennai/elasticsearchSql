@@ -8,7 +8,7 @@ package org.parc.restes.entity;
 
 import java.util.List;
 
-public class AttackTarget {
+class AttackTarget {
 	private String target;
 	private List<Bucket> buckets;
 

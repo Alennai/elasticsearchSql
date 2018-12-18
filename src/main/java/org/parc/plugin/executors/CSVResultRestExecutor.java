@@ -55,8 +55,7 @@ public class CSVResultRestExecutor implements RestExecutor {
         if(params.containsKey("newLine")){
             newLine = params.get("newLine");
         }
-        String csvString = buildString(separator, result, newLine);
-        return csvString;
+        return buildString(separator, result, newLine);
     }
 
     private boolean getBooleanOrDefault(Map<String, String> params, String param, boolean defaultValue) {

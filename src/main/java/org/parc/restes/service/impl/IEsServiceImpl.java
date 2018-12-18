@@ -43,11 +43,7 @@ public class IEsServiceImpl implements IEsService {
     private static final Logger logger = LoggerFactory.getLogger(IEsServiceImpl.class);
     private String ip,restPort;
 
-    private static long oneDayTime = 24 * 60 * 60 * 1000L;
-    private static long oneHourTime = 60 * 60 * 1000L;
-    private static long oneMinuteTime = 60 * 1000L;
-
-    public IEsServiceImpl(String jdbcUrl) {
+    private IEsServiceImpl(String jdbcUrl) {
         String hostAndPortArrayStr = jdbcUrl.split("/")[2];
         String[] hostAndPortArray = hostAndPortArrayStr.split(",");
         HttpHost[] hosts = new HttpHost[hostAndPortArray.length];
@@ -107,7 +103,7 @@ public class IEsServiceImpl implements IEsService {
 
     }
 
-    public Map<ICategory, List<IField>> json2Fields(String json, String _type) {
+    private Map<ICategory, List<IField>> json2Fields(String json, String _type) {
         Map<ICategory, List<IField>> map = new HashMap<>();
         Set<String> keySet = new HashSet<>();
         JSONObject jsonObject = JSONObject.parseObject(json);
@@ -272,16 +268,13 @@ public class IEsServiceImpl implements IEsService {
     public boolean indexExists(String index) throws Exception {
         Response resp = client.performRequest("GET", "/" + index);
         JSONObject object = JSONObject.parseObject(EntityUtils.toString(resp.getEntity()));
-        if (object.containsKey("error")) {
-            return false;
-        } else
-            return true;
+        return !object.containsKey("error");
     }
 
     @Override
     public boolean indexClose(String indexes) throws Exception {
         if (!indexes.isEmpty()) {
-            String index[] = indexes.split(",");
+            String[] index = indexes.split(",");
             for (int i = 0; i < index.length; i++) {
                 if (indexExists(index[i])) {
                     Response resp = client.performRequest("POST", "/" + index[i]+"/_close");
@@ -295,7 +288,7 @@ public class IEsServiceImpl implements IEsService {
 
     @Override
     public boolean indexOpen(String indexes) throws Exception {
-        String index[] = indexes.split(",");
+        String[] index = indexes.split(",");
         for (int i = 0; i < index.length; i++) {
             Response resp = client.performRequest("POST", "/" + index[i]+"/_open");
         }
@@ -306,10 +299,7 @@ public class IEsServiceImpl implements IEsService {
     public boolean indexCreate(String index) throws Exception {
         Response resp = client.performRequest("PUT", "/" + index);
         JSONObject object = JSONObject.parseObject(EntityUtils.toString(resp.getEntity()));
-        if (object.containsKey("error")) {
-            return false;
-        } else
-            return true;
+        return !object.containsKey("error");
     }
 
     @Override
@@ -320,10 +310,7 @@ public class IEsServiceImpl implements IEsService {
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
         Response resp = client.performRequest("DELETE", "/_search/scroll",Collections.<String, String>emptyMap(), entity);
         JSONObject object = JSONObject.parseObject(EntityUtils.toString(resp.getEntity()));
-        if (object.containsKey("error")) {
-            return false;
-        } else
-            return true;
+        return !object.containsKey("error");
     }
 
     @Override
@@ -425,6 +412,9 @@ public class IEsServiceImpl implements IEsService {
         long splits = diff / interval2Long(originalInterval);
         if (splits < 120)
             return originalInterval;
+        long oneMinuteTime = 60 * 1000L;
+        long oneHourTime = 60 * 60 * 1000L;
+        long oneDayTime = 24 * 60 * 60 * 1000L;
         if (diff < oneMinuteTime) {
             interval = "1s";
         } else if (diff < oneHourTime) {
@@ -498,8 +488,7 @@ public class IEsServiceImpl implements IEsService {
         HttpEntity entity = new NStringEntity(query,
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
         Response resp = client.performRequest("POST", path, Collections.<String, String>emptyMap(), entity);
-        Map<String, Object> result = DataAdapter.seriesByDateHistogram(EntityUtils.toString(resp.getEntity()), "yyyy-MM-dd HH:mm:ss");
-        return result;
+        return DataAdapter.seriesByDateHistogram(EntityUtils.toString(resp.getEntity()), "yyyy-MM-dd HH:mm:ss");
     }
 
 

@@ -13,7 +13,7 @@ public enum ShapeRelation  {
 
     private final String relationName;
 
-    private ShapeRelation(String relationName) {
+    ShapeRelation(String relationName) {
         this.relationName = relationName;
     }
 

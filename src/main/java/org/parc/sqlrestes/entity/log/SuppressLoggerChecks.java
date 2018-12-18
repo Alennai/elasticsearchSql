@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.TYPE})
-public @interface SuppressLoggerChecks {
+@interface SuppressLoggerChecks {
     String reason();
 }
 

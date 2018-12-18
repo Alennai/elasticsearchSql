@@ -12,7 +12,7 @@ import org.parc.sqlrestes.parse.NestedType;
  */
 public class Field implements Cloneable{
 
-	protected String name;
+	String name;
 	private String alias;
     private NestedType nested;
     private ChildrenType children;
@@ -95,7 +95,7 @@ public class Field implements Cloneable{
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    protected Object clone() {
         return new Field(new String(this.name), new String(this.alias));
     }
 }

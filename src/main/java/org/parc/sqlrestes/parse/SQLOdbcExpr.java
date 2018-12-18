@@ -25,7 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 
 
-public class SQLOdbcExpr extends SQLCharExpr {
+class SQLOdbcExpr extends SQLCharExpr {
 
     private static final long serialVersionUID = 1L;
 

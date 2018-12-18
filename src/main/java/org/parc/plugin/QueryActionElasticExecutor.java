@@ -2,7 +2,6 @@ package org.parc.plugin;
 
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregations;
@@ -18,28 +17,28 @@ import java.io.IOException;
  * Created by xusiao on 2018/6/19.
  */
 public class QueryActionElasticExecutor {
-    public static SearchHits executeSearchAction(DefaultQueryAction searchQueryAction) throws SqlParseException {
+    private static SearchHits executeSearchAction(DefaultQueryAction searchQueryAction) throws SqlParseException {
         SqlElasticSearchRequestBuilder builder  =  searchQueryAction.explain();
         return ((SearchResponse) builder.get()).getHits();
     }
 
-    public static SearchHits executeJoinSearchAction(RestClient client , ESJoinQueryAction joinQueryAction) throws IOException, SqlParseException {
+    private static SearchHits executeJoinSearchAction(RestClient client, ESJoinQueryAction joinQueryAction) throws IOException, SqlParseException {
         SqlElasticRequestBuilder joinRequestBuilder = joinQueryAction.explain();
         ElasticJoinExecutor executor = ElasticJoinExecutor.createJoinExecutor(client,joinRequestBuilder);
         executor.run();
         return executor.getHits();
     }
 
-    public static Aggregations executeAggregationAction(AggregationQueryAction aggregationQueryAction) throws SqlParseException {
+    private static Aggregations executeAggregationAction(AggregationQueryAction aggregationQueryAction) throws SqlParseException {
         SqlElasticSearchRequestBuilder select =  aggregationQueryAction.explain();
         return ((SearchResponse)select.get()).getAggregations();
     }
 
-    public static ActionResponse executeDeleteAction(DeleteQueryAction deleteQueryAction) throws SqlParseException {
+    private static ActionResponse executeDeleteAction(DeleteQueryAction deleteQueryAction) throws SqlParseException {
         return deleteQueryAction.explain().get();
     }
 
-    public static SearchHits executeMultiQueryAction(RestClient client, MultiQueryAction queryAction) throws SqlParseException, IOException {
+    private static SearchHits executeMultiQueryAction(RestClient client, MultiQueryAction queryAction) throws SqlParseException, IOException {
         SqlElasticRequestBuilder multiRequestBuilder = queryAction.explain();
 //        ElasticHitsExecutor executor = MultiRequestExecutorFactory.createExecutor(client, (MultiQueryRequestBuilder) multiRequestBuilder);
         ElasticHitsExecutor executor = MultiRequestExecutorFactory.createExecutor(client, (MultiQueryRequestBuilder) multiRequestBuilder);

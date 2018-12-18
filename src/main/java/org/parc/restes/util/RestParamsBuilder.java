@@ -39,7 +39,7 @@ public class RestParamsBuilder {
 		put("chineseModelName","");
 		put("name","");
 	}};
-	public RestParamsBuilder() {
+	private RestParamsBuilder() {
 		try {
 			xContentBuilder = jsonBuilder().startObject();
 		} catch (IOException e) {
@@ -47,11 +47,11 @@ public class RestParamsBuilder {
 		}
 	}
 
-	public static RestParamsBuilder restParamsBuilder() {
+	private static RestParamsBuilder restParamsBuilder() {
 		return new RestParamsBuilder();
 	}
 
-	public RestParamsBuilder must(String k, String v) {
+	private RestParamsBuilder must(String k, String v) {
 		musts.add(term("term", term(k, v)));
 		return this;
 	}
@@ -61,7 +61,7 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder match(String k, String v) {
+	private RestParamsBuilder match(String k, String v) {
 		musts.add(term("match", matchTerm(k, v)));
 		return this;
 	}
@@ -81,12 +81,12 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder must(String k, List<String> v) {
+	private RestParamsBuilder must(String k, List<String> v) {
 		musts.add(term("terms", term(k, v)));
 		return this;
 	}
 
-	public RestParamsBuilder match(String k, List<String> v) {
+	private RestParamsBuilder match(String k, List<String> v) {
 		StringBuilder sb = new StringBuilder();
 		for(String value : v){
 			sb.append(value).append(" ");
@@ -95,7 +95,7 @@ public class RestParamsBuilder {
 		musts.add(term("match", matchTerm(k, sb.toString().trim())));
 		return this;
 	}
-	public RestParamsBuilder mul_match(String keyword, List<String> fields, String operator) {
+	private RestParamsBuilder mul_match(String keyword, List<String> fields, String operator) {
 		Map<String, Object> fieldMap = new HashMap<>();
 		fieldMap.put("query", keyword);
 		fieldMap.put("operator", operator);
@@ -114,7 +114,7 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder must(String k, Object lt, Object gt) {
+	private RestParamsBuilder must(String k, Object lt, Object gt) {
 		Map<String, Object> range = new HashMap<>();
 		Map<String, Object> data = new HashMap<>();
 		data.put("gte", lt);
@@ -213,12 +213,12 @@ public class RestParamsBuilder {
 		return xContentBuilder.endObject().string();
 	}
 
-	public RestParamsBuilder from(int from) throws IOException {
+	private RestParamsBuilder from(int from) throws IOException {
 		xContentBuilder.field("from", from);
 		return this;
 	}
 
-	public RestParamsBuilder size(int size) throws IOException {
+	private RestParamsBuilder size(int size) throws IOException {
 		xContentBuilder.field("size", size);
 		return this;
 	}
@@ -233,7 +233,7 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder order(String k, String order, String type) throws IOException {
+	private RestParamsBuilder order(String k, String order, String type) {
 		Map<String, Object> sort = new HashMap<>();
 		Map<String, String> data = null;
 		if (type != null) {
@@ -263,7 +263,7 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder queryString(String query,String default_field) throws IOException {
+	private RestParamsBuilder queryString(String query, String default_field) {
 		if (StringUtils.isBlank(query))
 			return this;
 		Map<String, Object> queryString = new HashMap<>();
@@ -275,7 +275,7 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder conditions(List<String> conditions,String default_field) throws IOException {
+	private RestParamsBuilder conditions(List<String> conditions, String default_field) {
 		CleverListMap maps = new CleverListMap();
 		for (int i = 0; i < conditions.size(); i++) {
 			String condition = conditions.get(i);
@@ -325,7 +325,7 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder keywords(List<String> keywords,String default_field) throws IOException {
+	public RestParamsBuilder keywords(List<String> keywords,String default_field) {
 		CleverListMap maps = new CleverListMap();
 		for (String keyword : keywords) {
 			if (StringUtils.isBlank(keyword)) {
@@ -362,7 +362,7 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder keywordmap(Map keywords,String default_field) throws IOException {
+	public RestParamsBuilder keywordmap(Map keywords,String default_field) {
 		CleverListMap maps = new CleverListMap();
 		for (Object keyword : keywords.keySet()) {
 			if (StringUtils.isBlank(keyword.toString())) {
@@ -380,7 +380,7 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder aggTerms(String field, int size) {
+	private RestParamsBuilder aggTerms(String field, int size) {
 		Map<String, Object> tmp = new HashMap<>();
 		tmp.put("field", field);
 		tmp.put("size", size);
@@ -453,7 +453,7 @@ public class RestParamsBuilder {
 		return tmp;
 	}
 
-	public static String buildRestJsonByTemplate(TraceParam traceParam) throws IOException {
+	public static String buildRestJsonByTemplate(TraceParam traceParam) {
 		return String.format(traceParam.getTemplate(), getTimeLong(traceParam.getStart()),
 				getTimeLong(traceParam.getEnd()));
 	}
@@ -462,7 +462,7 @@ public class RestParamsBuilder {
 		return buildRestJson(traceParam, false, false);
 	}
 
-	public static RestParamsBuilder buildRestJson(TraceParam traceParam, boolean isTemplate, boolean noTime)
+	private static RestParamsBuilder buildRestJson(TraceParam traceParam, boolean isTemplate, boolean noTime)
 			throws IOException {
 		RestParamsBuilder builder = restParamsBuilder();
 		List<Param> ps = traceParam.getParams();
@@ -509,7 +509,7 @@ public class RestParamsBuilder {
 		return default_field;
 	}
 
-	public static long getTimeLong(String time) {
+	private static long getTimeLong(String time) {
 		try {
 			return CDateUtil.parse(time).getTime();
 		} catch (ParseException e) {
@@ -518,7 +518,7 @@ public class RestParamsBuilder {
 		return 0;
 	}
 
-	public RestParamsBuilder timeRange(String key, String start, String end) {
+	private RestParamsBuilder timeRange(String key, String start, String end) {
 		must(key, getTimeLong(start), getTimeLong(end));
 		return this;
 	}
@@ -528,12 +528,12 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder timeRange(String key, long start, long end) {
+	private RestParamsBuilder timeRange(String key, long start, long end) {
 		must(key, start, end);
 		return this;
 	}
 
-	public RestParamsBuilder timeRangeTemplate(String key) {
+	private RestParamsBuilder timeRangeTemplate(String key) {
 		must(key, "%s", "%s");
 		return this;
 	}
@@ -593,7 +593,7 @@ public class RestParamsBuilder {
 		filtershould.add(ranges);
 	}
 
-	public RestParamsBuilder filterMust(String k, Object lt, Object gt) throws IOException {
+	private RestParamsBuilder filterMust(String k, Object lt, Object gt) {
 		Map<String, Object> data = new HashMap<>();
 		Map<String, Object> range = new HashMap<>();
 		Map<String, Object> ranges = new HashMap<>();
@@ -605,7 +605,7 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder fuzzy(String words, ArrayList<String> field) throws IOException {
+	public RestParamsBuilder fuzzy(String words, ArrayList<String> field) {
 		Map<String, Object> multimatchs = new HashMap<>();
 		Map<String, Object> fuzzy = new HashMap<>();
 		fuzzy.put("fields", field);
@@ -617,7 +617,7 @@ public class RestParamsBuilder {
 	}
 
 
-	public RestParamsBuilder enumCondition(List<Set> lists) throws IOException{
+	public RestParamsBuilder enumCondition(List<Set> lists) {
 		for(Set<String> list : lists) {
 			Map<String, String> maps = new HashMap<>();
 			List<Map<String, Object>> localshoulds = new ArrayList<>();
@@ -633,12 +633,11 @@ public class RestParamsBuilder {
 				}
 			}
 			for (String key : maps.keySet()) {
-				String v = key;
-				String k = maps.get(key);
-				if (StringUtils.isBlank(v)) {
+                String k = maps.get(key);
+				if (StringUtils.isBlank(key)) {
 					continue;
 				} else {
-					localshoulds.add(term("term", term(k, v)));
+					localshoulds.add(term("term", term(k, key)));
 				}
 			}
 			musts.add(term("bool", term("should", localshoulds)));
@@ -646,7 +645,7 @@ public class RestParamsBuilder {
 		return this;
 	}
 
-	public RestParamsBuilder conditionSet(List<Set> conditions) throws IOException {
+	public RestParamsBuilder conditionSet(List<Set> conditions) {
 		for (Set<String> list : conditions) {
 			Map<String, String> maps = new HashMap<>();
 			List<Map<String, Object>> localshoulds = new ArrayList<>();
@@ -663,15 +662,14 @@ public class RestParamsBuilder {
 			}
 			if(maps.size() > 1){
 				for (String key : maps.keySet()) {
-					String v = key;
-					String k = maps.get(key);
-					if (StringUtils.isBlank(v)) {
+                    String k = maps.get(key);
+					if (StringUtils.isBlank(key)) {
 						continue;
 					} else {
 						if (analyzer_fields.containsKey(k)) {
-							localshoulds.add(term("match", term(k, v)));
+							localshoulds.add(term("match", term(k, key)));
 						} else {
-							localshoulds.add(term("term", term(k, v)));
+							localshoulds.add(term("term", term(k, key)));
 						}
 
 					}
@@ -680,15 +678,14 @@ public class RestParamsBuilder {
 				musts.add(term("bool", term("should", localshoulds)));
 			}else if(maps.size() == 1){
 				for (String key : maps.keySet()) {
-					String v = key;
-					String k = maps.get(key);
-					if (StringUtils.isBlank(v)) {
+                    String k = maps.get(key);
+					if (StringUtils.isBlank(key)) {
 						continue;
 					} else {
 						if (analyzer_fields.containsKey(k)) {
-							this.match(k, v);
+							this.match(k, key);
 						} else {
-							this.must(k, v);
+							this.must(k, key);
 						}
 					}
 				}

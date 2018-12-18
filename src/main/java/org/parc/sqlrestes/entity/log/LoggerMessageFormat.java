@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * Created by xusiao on 2018/5/4.
  */
-public class LoggerMessageFormat {
+class LoggerMessageFormat {
     static final char DELIM_START = '{';
     static final char DELIM_STOP = '}';
     static final String DELIM_STR = "{}";
@@ -19,7 +19,7 @@ public class LoggerMessageFormat {
         return format((String)null, messagePattern, argArray);
     }
 
-    public static String format(String prefix, String messagePattern, Object... argArray) {
+    private static String format(String prefix, String messagePattern, Object... argArray) {
         if(messagePattern == null) {
             return null;
         } else if(argArray == null) {
@@ -65,7 +65,7 @@ public class LoggerMessageFormat {
         }
     }
 
-    static boolean isEscapedDelimiter(String messagePattern, int delimiterStartIndex) {
+    private static boolean isEscapedDelimiter(String messagePattern, int delimiterStartIndex) {
         if(delimiterStartIndex == 0) {
             return false;
         } else {
@@ -74,7 +74,7 @@ public class LoggerMessageFormat {
         }
     }
 
-    static boolean isDoubleEscaped(String messagePattern, int delimiterStartIndex) {
+    private static boolean isDoubleEscaped(String messagePattern, int delimiterStartIndex) {
         return delimiterStartIndex >= 2 && messagePattern.charAt(delimiterStartIndex - 2) == 92;
     }
 

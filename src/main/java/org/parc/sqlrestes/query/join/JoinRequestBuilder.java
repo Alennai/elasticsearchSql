@@ -23,7 +23,7 @@ public  class JoinRequestBuilder implements SqlElasticRequestBuilder {
     private SQLJoinTableSource.JoinType joinType;
     private int totalLimit;
 
-    public JoinRequestBuilder() {
+    JoinRequestBuilder() {
         firstTable = new TableInJoinRequestBuilder();
         secondTable = new TableInJoinRequestBuilder();
     }
@@ -53,9 +53,8 @@ public  class JoinRequestBuilder implements SqlElasticRequestBuilder {
             XContentBuilder secondBuilder = XContentFactory.contentBuilder(XContentType.JSON).prettyPrint();
 //            secondTable.getRequestBuilder().request().source().toXContent(secondBuilder, ToXContent.EMPTY_PARAMS);
             secondTable.getRequestBuilder().toString();
-            String explained = String.format(" first query:\n%s\n second query:\n%s", firstBuilder.string(), secondBuilder.string());
 
-            return explained;
+            return String.format(" first query:\n%s\n second query:\n%s", firstBuilder.string(), secondBuilder.string());
         } catch (IOException e) {
             e.printStackTrace();
         }

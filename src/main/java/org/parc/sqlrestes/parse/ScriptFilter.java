@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import org.elasticsearch.script.ScriptType;
 import org.parc.sqlrestes.Util;
-import org.parc.sqlrestes.exception.SqlParseException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +29,7 @@ public class ScriptFilter {
 //        this.scriptType = scriptType;
 //    }
 
-    public boolean tryParseFromMethodExpr(SQLMethodInvokeExpr expr) throws SqlParseException {
+    public boolean tryParseFromMethodExpr(SQLMethodInvokeExpr expr) {
         if (!expr.getMethodName().toLowerCase().equals("script")) {
             return false;
         }

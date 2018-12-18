@@ -62,7 +62,7 @@ public class DateUtil  {
         return null;
     }
 
-    public static Date utc2local(String utcTime) {
+    private static Date utc2local(String utcTime) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
@@ -78,7 +78,7 @@ public class DateUtil  {
      * @param timestamp
      * @return
      */
-    public static String timestamp2localStr(Long timestamp) {
+    private static String timestamp2localStr(Long timestamp) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return df.format(new Date(timestamp));
     }
@@ -99,7 +99,7 @@ public class DateUtil  {
         return df.format(localDate);
     }
 
-    public static Date utc2cst(String utcTime) {
+    private static Date utc2cst(String utcTime) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {

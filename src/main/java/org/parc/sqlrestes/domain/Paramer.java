@@ -5,21 +5,19 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import org.elasticsearch.common.xcontent.ToXContent;
-import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
-import org.parc.sqlrestes.exception.SqlParseException;
 
 import java.util.List;
 
 
 public class Paramer {
-	public String analysis;
-	public Float boost;
+	private String analysis;
+	private Float boost;
 	public String value;
 
-	public static Paramer parseParamer(SQLMethodInvokeExpr method) throws SqlParseException {
+	public static Paramer parseParamer(SQLMethodInvokeExpr method) {
 		Paramer instance = new Paramer();
 		List<SQLExpr> parameters = method.getParameters();
 		instance.value = ((SQLCharExpr) parameters.get(0)).getText();

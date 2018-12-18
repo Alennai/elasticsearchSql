@@ -3,13 +3,13 @@ package org.parc.sqlrestes.entity;
 /**
  * Created by xusiao on 2018/5/4.
  */
-public abstract class  Query {
+abstract class  Query {
     private final int CLASS_NAME_HASH = this.getClass().getName().hashCode();
 
-    public Query() {
+    Query() {
     }
 
-    public abstract String toString(String var1);
+    protected abstract String toString(String var1);
 
     public final String toString() {
         return this.toString("");

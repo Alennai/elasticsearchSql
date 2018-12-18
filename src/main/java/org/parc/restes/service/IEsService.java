@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public interface IEsService {
-    Field categories(String type, String fieldName) throws Exception;
+    Field categories(String type, String fieldName);
 
     List<Map<String, Object>> get_field_by_type(String type) throws Exception;
 
@@ -68,11 +68,11 @@ public interface IEsService {
 
     Map<String, String> getNodeStats() throws Exception;
 
-    default public String compositePath(String[] indexes, String[] types, String opt) {
+    default String compositePath(String[] indexes, String[] types, String opt) {
         if (types == null) {
-            return "/" + Stream.of(indexes).collect(Collectors.joining(",")) + "/" + opt;
+            return "/" + String.join(",", indexes) + "/" + opt;
         }
-        return "/" + Stream.of(indexes).collect(Collectors.joining(",")) + "/" + Stream.of(types).collect(Collectors.joining(",")) + "/" + opt;
+        return "/" + String.join(",", indexes) + "/" + String.join(",", types) + "/" + opt;
     }
 
 }

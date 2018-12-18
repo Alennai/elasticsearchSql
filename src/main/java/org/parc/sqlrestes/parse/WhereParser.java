@@ -18,10 +18,9 @@ import java.util.List;
 /**
  * Created by allwefantasy on 9/2/16.
  */
-public class WhereParser {
+class WhereParser {
 
     private MySqlSelectQueryBlock query;
-    private SQLDeleteStatement delete;
     private SQLExpr where;
     private SqlParser sqlParser;
 
@@ -33,7 +32,7 @@ public class WhereParser {
 
     public WhereParser(SqlParser sqlParser, SQLDeleteStatement delete) {
         this.sqlParser = sqlParser;
-        this.delete = delete;
+        SQLDeleteStatement delete1 = delete;
         this.where = delete.getWhere();
     }
 
@@ -433,13 +432,12 @@ public class WhereParser {
 
     private MethodField parseSQLMethodInvokeExprWithFunctionInWhere(SQLMethodInvokeExpr soExpr) throws SqlParseException {
 
-        MethodField methodField = FieldMaker.makeMethodField(soExpr.getMethodName(),
+        return FieldMaker.makeMethodField(soExpr.getMethodName(),
                 soExpr.getParameters(),
                 null,
                 null,
                 query != null ? query.getFrom().getAlias() : null,
                 false);
-        return methodField;
     }
 
     private SQLMethodInvokeExpr parseSQLBinaryOpExprWhoIsConditionInWhere(SQLBinaryOpExpr soExpr) throws SqlParseException {

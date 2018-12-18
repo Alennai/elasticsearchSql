@@ -146,7 +146,7 @@ public class SQLFunctions {
 
 
     //split(Column str, java.lang.String pattern)
-    public static Tuple<String, String> split(String strColumn, String pattern, int index, String valueName) {
+    private static Tuple<String, String> split(String strColumn, String pattern, int index, String valueName) {
         String name = "split_" + random();
         String script = "";
         if (valueName == null) {
@@ -169,7 +169,7 @@ public class SQLFunctions {
     }
 
 
-    public static Tuple<String, String> add(SQLExpr a, SQLExpr b) {
+    private static Tuple<String, String> add(SQLExpr a, SQLExpr b) {
         return binaryOpertator("add", "+", a, b);
     }
 
@@ -177,7 +177,7 @@ public class SQLFunctions {
         return binaryOpertator("modulus", "%", a, b);
     }
 
-    public static Tuple<String, String> field(String a) {
+    private static Tuple<String, String> field(String a) {
         String name = "field_" + random();
         return new Tuple<>(name, "def " + name + " = " + "doc['" + a + "'].value");
     }
@@ -265,7 +265,7 @@ public class SQLFunctions {
 
     }
 
-    public static Tuple<String, String> trim(String strColumn, String valueName) {
+    private static Tuple<String, String> trim(String strColumn, String valueName) {
 
         return strSingleValueTemplate("trim", strColumn, valueName);
 
@@ -284,7 +284,7 @@ public class SQLFunctions {
 
     }
 
-    public static Tuple<String, String> strSingleValueTemplate(String methodName, String strColumn, String valueName) {
+    private static Tuple<String, String> strSingleValueTemplate(String methodName, String strColumn, String valueName) {
         String name = methodName + "_" + random();
         if (valueName == null) {
             return new Tuple(name, "def " + name + " = doc['" + strColumn + "'].value." + methodName + "()" );
@@ -302,7 +302,7 @@ public class SQLFunctions {
 
 
     //substring(Column str, int pos, int len)
-    public static Tuple<String, String> substring(String strColumn, int pos, int len, String valueName) {
+    private static Tuple<String, String> substring(String strColumn, int pos, int len, String valueName) {
         String name = "substring_" + random();
         if (valueName == null) {
             return new Tuple(name, "def " + name + " = doc['" + strColumn + "'].value.substring(" + pos + "," + len + ")");
@@ -313,7 +313,7 @@ public class SQLFunctions {
     }
 
     //split(Column str, java.lang.String pattern)
-    public static Tuple<String, String> split(String strColumn, String pattern, String valueName) {
+    private static Tuple<String, String> split(String strColumn, String pattern, String valueName) {
         String name = "split_" + random();
         if (valueName == null) {
             return new Tuple(name, "def " + name + " = doc['" + strColumn + "'].value.split('" + pattern + "')" );

@@ -53,9 +53,8 @@ public class MultiQueryRequestBuilder implements SqlElasticRequestBuilder {
 
             XContentBuilder secondBuilder = XContentFactory.contentBuilder(XContentType.JSON).prettyPrint();
 //            this.secondSearchRequest.request().source().toXContent(secondBuilder, ToXContent.EMPTY_PARAMS);
-            String explained = String.format("performing %s on :\n left query:\n%s\n right query:\n%s", this.relation.name,firstBuilder.string(), secondBuilder.string());
 
-            return explained;
+            return String.format("performing %s on :\n left query:\n%s\n right query:\n%s", this.relation.name,firstBuilder.string(), secondBuilder.string());
         } catch (IOException e) {
             e.printStackTrace();
         }

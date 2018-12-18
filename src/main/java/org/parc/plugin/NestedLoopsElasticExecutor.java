@@ -139,7 +139,7 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
                 Where connectedWhereCloned = null;
                 try {
                     connectedWhereCloned = (Where) connectedWhere.clone();
-                } catch (CloneNotSupportedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 updateValuesOnWhereConditions(hitFromFirstTableAsMap,connectedWhereCloned);
@@ -240,11 +240,11 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
             this.needScrollForFirstTable = needScrollForFirstTable;
         }
 
-        public SearchResponse getResponse() {
+        SearchResponse getResponse() {
             return response;
         }
 
-        public boolean isNeedScrollForFirstTable() {
+        boolean isNeedScrollForFirstTable() {
             return needScrollForFirstTable;
         }
 

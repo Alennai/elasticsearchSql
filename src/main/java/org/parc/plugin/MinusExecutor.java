@@ -17,7 +17,6 @@ import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.DefaultQueryAction;
 import org.parc.sqlrestes.query.multi.MultiQueryRequestBuilder;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -32,7 +31,6 @@ public class MinusExecutor implements ElasticHitsExecutor {
     private boolean useScrolling;
     private int maxDocsToFetchOnFirstTable;
     private int maxDocsToFetchOnSecondTable;
-    private int maxDocsToFetchOnEachScrollShard;
     private String[] fieldsOrderFirstTable;
     private String[] fieldsOrderSecondTable;
     private String seperator;
@@ -48,7 +46,7 @@ public class MinusExecutor implements ElasticHitsExecutor {
     }
 
     @Override
-    public void run() throws IOException, SqlParseException {
+    public void run() throws SqlParseException {
         if(this.useTermsOptimization && this.fieldsOrderFirstTable.length != 1){
             throw new SqlParseException("terms optimization supports minus with only one field");
         }
@@ -410,7 +408,7 @@ public class MinusExecutor implements ElasticHitsExecutor {
                 this.useScrolling = true;
                 this.maxDocsToFetchOnFirstTable = (int) params[0];
                 this.maxDocsToFetchOnSecondTable = (int) params[1];
-                this.maxDocsToFetchOnEachScrollShard = (int) params[2];
+                int maxDocsToFetchOnEachScrollShard = (int) params[2];
             }
         }
     }

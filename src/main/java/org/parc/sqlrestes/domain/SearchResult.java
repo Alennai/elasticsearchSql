@@ -17,7 +17,7 @@ import org.parc.sqlrestes.exception.SqlParseException;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class SearchResult {
+class SearchResult {
 	/**
 	 * 查询结果
 	 */
@@ -25,7 +25,7 @@ public class SearchResult {
 
 	private long total;
 
-	double maxScore = 0;
+	private double maxScore = 0;
 
 	public SearchResult(SearchResponse resp) {
 		SearchHits hits = resp.getHits();

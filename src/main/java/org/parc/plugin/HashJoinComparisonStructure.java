@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Created by xusiao on 2018/6/20.
  */
-public class HashJoinComparisonStructure {
+class HashJoinComparisonStructure {
     private HashMap<String,List<Map.Entry<Field,Field>>> comparisonIDtoComparisonFields;
     private HashMap<String,HashMap<String,SearchHitsResult>> comparisonIDtoComparisonHash;
 

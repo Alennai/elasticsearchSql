@@ -13,7 +13,7 @@ import java.util.WeakHashMap;
 /**
  * Created by xusiao on 2018/5/4.
  */
-public class PrefixLogger extends ExtendedLoggerWrapper {
+class PrefixLogger extends ExtendedLoggerWrapper {
     private static final WeakHashMap<String, Marker> markers = new WeakHashMap();
     private final Marker marker;
 

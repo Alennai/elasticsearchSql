@@ -18,7 +18,7 @@ public class FormatDateTimeFormatter {
         this(format, parser, parser, locale);
     }
 
-    public FormatDateTimeFormatter(String format, DateTimeFormatter parser, DateTimeFormatter printer, Locale locale) {
+    private FormatDateTimeFormatter(String format, DateTimeFormatter parser, DateTimeFormatter printer, Locale locale) {
         this.format = format;
         this.locale = (Locale) Objects.requireNonNull(locale, "A locale is required as JODA otherwise uses the default locale");
         this.printer = printer.withLocale(locale).withDefaultYear(1970);

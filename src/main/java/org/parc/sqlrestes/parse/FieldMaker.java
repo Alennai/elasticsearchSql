@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author ansj
  */
-public class FieldMaker {
+class FieldMaker {
     public static Field makeField(SQLExpr expr, String alias, String tableAlias) throws SqlParseException {
         if (expr instanceof SQLIdentifierExpr || expr instanceof SQLPropertyExpr || expr instanceof SQLVariantRefExpr) {
             return handleIdentifier(expr, alias, tableAlias);
@@ -144,7 +144,7 @@ public class FieldMaker {
 
 
     //binary method can nested
-    public static SQLMethodInvokeExpr makeBinaryMethodField(SQLBinaryOpExpr expr, String alias, boolean first) throws SqlParseException {
+    private static SQLMethodInvokeExpr makeBinaryMethodField(SQLBinaryOpExpr expr, String alias, boolean first) throws SqlParseException {
         List<SQLExpr> params = new ArrayList<>();
 
         String scriptFieldAlias;

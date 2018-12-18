@@ -5,7 +5,7 @@
  */
 package org.parc.restes.entity;
 
-public class Saved {
+class Saved {
 	private String id;
 	private String type;
 	private String title;

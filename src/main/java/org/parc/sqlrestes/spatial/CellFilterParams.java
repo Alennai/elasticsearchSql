@@ -3,7 +3,7 @@ package org.parc.sqlrestes.spatial;
 /**
  * Created by Eliran on 15/8/2015.
  */
-public class CellFilterParams {
+class CellFilterParams {
     private Point geohashPoint;
     private int precision;
     private boolean neighbors;

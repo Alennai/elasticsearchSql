@@ -9,12 +9,11 @@ import org.parc.sqlrestes.SearchDao;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.QueryAction;
 
-import java.io.IOException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.*;
 
 
-public class RestSqlAction extends BaseRestHandler {
+class RestSqlAction extends BaseRestHandler {
 
 //    public static final RestSqlAction INSTANCE = new RestSqlAction();
 
@@ -33,7 +32,7 @@ public class RestSqlAction extends BaseRestHandler {
     }
 
     @Override
-    protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) throws IOException {
+    protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) {
         String sql = request.param("sql");
 
         if (sql == null) {

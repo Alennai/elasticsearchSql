@@ -27,8 +27,7 @@ public class NestedLoopsElasticRequestBuilder extends JoinRequestBuilder {
 //        } catch (SqlParseException e) {
 //        }
         String conditions = explan == null ? "Could not parse conditions" : explan.toString();
-        String nestedExplain =  "Nested Loops \n run first query , and for each result run second query with additional conditions :\n" +conditions +"\n"+  baseExplain;
-        return nestedExplain;
+        return "Nested Loops \n run first query , and for each result run second query with additional conditions :\n" +conditions +"\n"+  baseExplain;
     }
 
 

@@ -136,7 +136,7 @@ public class WktToGeoJsonConverter {
         return String.format("{\"type\":\"%s\", \"coordinates\": %s}", type, coordinates);
     }
     //input : (30 10)
-    public static String pointCoordinatesFromWkt(String wkt) {
+    private static String pointCoordinatesFromWkt(String wkt) {
         wkt = removeBrackets(wkt,1);
         return extractCoordinateFromPoint(wkt);
     }

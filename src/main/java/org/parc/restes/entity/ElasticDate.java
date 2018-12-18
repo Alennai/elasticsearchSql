@@ -109,7 +109,7 @@ public class ElasticDate {
 		return parse(dateStr, df2.get());
 	}
 
-	public static Date parse(String dateStr, DateFormat _df) {
+	private static Date parse(String dateStr, DateFormat _df) {
 		try {
 			return _df.parse(dateStr);
 		} catch (ParseException e) {
@@ -122,7 +122,7 @@ public class ElasticDate {
 		return null;
 	}
 
-	public static String format(Date date, DateFormat _df) {
+	private static String format(Date date, DateFormat _df) {
 		return _df.format(date);
 	}
 
@@ -186,7 +186,7 @@ public class ElasticDate {
 		return N_MinutesBefore(date, 10);
 	}
 
-	public static Date N_MinutesBefore(Date date, int n) {
+	private static Date N_MinutesBefore(Date date, int n) {
 		if (n <= 0) {
 			return date;
 		}

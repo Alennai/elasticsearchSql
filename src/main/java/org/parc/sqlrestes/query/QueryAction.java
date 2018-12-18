@@ -22,15 +22,15 @@ import java.util.Map;
  */
 public abstract class QueryAction {
 
-	protected org.parc.sqlrestes.domain.Query query;
+	org.parc.sqlrestes.domain.Query query;
 	protected RestClient client;
 
-	public QueryAction(RestClient client, Query query) {
+	protected QueryAction(RestClient client, Query query) {
 		this.client = client;
 		this.query = query;
 	}
 
-    protected void updateRequestWithCollapse(Select select, RestQueryBuilder request) throws SqlParseException {
+    void updateRequestWithCollapse(Select select, RestQueryBuilder request) throws SqlParseException {
         JsonFactory jsonFactory = new JsonFactory();
         for (Hint hint : select.getHints()) {
             if (hint.getType() == HintType.COLLAPSE && hint.getParams() != null && 0 < hint.getParams().length) {
@@ -43,7 +43,7 @@ public abstract class QueryAction {
         }
     }
 
-    protected void updateRequestWithPostFilter(Select select, RestQueryBuilder request) {
+    void updateRequestWithPostFilter(Select select, RestQueryBuilder request) {
         for (Hint hint : select.getHints()) {
             if (hint.getType() == HintType.POST_FILTER && hint.getParams() != null && 0 < hint.getParams().length) {
 //                request.setPostFilter(QueryBuilders.wrapperQuery(hint.getParams()[0].toString()));
@@ -51,7 +51,7 @@ public abstract class QueryAction {
         }
     }
 
-    protected void updateRequestWithIndexAndRoutingOptions(Select select, RestQueryBuilder request) {
+    void updateRequestWithIndexAndRoutingOptions(Select select, RestQueryBuilder request) {
         for(Hint hint : select.getHints()){
             if(hint.getType() == HintType.IGNORE_UNAVAILABLE){
                 //saving the defaults from TransportClient search
@@ -68,7 +68,7 @@ public abstract class QueryAction {
         }
     }
 
-    protected void updateRequestWithHighlight(Select select, RestQueryBuilder request) {
+    void updateRequestWithHighlight(Select select, RestQueryBuilder request) {
         boolean foundAnyHighlights = false;
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         for(Hint hint : select.getHints()){
@@ -85,7 +85,7 @@ public abstract class QueryAction {
         }
     }
 
-    protected HighlightBuilder.Field parseHighlightField(Object[] params)
+    private HighlightBuilder.Field parseHighlightField(Object[] params)
     {
         if(params == null || params.length == 0 || params.length > 2){
             //todo: exception.

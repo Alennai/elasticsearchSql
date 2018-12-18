@@ -34,7 +34,7 @@ public class CurlUtil {
             br=new BufferedReader(new InputStreamReader(p.getInputStream()));
             while((line=br.readLine())!=null){
                 if (iscontent){
-                    String content[]=line.split("\\s+");
+                    String[] content = line.split("\\s+");
                     String index =content[2];
                     Matcher m = ptn1.matcher(index);
                     if (m.find()) {

@@ -33,8 +33,7 @@ public class ChildrenType {
         if (parameters.size() != 2)
             throw new SqlParseException("on children object only allowed 2 parameters (type, field)/(type, conditions...) ");
 
-        String type = Util.extendedToString(parameters.get(0));
-        this.childType = type;
+        this.childType = Util.extendedToString(parameters.get(0));
         
         SQLExpr secondParameter = parameters.get(1);
         if(secondParameter instanceof SQLTextLiteralExpr || secondParameter instanceof SQLIdentifierExpr || secondParameter instanceof SQLPropertyExpr) {

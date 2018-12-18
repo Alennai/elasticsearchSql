@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
  * This is for tracking in group bys the difference between "group by state, age" and "group by (state), (age)".
  * For non group by identifiers, it acts as a normal SQLIdentifierExpr.
  */
-public class SQLParensIdentifierExpr extends SQLIdentifierExpr {
+class SQLParensIdentifierExpr extends SQLIdentifierExpr {
 
     public SQLParensIdentifierExpr() {
     }

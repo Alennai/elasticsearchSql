@@ -12,12 +12,12 @@ public class Script {
     public static  String DEFAULT_SCRIPT_LANG = "painless";
     public static  String DEFAULT_TEMPLATE_LANG = "mustache";
     public static  String CONTENT_TYPE_OPTION = "content_type";
-    public static  ScriptType DEFAULT_SCRIPT_TYPE;
-    public static  ParseField SCRIPT_PARSE_FIELD;
-    public static  ParseField SOURCE_PARSE_FIELD;
-    public static  ParseField LANG_PARSE_FIELD;
-    public static  ParseField OPTIONS_PARSE_FIELD;
-    public static  ParseField PARAMS_PARSE_FIELD;
+    private static  ScriptType DEFAULT_SCRIPT_TYPE;
+    private static  ParseField SCRIPT_PARSE_FIELD;
+    private static  ParseField SOURCE_PARSE_FIELD;
+    private static  ParseField LANG_PARSE_FIELD;
+    private static  ParseField OPTIONS_PARSE_FIELD;
+    private static  ParseField PARAMS_PARSE_FIELD;
 //    private static final ObjectParser<Script.Builder, Void> PARSER;
     private  ScriptType type=null;
     private  String lang=null;
@@ -34,7 +34,6 @@ public class Script {
         LANG_PARSE_FIELD = new ParseField("lang", new String[0]);
         OPTIONS_PARSE_FIELD = new ParseField("options", new String[0]);
         PARAMS_PARSE_FIELD = new ParseField("params", new String[0]);
-        ;
 
 //        PARSER = new ObjectParser("script", () -> {
 //            return new Script.Builder();
@@ -62,7 +61,7 @@ public class Script {
         this(DEFAULT_SCRIPT_TYPE, "painless", idOrCode, Collections.emptyMap(), Collections.emptyMap());
     }
 
-    public Script(ScriptType type, String lang, String idOrCode, Map<String, String> options, Map<String, Object> params) {
+    private Script(ScriptType type, String lang, String idOrCode, Map<String, String> options, Map<String, Object> params) {
         this.type = (ScriptType) Objects.requireNonNull(type);
         this.idOrCode = (String)Objects.requireNonNull(idOrCode);
         this.params = Collections.unmodifiableMap((Map)Objects.requireNonNull(params));

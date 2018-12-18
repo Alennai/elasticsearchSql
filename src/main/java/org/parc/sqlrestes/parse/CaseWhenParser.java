@@ -14,14 +14,12 @@ import java.util.List;
 /**
  * Created by allwefantasy on 9/3/16.
  */
-public class CaseWhenParser {
+class CaseWhenParser {
     private SQLCaseExpr caseExpr;
-    private String alias;
-    private String tableAlias;
 
     public CaseWhenParser(SQLCaseExpr caseExpr, String alias, String tableAlias) {
-        this.alias = alias;
-        this.tableAlias = tableAlias;
+        String alias1 = alias;
+        String tableAlias1 = tableAlias;
         this.caseExpr = caseExpr;
 
     }
@@ -55,7 +53,7 @@ public class CaseWhenParser {
         return Joiner.on(" ").join(result);
     }
 
-    public String explain(Where where) throws SqlParseException {
+    private String explain(Where where) throws SqlParseException {
         List<String> codes = new ArrayList<String>();
         while (where.getWheres().size() == 1) {
             where = where.getWheres().getFirst();

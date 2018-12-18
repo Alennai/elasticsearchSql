@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CleverListMap extends HashMap<String, List<String>> {
+class CleverListMap extends HashMap<String, List<String>> {
 
 	/**
 	 * 

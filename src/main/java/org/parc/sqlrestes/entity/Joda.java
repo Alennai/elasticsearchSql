@@ -14,13 +14,13 @@ import java.util.Locale;
 /**
  * Created by xusiao on 2018/5/4.
  */
-public class Joda {
-    public static final DurationFieldType Quarters = new DurationFieldType("quarters") {
+class Joda {
+    private static final DurationFieldType Quarters = new DurationFieldType("quarters") {
         public DurationField getField(Chronology chronology) {
             return new ScaledDurationField(chronology.months(), Joda.Quarters, 3);
         }
     };
-    public static final DateTimeFieldType QuarterOfYear = new DateTimeFieldType("quarterOfYear") {
+    private static final DateTimeFieldType QuarterOfYear = new DateTimeFieldType("quarterOfYear") {
         public DurationFieldType getDurationType() {
             return Joda.Quarters;
         }
@@ -391,7 +391,7 @@ public class Joda {
         return new FormatDateTimeFormatter("yyyy/MM/dd HH:mm:ss||yyyy/MM/dd||epoch_millis", builder.toFormatter().withZone(DateTimeZone.UTC), Locale.ROOT);
     }
 
-    public static class EpochTimePrinter implements DateTimePrinter {
+    static class EpochTimePrinter implements DateTimePrinter {
         private boolean hasMilliSecondPrecision;
 
         public EpochTimePrinter(boolean hasMilliSecondPrecision) {
@@ -422,9 +422,9 @@ public class Joda {
 
         public void printTo(StringBuffer buf, ReadablePartial partial, Locale locale) {
             if(this.hasMilliSecondPrecision) {
-                buf.append(String.valueOf(this.getDateTimeMillis(partial)));
+                buf.append(this.getDateTimeMillis(partial));
             } else {
-                buf.append(String.valueOf(this.getDateTimeMillis(partial) / 1000L));
+                buf.append(this.getDateTimeMillis(partial) / 1000L);
             }
 
         }
@@ -450,10 +450,10 @@ public class Joda {
         }
     }
 
-    public static class EpochTimeParser implements DateTimeParser {
+    static class EpochTimeParser implements DateTimeParser {
         private final boolean hasMilliSecondPrecision;
 
-        public EpochTimeParser(boolean hasMilliSecondPrecision) {
+        EpochTimeParser(boolean hasMilliSecondPrecision) {
             this.hasMilliSecondPrecision = hasMilliSecondPrecision;
         }
 

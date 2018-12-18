@@ -1,6 +1,5 @@
 package org.parc.plugin;
 
-import org.elasticsearch.client.Client;
 import org.elasticsearch.client.RestClient;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.multi.MultiQueryRequestBuilder;

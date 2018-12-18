@@ -16,7 +16,6 @@ import org.parc.sqlrestes.query.join.HashJoinElasticRequestBuilder;
 import org.parc.sqlrestes.query.join.TableInJoinRequestBuilder;
 import org.parc.sqlrestes.query.maker.QueryMaker;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -26,22 +25,20 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
     private HashJoinElasticRequestBuilder requestBuilder;
 
 
-    private RestClient client;
     private boolean useQueryTermsFilterOptimization = false;
-    private final int MAX_RESULTS_FOR_FIRST_TABLE = 100000;
-    HashJoinComparisonStructure hashJoinComparisonStructure;
+    private HashJoinComparisonStructure hashJoinComparisonStructure;
     private Set<String> alreadyMatched;
 
     public HashJoinElasticExecutor(RestClient client, HashJoinElasticRequestBuilder requestBuilder) {
         super(requestBuilder);
-        this.client = client;
+        RestClient client1 = client;
         this.requestBuilder = requestBuilder;
         this.useQueryTermsFilterOptimization = requestBuilder.isUseTermFiltersOptimization();
         this.hashJoinComparisonStructure = new HashJoinComparisonStructure(requestBuilder.getT1ToT2FieldsComparison());
         this.alreadyMatched = new HashSet<>();
     }
 
-    public List<SearchHit> innerRun() throws IOException, SqlParseException {
+    public List<SearchHit> innerRun() throws SqlParseException {
 
         Map<String, Map<String, List<Object>>> optimizationTermsFilterStructure =
                 initOptimizationStructure();
@@ -236,6 +233,7 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
         int curentNumOfResults = 0;
         SearchHit[] hits = scrollResp.getHits().getHits();
 
+        int MAX_RESULTS_FOR_FIRST_TABLE = 100000;
         if (hintLimit == null) hintLimit = MAX_RESULTS_FOR_FIRST_TABLE;
 
         while (hits.length != 0 && curentNumOfResults < hintLimit) {

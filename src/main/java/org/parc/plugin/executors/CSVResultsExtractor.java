@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * Created by Eliran on 27/12/2015.
  */
-public class CSVResultsExtractor {
+class CSVResultsExtractor {
     private final boolean includeType;
     private final boolean includeScore;
     private final boolean indcludeId;
@@ -300,7 +300,7 @@ public class CSVResultsExtractor {
         }
         else {
             if(doc.containsKey(header)){
-                return String.valueOf(doc.get(header)) + separator;
+                return doc.get(header) + separator;
             }
         }
         return separator;

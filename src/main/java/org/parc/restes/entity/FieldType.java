@@ -9,7 +9,7 @@ public enum FieldType {
 	search("search"), scenes("scenes"), alert("alert");
 	private String type;
 
-	private FieldType(String type) {
+	FieldType(String type) {
 		this.type = type;
 	}
 

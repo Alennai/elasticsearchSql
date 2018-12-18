@@ -6,7 +6,7 @@ import java.io.Reader;
 /**
  * Created by xusiao on 2018/5/4.
  */
-public class FastStringReader extends Reader implements CharSequence {
+class FastStringReader extends Reader implements CharSequence {
     private String str;
     private int length;
     private int next = 0;

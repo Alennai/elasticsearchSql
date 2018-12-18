@@ -5,7 +5,7 @@
  */
 package org.parc.restes.entity;
 
-public class BdResponse {
+class BdResponse {
 	private String code;
 	private String message;
 	private String respMsg;

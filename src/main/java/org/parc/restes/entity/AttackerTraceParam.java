@@ -6,7 +6,7 @@
  */
 package org.parc.restes.entity;
 
-public class AttackerTraceParam {
+class AttackerTraceParam {
 //	@ApiParam("开始时间 eg:2017-05-27 00:00:00")
 	private String startTime;
 //	@QueryParam("endTime")

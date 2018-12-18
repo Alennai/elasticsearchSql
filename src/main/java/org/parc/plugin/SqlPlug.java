@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class SqlPlug extends Plugin implements ActionPlugin {
+class SqlPlug extends Plugin implements ActionPlugin {
 
 	public SqlPlug() {
 	}

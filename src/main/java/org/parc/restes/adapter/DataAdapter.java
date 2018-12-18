@@ -20,7 +20,7 @@ import java.util.*;
 
 
 public class DataAdapter {
-    public static DecimalFormat df = new DecimalFormat("#.00");
+    private static DecimalFormat df = new DecimalFormat("#.00");
     private static final Comparator<IField> comparator = new FieldComparator();
     private static final List<String> INCLUDE = Arrays.asList(new String[]{"responseCode", "destGeoRegion",
             "destHostName", "severity", "warningType", "destAddress", "requestUrl", "deviceName ", "ruleId",
@@ -255,7 +255,7 @@ public class DataAdapter {
 
 
 
-    public static Map<String, Object> adapterNV(String value) {
+    private static Map<String, Object> adapterNV(String value) {
         Map<String, Object> TMP = new HashMap<>();
         TMP.put("name", value);
         return TMP;
@@ -276,7 +276,7 @@ public class DataAdapter {
         return TMP;
     }
 
-    public static Map<String, Object> adapterKC(String key, List<Map<String, Object>> children) {
+    private static Map<String, Object> adapterKC(String key, List<Map<String, Object>> children) {
         Map<String, Object> TMP = new HashMap<>();
         TMP.put("name", key);
         TMP.put("children", children);
@@ -305,8 +305,8 @@ public class DataAdapter {
     }
 
 
-    public static void recursiveDig(JSONObject root, String source, Stack<String> stack,
-                                    List<Map<String, String>> first, List<String> second) {
+    private static void recursiveDig(JSONObject root, String source, Stack<String> stack,
+                                     List<Map<String, String>> first, List<String> second) {
         Set<String> keys = root.keySet();
         String key = getNode(keys);
         if (StringUtils.isNotBlank(key)) {
@@ -339,7 +339,7 @@ public class DataAdapter {
         }
     }
 
-    public static String getNode(Set<String> keys) {
+    private static String getNode(Set<String> keys) {
         Iterator<String> it = keys.iterator();
         while (it.hasNext()) {
             String key = it.next();
@@ -387,7 +387,7 @@ public class DataAdapter {
         return targets;
     }
 
-    public static void recursiveDig(JSONObject root, List<Bucket> buckets, Bucket current) {
+    private static void recursiveDig(JSONObject root, List<Bucket> buckets, Bucket current) {
         Set<String> keys = root.keySet();
         String key = getNode(keys);
         if (StringUtils.isNotBlank(key)) {

@@ -9,7 +9,7 @@ import org.parc.restes.RestQueryBuilder;
  * Created by Eliran on 19/8/2015.
  */
 public class SqlElasticSearchRequestBuilder implements SqlElasticRequestBuilder {
-    RestQueryBuilder requestBuilder;
+    private RestQueryBuilder requestBuilder;
 
     public SqlElasticSearchRequestBuilder(RestQueryBuilder requestBuilder) {
         this.requestBuilder = requestBuilder;

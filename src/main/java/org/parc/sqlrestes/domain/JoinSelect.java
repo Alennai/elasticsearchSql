@@ -19,8 +19,6 @@ public class JoinSelect {
     private List<Condition> connectedConditions;
     private int totalLimit;
 
-    private final int DEAFULT_NUM_OF_RESULTS = 200;
-
     private SQLJoinTableSource.JoinType joinType;
 
 
@@ -28,6 +26,7 @@ public class JoinSelect {
         firstTable = new TableOnJoinSelect();
         secondTable = new TableOnJoinSelect();
 
+        int DEAFULT_NUM_OF_RESULTS = 200;
         totalLimit = DEAFULT_NUM_OF_RESULTS;
     }
 

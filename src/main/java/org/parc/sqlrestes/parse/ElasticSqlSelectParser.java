@@ -18,7 +18,7 @@ import com.alibaba.druid.sql.parser.Token;
 /**
  * Created by allwefantasy on 8/19/16.
  */
-public class ElasticSqlSelectParser extends SQLSelectParser {
+class ElasticSqlSelectParser extends SQLSelectParser {
     public ElasticSqlSelectParser(SQLExprParser exprParser) {
         super(exprParser);
     }
@@ -144,7 +144,7 @@ public class ElasticSqlSelectParser extends SQLSelectParser {
         return queryRest(queryBlock);
     }
 
-    protected void parseInto(SQLSelectQueryBlock queryBlock) {
+    private void parseInto(SQLSelectQueryBlock queryBlock) {
         if (lexer.token() == (Token.INTO)) {
             lexer.nextToken();
 
@@ -321,11 +321,11 @@ public class ElasticSqlSelectParser extends SQLSelectParser {
         return super.unionRest(union);
     }
 
-    public MySqlSelectQueryBlock.Limit parseLimit() {
+    private MySqlSelectQueryBlock.Limit parseLimit() {
         return ((ElasticSqlExprParser) this.exprParser).parseLimit();
     }
 
-    public ElasticSqlExprParser getExprParser() {
+    private ElasticSqlExprParser getExprParser() {
         return (ElasticSqlExprParser) exprParser;
     }
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by Eliran on 3/10/2015.
  */
-public class ElasticResultHandler {
+class ElasticResultHandler {
     public static Object getFieldValue(SearchHit hit,String field){
         return deepSearchInMap(hit.getSourceAsMap(),field);
     }

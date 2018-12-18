@@ -2,7 +2,6 @@ package com.alibaba.druid.pool;
 
 import org.elasticsearch.client.RestClient;
 import org.parc.plugin.QueryActionElasticExecutor;
-import org.parc.plugin.executors.CsvExtractorException;
 import org.parc.sqlrestes.SearchDao;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.jdbc.ObjectResult;
@@ -14,10 +13,10 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
 
-public class ElasticSearchDruidPooledPreparedStatement extends DruidPooledPreparedStatement {
+class ElasticSearchDruidPooledPreparedStatement extends DruidPooledPreparedStatement {
 
 
-    RestClient client = null;
+    private RestClient client = null;
 
     public ElasticSearchDruidPooledPreparedStatement(DruidPooledConnection conn, PreparedStatementHolder holder) throws SQLException {
         super(conn, holder);
@@ -58,7 +57,7 @@ public class ElasticSearchDruidPooledPreparedStatement extends DruidPooledPrepar
         }
     }
 
-    private ObjectResult getObjectResult(boolean flat, String query, boolean includeScore, boolean includeType, boolean includeId) throws SqlParseException, SQLFeatureNotSupportedException, Exception, CsvExtractorException {
+    private ObjectResult getObjectResult(boolean flat, String query, boolean includeScore, boolean includeType, boolean includeId) throws SqlParseException, SQLFeatureNotSupportedException, Exception {
         SearchDao searchDao = new org.parc.sqlrestes.SearchDao(client);
 
         //String rewriteSQL = searchDao.explain(getSql()).explain().explain();

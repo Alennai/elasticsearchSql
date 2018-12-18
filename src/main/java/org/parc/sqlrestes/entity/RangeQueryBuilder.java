@@ -97,7 +97,7 @@ public class RangeQueryBuilder {
         return this.fieldName;
     }
 
-    public RangeQueryBuilder from(Object from, boolean includeLower) {
+    private RangeQueryBuilder from(Object from, boolean includeLower) {
 //        this.from = convertToBytesRefIfString(from);
         this.includeLower = includeLower;
         return this;
@@ -119,7 +119,7 @@ public class RangeQueryBuilder {
         return this.from(from, true);
     }
 
-    public RangeQueryBuilder to(Object to, boolean includeUpper) {
+    private RangeQueryBuilder to(Object to, boolean includeUpper) {
 //        this.to = convertToBytesRefIfString(to);
         this.includeUpper = includeUpper;
         return this;
@@ -168,7 +168,7 @@ public class RangeQueryBuilder {
         }
     }
 
-    public String timeZone() {
+    private String timeZone() {
         return this.timeZone == null?null:this.timeZone.getID();
     }
 
@@ -185,7 +185,7 @@ public class RangeQueryBuilder {
         }
     }
 
-    public String format() {
+    private String format() {
         return this.format == null?null:this.format.format();
     }
 

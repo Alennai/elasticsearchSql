@@ -36,9 +36,7 @@ public class SqlParser {
 
         MySqlSelectQueryBlock query = (MySqlSelectQueryBlock) mySqlExpr.getSubQuery().getQuery();
 
-        Select select = parseSelect(query);
-
-        return select;
+        return parseSelect(query);
     }
 
     public Select parseSelect(MySqlSelectQueryBlock query) throws SqlParseException {

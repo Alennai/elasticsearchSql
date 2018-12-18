@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by Eliran on 9/9/2016.
  */
-public class ComperableHitResult {
+class ComperableHitResult {
     private SearchHit hit;
     private String comperator;
     private boolean isAllNull;
@@ -46,9 +46,7 @@ public class ComperableHitResult {
 
         ComperableHitResult that = (ComperableHitResult) o;
 
-        if (!comperator.equals(that.comperator)) return false;
-
-        return true;
+        return comperator.equals(that.comperator);
     }
 
     public boolean isAllNull() {

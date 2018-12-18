@@ -181,11 +181,10 @@ public class AggregationQueryAction extends QueryAction {
         updateRequestWithHighlight(select, request);
         updateRequestWithCollapse(select, request);
         updateRequestWithPostFilter(select, request);
-        SqlElasticSearchRequestBuilder sqlElasticRequestBuilder = new SqlElasticSearchRequestBuilder(request);
-        return sqlElasticRequestBuilder;
+        return new SqlElasticSearchRequestBuilder(request);
     }
     
-    private Aggregation getGroupAgg(Field field, Select select2) throws SqlParseException {
+    private Aggregation getGroupAgg(Field field, Select select2) {
         boolean refrence = false;
         Aggregation lastAgg = null;
         for (Field temp : select.getFields()) {
@@ -282,14 +281,12 @@ public class AggregationQueryAction extends QueryAction {
         return prefix + "@CHILDREN";
     }
 
-    private boolean insertFilterIfExistsAfter(Aggregation agg, List<Field> groupBy, Aggregation builder, int nextPosition) throws SqlParseException {
+    private boolean insertFilterIfExistsAfter(Aggregation agg, List<Field> groupBy, Aggregation builder, int nextPosition) {
         if (groupBy.size() <= nextPosition) return false;
         Field filterFieldCandidate = groupBy.get(nextPosition);
         if (!(filterFieldCandidate instanceof MethodField)) return false;
         MethodField methodField = (MethodField) filterFieldCandidate;
-        if (!methodField.getName().toLowerCase().equals("filter")) return false;
-//        builder.subAggregation(aggMaker.makeGroupAgg(filterFieldCandidate).subAggregation(agg));
-        return true;
+        return methodField.getName().toLowerCase().equals("filter");//        builder.subAggregation(aggMaker.makeGroupAgg(filterFieldCandidate).subAggregation(agg));
     }
 
     private Aggregation updateAggIfNested(Aggregation lastAgg, Field field) {

@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CDateUtil {
+class CDateUtil {
 	private static ThreadLocal<DateFormat> threadLocal = new ThreadLocal<DateFormat>() {
 		@Override
 		protected DateFormat initialValue() {

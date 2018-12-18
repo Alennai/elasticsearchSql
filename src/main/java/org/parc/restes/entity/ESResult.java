@@ -20,7 +20,7 @@ public class ESResult {
 		return aggregation;
 	}
 
-	public void setAggregation(JSONObject aggregation) {
+	void setAggregation(JSONObject aggregation) {
 		this.aggregation = aggregation;
 	}
 
@@ -35,7 +35,7 @@ public class ESResult {
 	 * @param total
 	 *            the total to set
 	 */
-	public void setTotal(int total) {
+    void setTotal(int total) {
 		this.total = total;
 	}
 
@@ -55,10 +55,10 @@ public class ESResult {
 
 	 *            the documents to set
 	 */
-	public void setDocuments(List<JSONObject> documents) {
+    void setDocuments(List<JSONObject> documents) {
 		this.documents = documents;
 	}
 
-	public void setScrollid(String scrollid) {this.scrollid=scrollid;
+	void setScrollid(String scrollid) {this.scrollid=scrollid;
 	}
 }

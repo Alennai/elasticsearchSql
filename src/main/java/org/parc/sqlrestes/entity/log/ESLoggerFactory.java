@@ -7,7 +7,7 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 /**
  * Created by xusiao on 2018/5/4.
  */
-public class ESLoggerFactory  {
+class ESLoggerFactory  {
     private ESLoggerFactory() {
     }
 
@@ -19,7 +19,7 @@ public class ESLoggerFactory  {
         return getLogger(prefix, LogManager.getLogger(clazz.getName()));
     }
 
-    public static Logger getLogger(String prefix, Logger logger) {
+    private static Logger getLogger(String prefix, Logger logger) {
         return new PrefixLogger((ExtendedLogger)logger, logger.getName(), prefix);
     }
 

@@ -10,7 +10,7 @@ import java.util.function.LongSupplier;
 /**
  * Created by xusiao on 2018/5/4.
  */
-public class DateMathParser{
+class DateMathParser{
     private final FormatDateTimeFormatter dateTimeFormatter;
 
     public DateMathParser(FormatDateTimeFormatter dateTimeFormatter) {
@@ -22,7 +22,7 @@ public class DateMathParser{
         return this.parse(text, now, false, (DateTimeZone)null);
     }
 
-    public long parse(String text, LongSupplier now, boolean roundUp, DateTimeZone timeZone) {
+    private long parse(String text, LongSupplier now, boolean roundUp, DateTimeZone timeZone) {
         long time;
         String mathString;
         if(text.startsWith("now")) {
@@ -87,7 +87,6 @@ public class DateMathParser{
             } else {
                 int unit;
                 for(unit = i; i < mathString.length() && Character.isDigit(mathString.charAt(i)); ++i) {
-                    ;
                 }
 
                 if(i >= mathString.length()) {

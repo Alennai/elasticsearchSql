@@ -19,7 +19,7 @@ import java.util.List;
  * Created by Eliran on 18/8/2015.
  */
 public class ElasticSqlExprParser extends SQLExprParser {
-    public ElasticSqlExprParser(Lexer lexer) {
+    private ElasticSqlExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
     }
@@ -58,9 +58,8 @@ public class ElasticSqlExprParser extends SQLExprParser {
             }
 
             if (isAggreateFunction(methodName)) {
-                SQLAggregateExpr aggregateExpr = parseAggregateExpr(methodName);
 
-                return aggregateExpr;
+                return parseAggregateExpr(methodName);
             }
 
             if (lexer.token() != Token.RPAREN) {
@@ -156,7 +155,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return expr;
     }
 
-    public static String[] AGGREGATE_FUNCTIONS = {"AVG", "COUNT", "GROUP_CONCAT", "MAX", "MIN", "STDDEV", "SUM"};
+    private static String[] AGGREGATE_FUNCTIONS = {"AVG", "COUNT", "GROUP_CONCAT", "MAX", "MIN", "STDDEV", "SUM"};
 
 
     public SQLExpr relationalRest(SQLExpr expr) {
@@ -198,7 +197,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return super.notRationalRest(expr);
     }
 
-    public SQLExpr primary2() {
+    private SQLExpr primary2() {
         final Token tok = lexer.token();
 
         if (identifierEquals("outfile")) {
@@ -332,10 +331,8 @@ public class ElasticSqlExprParser extends SQLExprParser {
                 String collate = lexer.stringVal();
                 lexer.nextToken();
 
-                SQLBinaryOpExpr binaryExpr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.COLLATE,
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.COLLATE,
                         new SQLIdentifierExpr(collate), JdbcConstants.MYSQL);
-
-                expr = binaryExpr;
 
                 return primaryRest(expr);
             } else if (expr instanceof SQLVariantRefExpr) {
@@ -574,7 +571,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return super.primaryRest(expr);
     }
 
-    protected SQLExpr bracketRest(SQLExpr expr) {
+    private SQLExpr bracketRest(SQLExpr expr) {
         Number index;
 
         if (lexer.token() == Token.LITERAL_INT) {

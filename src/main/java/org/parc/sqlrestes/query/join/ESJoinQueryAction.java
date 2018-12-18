@@ -20,9 +20,9 @@ import java.util.List;
  */
 public abstract class ESJoinQueryAction extends QueryAction {
 
-    protected JoinSelect joinSelect;
+    JoinSelect joinSelect;
 
-    public ESJoinQueryAction(RestClient client, JoinSelect joinSelect) {
+    ESJoinQueryAction(RestClient client, JoinSelect joinSelect) {
         super(client, null);
         this.joinSelect = joinSelect;
     }
@@ -54,7 +54,7 @@ public abstract class ESJoinQueryAction extends QueryAction {
 
     }
 
-    protected void updateRequestWithHints(JoinRequestBuilder requestBuilder){
+    void updateRequestWithHints(JoinRequestBuilder requestBuilder){
         for(Hint hint : joinSelect.getHints()) {
             if (hint.getType() == HintType.JOIN_LIMIT) {
                 Object[] params = hint.getParams();

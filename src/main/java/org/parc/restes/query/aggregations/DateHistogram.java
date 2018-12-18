@@ -92,7 +92,7 @@ public class DateHistogram extends Aggregation {
 
         private final String expression;
 
-        public DateHistogramInterval(String expression) {
+        DateHistogramInterval(String expression) {
             this.expression = expression;
         }
 

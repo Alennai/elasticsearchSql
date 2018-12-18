@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by allwefantasy on 8/31/16.
  */
-public class ElasticSearchResultSetMetaDataBase extends ResultSetMetaDataBase {
+class ElasticSearchResultSetMetaDataBase extends ResultSetMetaDataBase {
 	
     private final List<ColumnMetaData> columns = new ArrayList<ColumnMetaData>();
 
@@ -41,7 +41,7 @@ public class ElasticSearchResultSetMetaDataBase extends ResultSetMetaDataBase {
     }
     
     @Override
-    public int getColumnCount() throws SQLException {
+    public int getColumnCount() {
         return columns.size();
     }
 

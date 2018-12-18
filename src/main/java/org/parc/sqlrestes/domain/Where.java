@@ -18,13 +18,13 @@ public class Where implements Cloneable{
 
 	private LinkedList<Where> wheres = new LinkedList<>();
 
-	protected CONN conn;
+	CONN conn;
 
 	public Where(String connStr) {
 		this.conn = CONN.valueOf(connStr.toUpperCase());
 	}
 
-	public Where(CONN conn) {
+	Where(CONN conn) {
 		this.conn = conn;
 	}
 
@@ -56,7 +56,7 @@ public class Where implements Cloneable{
 	}
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         Where clonedWhere = new Where(this.getConn());
         for (Where innerWhere : this.getWheres()){
             clonedWhere.addWhere((Where)innerWhere.clone());

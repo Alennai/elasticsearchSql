@@ -6,7 +6,6 @@ import org.parc.sqlrestes.domain.JoinSelect;
 import org.parc.sqlrestes.domain.Where;
 import org.parc.sqlrestes.domain.hints.Hint;
 import org.parc.sqlrestes.domain.hints.HintType;
-import org.parc.sqlrestes.exception.SqlParseException;
 
 /**
  * Created by Eliran on 15/9/2015.
@@ -18,7 +17,7 @@ public class ESNestedLoopsQueryAction extends ESJoinQueryAction {
     }
 
     @Override
-    protected void fillSpecificRequestBuilder(JoinRequestBuilder requestBuilder) throws SqlParseException {
+    protected void fillSpecificRequestBuilder(JoinRequestBuilder requestBuilder) {
         NestedLoopsElasticRequestBuilder nestedBuilder = (NestedLoopsElasticRequestBuilder) requestBuilder;
         Where where = joinSelect.getConnectedWhere();
         nestedBuilder.setConnectedWhere(where);

@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ExportUtil {
+class ExportUtil {
     private static final Logger logger = LoggerFactory.getLogger(ExportUtil.class);
     /**
      * CSV文件列分隔符

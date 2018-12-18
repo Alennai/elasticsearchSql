@@ -10,11 +10,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Field {
 	@XmlAttribute(name = "key", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String key;
+    private String key;
     @XmlAttribute(name = "name", required = true)
-    protected String name;
+    private String name;
     @XmlAttribute(name = "agg", required = true)
-    protected String agg;
+    private String agg;
     @XmlAttribute(name = "order", required = false)
     private Integer order;
     @XmlAttribute(name = "groupName", required = false)

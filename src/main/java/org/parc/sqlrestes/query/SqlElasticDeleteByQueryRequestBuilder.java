@@ -10,7 +10,7 @@ import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
  * Created by Eliran on 19/8/2015.
  */
 public class SqlElasticDeleteByQueryRequestBuilder implements SqlElasticRequestBuilder {
-    DeleteByQueryRequestBuilder deleteByQueryRequestBuilder;
+    private DeleteByQueryRequestBuilder deleteByQueryRequestBuilder;
 
     public SqlElasticDeleteByQueryRequestBuilder(DeleteByQueryRequestBuilder deleteByQueryRequestBuilder) {
         this.deleteByQueryRequestBuilder = deleteByQueryRequestBuilder;

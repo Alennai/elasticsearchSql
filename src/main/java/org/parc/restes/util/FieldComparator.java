@@ -12,7 +12,7 @@ import java.text.Collator;
 import java.util.Comparator;
 
 public class FieldComparator implements Comparator<IField> {
-	Comparator<Object> c = Collator.getInstance(java.util.Locale.CHINA);
+	private Comparator<Object> c = Collator.getInstance(java.util.Locale.CHINA);
 	/* (non-Javadoc)
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */

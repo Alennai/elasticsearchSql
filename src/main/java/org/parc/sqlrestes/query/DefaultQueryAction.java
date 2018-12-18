@@ -29,7 +29,7 @@ public class DefaultQueryAction extends QueryAction {
 		this.select = select;
 	}
 
-	public void intialize(RestQueryBuilder request) throws SqlParseException {
+	public void intialize(RestQueryBuilder request) {
 		this.request = request;
 	}
 
@@ -52,9 +52,8 @@ public class DefaultQueryAction extends QueryAction {
 		updateRequestWithHighlight(select, request);
 		updateRequestWithCollapse(select, request);
 		updateRequestWithPostFilter(select, request);
-		SqlElasticSearchRequestBuilder sqlElasticRequestBuilder = new SqlElasticSearchRequestBuilder(request);
 
-		return sqlElasticRequestBuilder;
+        return new SqlElasticSearchRequestBuilder(request);
 	}
 
 	private boolean useScrollIfNeeded(boolean existsOrderBy) {

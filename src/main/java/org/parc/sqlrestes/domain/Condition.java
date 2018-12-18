@@ -213,7 +213,7 @@ public class Condition extends Where {
                      Object value,
                      SQLExpr valueExpr,
                      Object relationshipType
-    ) throws SqlParseException {
+    ) {
         super(conn);
 
         this.opear = null;
@@ -297,7 +297,7 @@ public class Condition extends Where {
         this.opear = opear;
     }
 
-    public Object getRelationshipType() {
+    private Object getRelationshipType() {
         return relationshipType;
     }
 
@@ -329,7 +329,7 @@ public class Condition extends Where {
         this.isChildren = isChildren;
     }
 
-    public String getChildType() {
+    private String getChildType() {
         return childType;
     }
 
@@ -364,11 +364,10 @@ public class Condition extends Where {
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         try {
-            Condition clonedCondition = new Condition(this.getConn(), this.getName(),this.getNameExpr(), this.getOpear(), this.getValue(),this.getValueExpr(), this.getRelationshipType());
-            return clonedCondition;
-        } catch (SqlParseException e) {
+            return new Condition(this.getConn(), this.getName(), this.getNameExpr(), this.getOpear(), this.getValue(), this.getValueExpr(), this.getRelationshipType());
+        } catch (Exception e) {
 
         }
         return null;
