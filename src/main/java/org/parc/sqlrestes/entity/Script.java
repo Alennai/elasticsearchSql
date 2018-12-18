@@ -29,11 +29,11 @@ public class Script {
 
     static {
         DEFAULT_SCRIPT_TYPE = ScriptType.INLINE;
-        SCRIPT_PARSE_FIELD = new ParseField("script", new String[0]);
-        SOURCE_PARSE_FIELD = new ParseField("source", new String[0]);
-        LANG_PARSE_FIELD = new ParseField("lang", new String[0]);
-        OPTIONS_PARSE_FIELD = new ParseField("options", new String[0]);
-        PARAMS_PARSE_FIELD = new ParseField("params", new String[0]);
+        SCRIPT_PARSE_FIELD = new ParseField("script");
+        SOURCE_PARSE_FIELD = new ParseField("source");
+        LANG_PARSE_FIELD = new ParseField("lang");
+        OPTIONS_PARSE_FIELD = new ParseField("options");
+        PARAMS_PARSE_FIELD = new ParseField("params");
 
 //        PARSER = new ObjectParser("script", () -> {
 //            return new Script.Builder();

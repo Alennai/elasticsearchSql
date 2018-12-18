@@ -253,7 +253,7 @@ abstract class Maker {
             x = QueryBuilders.idsQuery(type).addIds(ids);
         break;
         case NESTED_COMPLEX:
-            if(value == null || ! (value instanceof Where) )
+            if(!(value instanceof Where))
                 throw new SqlParseException("unsupported nested condition");
 
             Where whereNested = (Where) value;
@@ -262,7 +262,7 @@ abstract class Maker {
             x = QueryBuilders.nestedQuery(name, nestedFilter, ScoreMode.None);
         break;
         case CHILDREN_COMPLEX:
-            if(value == null || ! (value instanceof Where) )
+            if(!(value instanceof Where))
                 throw new SqlParseException("unsupported nested condition");
 
             Where whereChildren = (Where) value;

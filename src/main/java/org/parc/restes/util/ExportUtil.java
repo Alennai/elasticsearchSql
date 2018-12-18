@@ -44,7 +44,7 @@ class ExportUtil {
             String[] mapKeyArr = null;
 
             if (columns == null || columns.isEmpty()) {
-                columns = Arrays.asList(new String[]{"@timestamp", "rawEvent"});
+                columns = Arrays.asList("@timestamp", "rawEvent");
             }
             int size = columns.size();
             colNamesArr = new String[size];

@@ -16,9 +16,9 @@ public class BoolQueryBuilder {
     private static final String FILTER = "filter";
     private static final String SHOULD = "should";
     private static final String MUST = "must";
-    private static final ParseField DISABLE_COORD_FIELD = (new ParseField("disable_coord", new String[0])).withAllDeprecated("disable_coord has been removed");
-    private static final ParseField MINIMUM_SHOULD_MATCH = new ParseField("minimum_should_match", new String[0]);
-    private static final ParseField ADJUST_PURE_NEGATIVE = new ParseField("adjust_pure_negative", new String[0]);
+    private static final ParseField DISABLE_COORD_FIELD = (new ParseField("disable_coord")).withAllDeprecated("disable_coord has been removed");
+    private static final ParseField MINIMUM_SHOULD_MATCH = new ParseField("minimum_should_match");
+    private static final ParseField ADJUST_PURE_NEGATIVE = new ParseField("adjust_pure_negative");
     private final List<QueryBuilder> mustClauses = new ArrayList();
     private final List<QueryBuilder> mustNotClauses = new ArrayList();
     private final List<QueryBuilder> filterClauses = new ArrayList();
@@ -379,7 +379,7 @@ public class BoolQueryBuilder {
 //    }
 
     protected int doHashCode() {
-        return Objects.hash(new Object[]{Boolean.valueOf(this.adjustPureNegative), this.minimumShouldMatch, this.mustClauses, this.shouldClauses, this.mustNotClauses, this.filterClauses});
+        return Objects.hash(Boolean.valueOf(this.adjustPureNegative), this.minimumShouldMatch, this.mustClauses, this.shouldClauses, this.mustNotClauses, this.filterClauses);
     }
 
     protected boolean doEquals(BoolQueryBuilder other) {

@@ -22,9 +22,9 @@ import java.util.*;
 public class DataAdapter {
     private static DecimalFormat df = new DecimalFormat("#.00");
     private static final Comparator<IField> comparator = new FieldComparator();
-    private static final List<String> INCLUDE = Arrays.asList(new String[]{"responseCode", "destGeoRegion",
+    private static final List<String> INCLUDE = Arrays.asList("responseCode", "destGeoRegion",
             "destHostName", "severity", "warningType", "destAddress", "requestUrl", "deviceName ", "ruleId",
-            "srcAddress", "srcGeoRegion", "warning", "predictCount", "visitCount"});
+            "srcAddress", "srcGeoRegion", "warning", "predictCount", "visitCount");
     private static final Logger logger = LoggerFactory.getLogger(DataAdapter.class);
 
     public static List<IField> json2Fields(String json, String _type) {

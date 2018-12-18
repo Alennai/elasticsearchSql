@@ -70,7 +70,7 @@ public class ParseField {
                         msg = "Deprecated field [" + fieldName + "] used, replaced by [" + this.allReplacedWith + "]";
                     }
 
-                    DEPRECATION_LOGGER.deprecated(msg, new Object[0]);
+                    DEPRECATION_LOGGER.deprecated(msg);
                     return true;
                 }
             }
@@ -92,11 +92,11 @@ public class ParseField {
     }
 
     private static class CommonFields {
-        public static final ParseField FIELD = new ParseField("field", new String[0]);
-        public static final ParseField FIELDS = new ParseField("fields", new String[0]);
-        public static final ParseField FORMAT = new ParseField("format", new String[0]);
-        public static final ParseField MISSING = new ParseField("missing", new String[0]);
-        public static final ParseField TIME_ZONE = new ParseField("time_zone", new String[0]);
+        public static final ParseField FIELD = new ParseField("field");
+        public static final ParseField FIELDS = new ParseField("fields");
+        public static final ParseField FORMAT = new ParseField("format");
+        public static final ParseField MISSING = new ParseField("missing");
+        public static final ParseField TIME_ZONE = new ParseField("time_zone");
 
         public CommonFields() {
         }

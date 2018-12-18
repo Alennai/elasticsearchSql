@@ -69,7 +69,6 @@ public class MinusExecutor implements ElasticHitsExecutor {
                 comperableHitResults = runWithScrollings();
             }
             fillMinusHitsFromResults(comperableHitResults);
-            return;
         }
 
 

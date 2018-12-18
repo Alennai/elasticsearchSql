@@ -12,17 +12,17 @@ public class RangeQueryBuilder {
     public static final String NAME = "range";
     public static final boolean DEFAULT_INCLUDE_UPPER = true;
     public static final boolean DEFAULT_INCLUDE_LOWER = true;
-    public static final ParseField LTE_FIELD = new ParseField("lte", new String[0]);
-    public static final ParseField GTE_FIELD = new ParseField("gte", new String[0]);
-    public static final ParseField FROM_FIELD = new ParseField("from", new String[0]);
-    public static final ParseField TO_FIELD = new ParseField("to", new String[0]);
-    private static final ParseField INCLUDE_LOWER_FIELD = new ParseField("include_lower", new String[0]);
-    private static final ParseField INCLUDE_UPPER_FIELD = new ParseField("include_upper", new String[0]);
-    public static final ParseField GT_FIELD = new ParseField("gt", new String[0]);
-    public static final ParseField LT_FIELD = new ParseField("lt", new String[0]);
-    private static final ParseField TIME_ZONE_FIELD = new ParseField("time_zone", new String[0]);
-    private static final ParseField FORMAT_FIELD = new ParseField("format", new String[0]);
-    private static final ParseField RELATION_FIELD = new ParseField("relation", new String[0]);
+    public static final ParseField LTE_FIELD = new ParseField("lte");
+    public static final ParseField GTE_FIELD = new ParseField("gte");
+    public static final ParseField FROM_FIELD = new ParseField("from");
+    public static final ParseField TO_FIELD = new ParseField("to");
+    private static final ParseField INCLUDE_LOWER_FIELD = new ParseField("include_lower");
+    private static final ParseField INCLUDE_UPPER_FIELD = new ParseField("include_upper");
+    public static final ParseField GT_FIELD = new ParseField("gt");
+    public static final ParseField LT_FIELD = new ParseField("lt");
+    private static final ParseField TIME_ZONE_FIELD = new ParseField("time_zone");
+    private static final ParseField FORMAT_FIELD = new ParseField("format");
+    private static final ParseField RELATION_FIELD = new ParseField("relation");
     private final String fieldName;
     private Object from;
     private Object to;
@@ -399,7 +399,7 @@ public class RangeQueryBuilder {
     protected int doHashCode() {
         String timeZoneId = this.timeZone == null?null:this.timeZone.getID();
         String formatString = this.format == null?null:this.format.format();
-        return Objects.hash(new Object[]{this.fieldName, this.from, this.to, timeZoneId, Boolean.valueOf(this.includeLower), Boolean.valueOf(this.includeUpper), formatString});
+        return Objects.hash(this.fieldName, this.from, this.to, timeZoneId, Boolean.valueOf(this.includeLower), Boolean.valueOf(this.includeUpper), formatString);
     }
 
     protected boolean doEquals(RangeQueryBuilder other) {

@@ -222,7 +222,6 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
                 throw new RuntimeException("On NestedLoops currently only supported Ordered conditions (t2.field2 OPEAR t1.field1) , badCondition was:" + c);
             c.setName(c.getName().replaceFirst(t2Alias+".",""));
             c.setValue(c.getValue().toString().replaceFirst(t1Alias+ ".", ""));
-            return;
         }
         else {
             for (Where innerWhere : where.getWheres())

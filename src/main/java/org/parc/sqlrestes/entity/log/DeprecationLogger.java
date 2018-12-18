@@ -121,7 +121,7 @@ public class DeprecationLogger {
     }
 
     private static String formatWarning(String s) {
-        return String.format(Locale.ROOT, WARNING_FORMAT, new Object[]{escapeAndEncode(s), RFC_7231_DATE_TIME.format(ZonedDateTime.now(GMT))});
+        return String.format(Locale.ROOT, WARNING_FORMAT, escapeAndEncode(s), RFC_7231_DATE_TIME.format(ZonedDateTime.now(GMT)));
     }
 
     private static String escapeAndEncode(String s) {
@@ -170,7 +170,7 @@ public class DeprecationLogger {
     }
 
     static {
-        WARNING_FORMAT = String.format(Locale.ROOT, "299 Elasticsearch-%s%s-%s ", new Object[]{}) + "\"%s\" \"%s\"";
+        WARNING_FORMAT = String.format(Locale.ROOT, "299 Elasticsearch-%s%s-%s ") + "\"%s\" \"%s\"";
         HashMap i = new HashMap();
         i.put(Long.valueOf(1L), "Mon");
         i.put(Long.valueOf(2L), "Tue");
