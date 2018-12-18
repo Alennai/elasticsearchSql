@@ -117,7 +117,7 @@ public class DefaultQueryAction extends QueryAction {
 				}
 			}
 
-			request.setFetchSource(includeFields.toArray(new String[includeFields.size()]), excludeFields.toArray(new String[excludeFields.size()]));
+			request.setFetchSource(includeFields.toArray(new String[0]), excludeFields.toArray(new String[0]));
 		}
 	}
 

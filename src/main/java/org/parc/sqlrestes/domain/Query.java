@@ -55,6 +55,6 @@ public abstract class Query {
 			return null;
 		}
 
-		return list.toArray(new String[list.size()]);
+		return list.toArray(new String[0]);
 	}
 }

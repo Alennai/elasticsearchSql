@@ -116,9 +116,7 @@ public class HintFactory {
             paramsWithDefaults[0] = defaultMaxFetchFromTable;
             paramsWithDefaults[1] = defaultMaxFetchFromTable;
             paramsWithDefaults[2] = defaultFetchOnScroll;
-            for(int i=0;i<params.length;i++){
-                paramsWithDefaults[i]=params[i];
-            }
+            System.arraycopy(params, 0, paramsWithDefaults, 0, params.length);
 
             return new Hint(HintType.MINUS_FETCH_AND_RESULT_LIMITS, paramsWithDefaults);
         }

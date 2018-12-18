@@ -67,12 +67,7 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
                     t2Alias);
         }
         if(firstTableRequest.getOriginalSelect().isOrderdSelect()){
-            Collections.sort(combinedResult,new Comparator<SearchHit>() {
-                @Override
-                public int compare(SearchHit o1, SearchHit o2) {
-                    return o1.docId() - o2.docId();
-                }
-            });
+            Collections.sort(combinedResult, (o1, o2) -> o1.docId() - o2.docId());
 
         }
         return combinedResult;
@@ -288,7 +283,7 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
     }
 
     private String getComparisonKey(List<Map.Entry<Field, Field>> t1ToT2FieldsComparison, SearchHit hit, boolean firstTable, Map<String, List<Object>> optimizationTermsFilterStructure) {
-        String key = "";
+        StringBuilder key = new StringBuilder();
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         for (Map.Entry<Field, Field> t1ToT2 : t1ToT2FieldsComparison) {
             //todo: change to our function find if key contains '.'
@@ -301,11 +296,11 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
                 updateOptimizationData(optimizationTermsFilterStructure, data, t1ToT2.getValue().getName());
             }
             if (data == null)
-                key += "|null|";
+                key.append("|null|");
             else
-                key += "|" + data.toString() + "|";
+                key.append("|").append(data.toString()).append("|");
         }
-        return key;
+        return key.toString();
     }
 
     private void updateOptimizationData(Map<String, List<Object>> optimizationTermsFilterStructure, Object data, String queryOptimizationKey) {

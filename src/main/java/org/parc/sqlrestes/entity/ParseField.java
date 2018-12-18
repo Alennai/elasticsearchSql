@@ -25,7 +25,7 @@ public class ParseField {
         if(deprecatedNames != null && deprecatedNames.length != 0) {
             allNames = new HashSet();
             Collections.addAll(allNames, deprecatedNames);
-            this.deprecatedNames = (String[])allNames.toArray(new String[allNames.size()]);
+            this.deprecatedNames = (String[])allNames.toArray(new String[0]);
         } else {
             this.deprecatedNames = Strings.EMPTY_ARRAY;
         }
@@ -33,7 +33,7 @@ public class ParseField {
         allNames = new HashSet();
         allNames.add(name);
         Collections.addAll(allNames, this.deprecatedNames);
-        this.allNames = (String[])allNames.toArray(new String[allNames.size()]);
+        this.allNames = (String[])allNames.toArray(new String[0]);
     }
 
     public String getPreferredName() {

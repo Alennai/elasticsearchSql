@@ -311,7 +311,7 @@ public class AggregationQueryAction extends QueryAction {
                 }
             }
 
-            request.setFetchSource(includeFields.toArray(new String[includeFields.size()]), null);
+            request.setFetchSource(includeFields.toArray(new String[0]), null);
         }
     }
 

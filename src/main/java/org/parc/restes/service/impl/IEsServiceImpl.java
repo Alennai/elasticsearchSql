@@ -86,18 +86,13 @@ public class IEsServiceImpl implements IEsService {
             ICategory ick = entry.getKey();
             _fields.add(ImmutableMap.of("name", ick.getName(), "order", ick.getOrder(), "fields", entry.getValue()));
         }
-        Collections.sort(_fields, new Comparator<Map<String, Object>>() {
-
-            @Override
-            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-                Object oo1 = o1.get("order");
-                Object oo2 = o2.get("order");
-                if (oo1 != null && oo2 != null) {
-                    return NumberUtils.toInt(oo1.toString()) - NumberUtils.toInt(oo2.toString());
-                }
-                return 0;
+        Collections.sort(_fields, (o1, o2) -> {
+            Object oo1 = o1.get("order");
+            Object oo2 = o2.get("order");
+            if (oo1 != null && oo2 != null) {
+                return NumberUtils.toInt(oo1.toString()) - NumberUtils.toInt(oo2.toString());
             }
-
+            return 0;
         });
         return _fields;
 
@@ -154,16 +149,20 @@ public class IEsServiceImpl implements IEsService {
         if (StringUtils.isBlank(type)) {
             return ALL_INDEX_MAPPING_POINT;
         } else {
-            if ("search".equals(type)) {
-                return ALL_INDEX_MAPPING_POINT;
-            } else if ("alert".equals(type)) {
-                return ALERT_INDEX_MAPPING_POINT;
-            } else if ("scenes".equals(type)) {
+            switch (type) {
+                case "search":
+                    return ALL_INDEX_MAPPING_POINT;
+                case "alert":
+                    return ALERT_INDEX_MAPPING_POINT;
+                case "scenes":
 //                return SCENES_INDEX_MAPPING_POINT;
-            } else if ("incident".equals(type)) {
+                    break;
+                case "incident":
 //                return INCIDENT_INDEX_MAPPING_POINT;
-            } else {
+                    break;
+                default:
 //                return ALL_INDEX_MAPPING_POINT;
+                    break;
             }
             return null;
         }
@@ -191,14 +190,14 @@ public class IEsServiceImpl implements IEsService {
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
         Response resp = client.performRequest("POST", path, Collections.<String, String>emptyMap(), entity);
         JSONArray documents = DataAdapter.jsonUpdate(EntityUtils.toString(resp.getEntity()), traceParam);
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < documents.size(); i++) {
             JSONObject source = (JSONObject) documents.get(i);
             String _id = source.getString("_id");
             String _type = source.getString("_type");
-            result += update(((JSONObject) source.get("_source")).toJSONString(), _type, traceParam.getName(), _id, index) + "\t ;";
+            result.append(update(((JSONObject) source.get("_source")).toJSONString(), _type, traceParam.getName(), _id, index)).append("\t ;");
         }
-        return result;
+        return result.toString();
     }
 
     @Override
@@ -209,15 +208,15 @@ public class IEsServiceImpl implements IEsService {
         Response resp = client.performRequest("POST", path, Collections.<String, String>emptyMap(), entity);
         JSONObject jsonObject = JSON.parseObject(EntityUtils.toString(resp.getEntity()));
         JSONArray jsonArray = jsonObject.getJSONObject("hits").getJSONArray("hits");
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject source = (JSONObject) jsonArray.get(i);
             String uuid = source.getString("_id");
             String _type = source.getString("_type");
             DataAdapter.updatealarmDoc(source, status);
-            result += update(((JSONObject) source.get("_source")).toJSONString(), _type, null, uuid, index);
+            result.append(update(((JSONObject) source.get("_source")).toJSONString(), _type, null, uuid, index));
         }
-        return result;
+        return result.toString();
     }
 
     @Override

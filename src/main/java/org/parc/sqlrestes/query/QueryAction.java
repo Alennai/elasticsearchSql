@@ -123,7 +123,7 @@ public abstract class QueryAction {
                     field.highlightFilter((Boolean) param.getValue());
                     break;
                 case "matched_fields":
-                    field.matchedFields((String[]) ((ArrayList)param.getValue()).toArray(new String[((ArrayList) param.getValue()).size()]));
+                    field.matchedFields((String[]) ((ArrayList)param.getValue()).toArray(new String[0]));
                     break;
                 case "no_match_size":
                     field.noMatchSize((Integer) param.getValue());
@@ -138,10 +138,10 @@ public abstract class QueryAction {
                     field.phraseLimit((Integer) param.getValue());
                     break;
                 case "post_tags":
-                    field.postTags((String[]) ((ArrayList)param.getValue()).toArray(new String[((ArrayList) param.getValue()).size()]));
+                    field.postTags((String[]) ((ArrayList)param.getValue()).toArray(new String[0]));
                     break;
                 case "pre_tags":
-                    field.preTags((String[]) ((ArrayList)param.getValue()).toArray(new String[((ArrayList) param.getValue()).size()]));
+                    field.preTags((String[]) ((ArrayList)param.getValue()).toArray(new String[0]));
                     break;
                 case "require_field_match":
                     field.requireFieldMatch((Boolean) param.getValue());

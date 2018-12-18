@@ -18,70 +18,27 @@ import java.util.regex.Pattern;
 public class ElasticDate {
 	private static final Logger logger = LoggerFactory.getLogger(ElasticDate.class);
 	private static Pattern ldPattern = Pattern.compile("(\\d+)(\\w)");
-	private static ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		}
-	};
+	private static ThreadLocal<DateFormat> df = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
-	private static ThreadLocal<DateFormat> df2 = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			return new SimpleDateFormat("yyyyMMdd");
-		}
-	};
+	private static ThreadLocal<DateFormat> df2 = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMdd"));
 
-	private static ThreadLocal<DateFormat> df3 = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			return new SimpleDateFormat("yyyy-MM-dd");
-		}
-	};
+	private static ThreadLocal<DateFormat> df3 = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
 
-	private static ThreadLocal<DateFormat> df4 = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			return new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		}
-	};
+	private static ThreadLocal<DateFormat> df4 = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm"));
 
-	private static ThreadLocal<DateFormat> df5 = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			return new SimpleDateFormat("HH:mm");
-		}
-	};
+	private static ThreadLocal<DateFormat> df5 = ThreadLocal.withInitial(() -> new SimpleDateFormat("HH:mm"));
 
-	private static ThreadLocal<DateFormat> df6 = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			return new SimpleDateFormat("yyyyMMddHHmmss");
-		}
-	};
+	private static ThreadLocal<DateFormat> df6 = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMddHHmmss"));
 
-	private static ThreadLocal<DateFormat> df8 = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			return new SimpleDateFormat("yyyy-MM-dd HH");
-		}
-	};
+	private static ThreadLocal<DateFormat> df8 = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH"));
 
-	private static ThreadLocal<DateFormat> df9 = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			return new SimpleDateFormat("yyyy-MM");
-		}
-	};
+	private static ThreadLocal<DateFormat> df9 = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM"));
 
-	private static ThreadLocal<DateFormat> df7 = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-			sdf.setTimeZone(TimeZone.getDefault());
-			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		}
-	};
+	private static ThreadLocal<DateFormat> df7 = ThreadLocal.withInitial(() -> {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		sdf.setTimeZone(TimeZone.getDefault());
+		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+	});
 
 	public static String _7_2_1(String date) {
 		try {

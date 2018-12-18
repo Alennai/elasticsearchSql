@@ -1024,10 +1024,12 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
             long waitNanos = waitNanosLocal.get();
 
             StringBuilder buf = new StringBuilder();
+            //
+            //
+            //
+            //
             buf.append("wait millis ")//
-                    .append(waitNanos / (1000 * 1000))//
-                    .append(", active " + activeCount)//
-                    .append(", maxActive " + maxActive)//
+                    .append(waitNanos / (1000 * 1000)).append(", active ").append(activeCount).append(", maxActive ").append(maxActive)//
             ;
 
             List<JdbcSqlStatValue> sqlList = this.getDataSourceStat().getRuningSqlList();
@@ -1300,32 +1302,24 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
 
     public void registerMbean() {
         if (!mbeanRegistered) {
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+                ObjectName objectName = DruidDataSourceStatManager.addDataSource(ElasticSearchDruidDataSource.this,
+                        ElasticSearchDruidDataSource.this.name);
 
-                @Override
-                public Object run() {
-                    ObjectName objectName = DruidDataSourceStatManager.addDataSource(ElasticSearchDruidDataSource.this,
-                            ElasticSearchDruidDataSource.this.name);
+                ElasticSearchDruidDataSource.this.setObjectName(objectName);
+                ElasticSearchDruidDataSource.this.mbeanRegistered = true;
 
-                    ElasticSearchDruidDataSource.this.setObjectName(objectName);
-                    ElasticSearchDruidDataSource.this.mbeanRegistered = true;
-
-                    return null;
-                }
+                return null;
             });
         }
     }
 
     public void unregisterMbean() {
         if (mbeanRegistered) {
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-
-                @Override
-                public Object run() {
-                    DruidDataSourceStatManager.removeDataSource(ElasticSearchDruidDataSource.this);
-                    ElasticSearchDruidDataSource.this.mbeanRegistered = false;
-                    return null;
-                }
+            AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+                DruidDataSourceStatManager.removeDataSource(ElasticSearchDruidDataSource.this);
+                ElasticSearchDruidDataSource.this.mbeanRegistered = false;
+                return null;
             });
         }
     }

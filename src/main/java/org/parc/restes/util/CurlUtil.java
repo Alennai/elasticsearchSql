@@ -54,23 +54,20 @@ public class CurlUtil {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        Collections.sort(indexList, new Comparator<Index>() {
-            @Override
-            public int compare(Index o1, Index o2) {
-                String index1 = o1.getName();
-                String index2 = o2.getName();
-                Matcher m1 = ptn1.matcher(index1);
-                Matcher m2 = ptn1.matcher(index2);
-                if (m1.find()) {
-                    index1 = m1.group();
-                }
-                if (m2.find()) {
-                    index2 = m2.group();
-                }
-                int date1 = Integer.parseInt(index1.substring(index1.lastIndexOf('-') + 1));
-                int date2 = Integer.parseInt(index2.substring(index1.lastIndexOf('-') + 1));
-                return date2 - date1;
+        Collections.sort(indexList, (o1, o2) -> {
+            String index1 = o1.getName();
+            String index2 = o2.getName();
+            Matcher m1 = ptn1.matcher(index1);
+            Matcher m2 = ptn1.matcher(index2);
+            if (m1.find()) {
+                index1 = m1.group();
             }
+            if (m2.find()) {
+                index2 = m2.group();
+            }
+            int date1 = Integer.parseInt(index1.substring(index1.lastIndexOf('-') + 1));
+            int date2 = Integer.parseInt(index2.substring(index1.lastIndexOf('-') + 1));
+            return date2 - date1;
         });
         return indexList;
     }

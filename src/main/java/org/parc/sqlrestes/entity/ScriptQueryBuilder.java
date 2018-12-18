@@ -16,11 +16,10 @@ public class ScriptQueryBuilder extends Query {
         }
     }
     public String toString(String field) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("ScriptQuery(");
-        buffer.append(this.script);
-        buffer.append(")");
-        return buffer.toString();
+        String buffer = "ScriptQuery(" +
+                this.script +
+                ")";
+        return buffer;
     }
 
     @Override
