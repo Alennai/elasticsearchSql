@@ -46,7 +46,7 @@ class ExportUtil {
             mapKeyArr = new String[size];
             for (int i = 0; i < size; i++) {
 //                String t_tmp = DictionaryCache.field(columns.get(i));
-                String t_tmp="";
+                String t_tmp = "";
                 Field field = IEsService.categories(type, columns.get(i));
                 if (field != null) {
                     t_tmp = field.getName();

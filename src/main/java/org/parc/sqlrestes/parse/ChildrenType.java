@@ -34,20 +34,20 @@ public class ChildrenType {
             throw new SqlParseException("on children object only allowed 2 parameters (type, field)/(type, conditions...) ");
 
         this.childType = Util.extendedToString(parameters.get(0));
-        
+
         SQLExpr secondParameter = parameters.get(1);
-        if(secondParameter instanceof SQLTextLiteralExpr || secondParameter instanceof SQLIdentifierExpr || secondParameter instanceof SQLPropertyExpr) {
+        if (secondParameter instanceof SQLTextLiteralExpr || secondParameter instanceof SQLIdentifierExpr || secondParameter instanceof SQLPropertyExpr) {
             this.field = Util.extendedToString(secondParameter);
             this.simple = true;
         } else {
             Where where = Where.newInstance();
-            new WhereParser(new SqlParser()).parseWhere(secondParameter,where);
-            if(where.getWheres().size() == 0)
+            new WhereParser(new SqlParser()).parseWhere(secondParameter, where);
+            if (where.getWheres().size() == 0)
                 throw new SqlParseException("unable to parse filter where.");
             this.where = where;
             simple = false;
         }
-        
+
         return true;
     }
 

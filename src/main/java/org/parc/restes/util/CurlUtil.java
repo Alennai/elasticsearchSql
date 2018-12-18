@@ -19,21 +19,21 @@ public class CurlUtil {
 
     public static List<Index> indexList(String ip, String restPort) {
         List<Index> indexList = new ArrayList<>();
-        String []cmds = {"curl", ip+":"+restPort+"/_cat/indices?v"};
-        ProcessBuilder pb=new ProcessBuilder(cmds);
+        String[] cmds = {"curl", ip + ":" + restPort + "/_cat/indices?v"};
+        ProcessBuilder pb = new ProcessBuilder(cmds);
         pb.redirectErrorStream(true);
         Process p;
         try {
             p = pb.start();
-            BufferedReader br=null;
-            String line=null;
-            boolean iscontent=false;
+            BufferedReader br = null;
+            String line = null;
+            boolean iscontent = false;
 
-            br=new BufferedReader(new InputStreamReader(p.getInputStream()));
-            while((line=br.readLine())!=null){
-                if (iscontent){
+            br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while ((line = br.readLine()) != null) {
+                if (iscontent) {
                     String[] content = line.split("\\s+");
-                    String index =content[2];
+                    String index = content[2];
                     Matcher m = ptn1.matcher(index);
                     if (m.find()) {
                         Index tmpIndex = new Index();
@@ -44,7 +44,7 @@ public class CurlUtil {
                     }
                 }
                 if (line.contains("health"))
-                    iscontent=true;
+                    iscontent = true;
 
             }
             br.close();

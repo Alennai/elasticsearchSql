@@ -10,7 +10,7 @@ import java.util.function.LongSupplier;
 /**
  * Created by xusiao on 2018/5/4.
  */
-class DateMathParser{
+class DateMathParser {
     private final FormatDateTimeFormatter dateTimeFormatter;
 
     public DateMathParser(FormatDateTimeFormatter dateTimeFormatter) {
@@ -19,13 +19,13 @@ class DateMathParser{
     }
 
     public long parse(String text, LongSupplier now) {
-        return this.parse(text, now, false, (DateTimeZone)null);
+        return this.parse(text, now, false, null);
     }
 
     private long parse(String text, LongSupplier now, boolean roundUp, DateTimeZone timeZone) {
         long time;
         String mathString;
-        if(text.startsWith("now")) {
+        if (text.startsWith("now")) {
             try {
                 time = now.getAsLong();
             } catch (Exception var9) {
@@ -36,7 +36,7 @@ class DateMathParser{
             mathString = text.substring("now".length());
         } else {
             int index = text.indexOf("||");
-            if(index == -1) {
+            if (index == -1) {
                 return this.parseDateTime(text, timeZone, roundUp);
             }
 
@@ -47,27 +47,27 @@ class DateMathParser{
         return this.parseMath(mathString, time, roundUp, timeZone);
     }
 
-    private long parseMath(String mathString, long time, boolean roundUp, DateTimeZone timeZone)  {
-        if(timeZone == null) {
+    private long parseMath(String mathString, long time, boolean roundUp, DateTimeZone timeZone) {
+        if (timeZone == null) {
             timeZone = DateTimeZone.UTC;
         }
 
         MutableDateTime dateTime = new MutableDateTime(time, timeZone);
         int i = 0;
 
-        while(i < mathString.length()) {
+        while (i < mathString.length()) {
             char c = mathString.charAt(i++);
             boolean round;
             byte sign;
-            if(c == 47) {
+            if (c == 47) {
                 round = true;
                 sign = 1;
             } else {
                 round = false;
-                if(c == 43) {
+                if (c == 43) {
                     sign = 1;
                 } else {
-                    if(c != 45) {
+                    if (c != 45) {
 //                        throw new ElasticsearchParseException("operator not supported for date math [{}]", new Object[]{mathString});
                         throw null;
                     }
@@ -76,20 +76,20 @@ class DateMathParser{
                 }
             }
 
-            if(i >= mathString.length()) {
+            if (i >= mathString.length()) {
 //                throw new ElasticsearchParseException("truncated date math [{}]", new Object[]{mathString});
                 throw null;
             }
 
             int num;
-            if(!Character.isDigit(mathString.charAt(i))) {
+            if (!Character.isDigit(mathString.charAt(i))) {
                 num = 1;
             } else {
                 int unit;
-                for(unit = i; i < mathString.length() && Character.isDigit(mathString.charAt(i)); ++i) {
+                for (unit = i; i < mathString.length() && Character.isDigit(mathString.charAt(i)); ++i) {
                 }
 
-                if(i >= mathString.length()) {
+                if (i >= mathString.length()) {
 //                    throw new ElasticsearchParseException("truncated date math [{}]", new Object[]{mathString});
                     throw null;
                 }
@@ -97,59 +97,59 @@ class DateMathParser{
                 num = Integer.parseInt(mathString.substring(unit, i));
             }
 
-            if(round && num != 1) {
+            if (round && num != 1) {
 //                throw new ElasticsearchParseException("rounding `/` can only be used on single unit types [{}]", new Object[]{mathString});
                 throw null;
             }
 
             char var14 = mathString.charAt(i++);
             MutableDateTime.Property propertyToRound = null;
-            switch(var14) {
+            switch (var14) {
                 case 'H':
                 case 'h':
-                    if(round) {
+                    if (round) {
                         propertyToRound = dateTime.hourOfDay();
                     } else {
                         dateTime.addHours(sign * num);
                     }
                     break;
                 case 'M':
-                    if(round) {
+                    if (round) {
                         propertyToRound = dateTime.monthOfYear();
                     } else {
                         dateTime.addMonths(sign * num);
                     }
                     break;
                 case 'd':
-                    if(round) {
+                    if (round) {
                         propertyToRound = dateTime.dayOfMonth();
                     } else {
                         dateTime.addDays(sign * num);
                     }
                     break;
                 case 'm':
-                    if(round) {
+                    if (round) {
                         propertyToRound = dateTime.minuteOfHour();
                     } else {
                         dateTime.addMinutes(sign * num);
                     }
                     break;
                 case 's':
-                    if(round) {
+                    if (round) {
                         propertyToRound = dateTime.secondOfMinute();
                     } else {
                         dateTime.addSeconds(sign * num);
                     }
                     break;
                 case 'w':
-                    if(round) {
+                    if (round) {
                         propertyToRound = dateTime.weekOfWeekyear();
                     } else {
                         dateTime.addWeeks(sign * num);
                     }
                     break;
                 case 'y':
-                    if(round) {
+                    if (round) {
                         propertyToRound = dateTime.yearOfCentury();
                     } else {
                         dateTime.addYears(sign * num);
@@ -159,8 +159,8 @@ class DateMathParser{
                     throw null;
             }
 
-            if(propertyToRound != null) {
-                if(roundUp) {
+            if (propertyToRound != null) {
+                if (roundUp) {
                     propertyToRound.add(1);
                     propertyToRound.roundFloor();
                     dateTime.addMillis(-1);
@@ -175,23 +175,23 @@ class DateMathParser{
 
     private long parseDateTime(String value, DateTimeZone timeZone, boolean roundUpIfNoTime) {
         DateTimeFormatter parser = this.dateTimeFormatter.parser();
-        if(timeZone != null) {
+        if (timeZone != null) {
             parser = parser.withZone(timeZone);
         }
 
         try {
             MutableDateTime e;
-            if(roundUpIfNoTime) {
+            if (roundUpIfNoTime) {
                 e = new MutableDateTime(1970, 1, 1, 23, 59, 59, 999, DateTimeZone.UTC);
             } else {
                 e = new MutableDateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeZone.UTC);
             }
 
             int end = parser.parseInto(e, value, 0);
-            if(end < 0) {
+            if (end < 0) {
                 int position = ~end;
                 throw new IllegalArgumentException("Parse failure at index [" + position + "] of [" + value + "]");
-            } else if(end != value.length()) {
+            } else if (end != value.length()) {
                 throw new IllegalArgumentException("Unrecognized chars at the end of [" + value + "]: [" + value.substring(end) + "]");
             } else {
                 return e.getMillis();

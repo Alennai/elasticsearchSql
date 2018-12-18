@@ -26,12 +26,7 @@ public class BoolQueryBuilder {
     private boolean adjustPureNegative = true;
     private String minimumShouldMatch;
 
-    public String toString() {
-//        return "Script{type=" + this.type + ", lang=\'" + this.lang + '\'' + ", idOrCode=\'" + this.idOrCode + '\'' + ", options=" + this.options + ", params=" + this.params + '}';
-        return "";
-    }
-
-    public BoolQueryBuilder( )   {
+    public BoolQueryBuilder() {
 //        super(in);
 //        this.mustClauses.addAll(readQueries(in));
 //        this.mustNotClauses.addAll(readQueries(in));
@@ -43,6 +38,11 @@ public class BoolQueryBuilder {
 //        }
 
 //        this.minimumShouldMatch = in.readOptionalString();
+    }
+
+    public String toString() {
+//        return "Script{type=" + this.type + ", lang=\'" + this.lang + '\'' + ", idOrCode=\'" + this.idOrCode + '\'' + ", options=" + this.options + ", params=" + this.params + '}';
+        return "";
     }
 
 //    protected void doWriteTo(StreamOutput out) throws IOException {
@@ -72,7 +72,7 @@ public class BoolQueryBuilder {
     }
 
     public BoolQueryBuilder filter(QueryBuilder queryBuilder) {
-        if(queryBuilder == null) {
+        if (queryBuilder == null) {
             throw new IllegalArgumentException("inner bool query clause cannot be null");
         } else {
             this.filterClauses.add(queryBuilder);
@@ -85,7 +85,7 @@ public class BoolQueryBuilder {
     }
 
     public BoolQueryBuilder mustNot(QueryBuilder queryBuilder) {
-        if(queryBuilder == null) {
+        if (queryBuilder == null) {
             throw new IllegalArgumentException("inner bool query clause cannot be null");
         } else {
             this.mustNotClauses.add(queryBuilder);
@@ -98,7 +98,7 @@ public class BoolQueryBuilder {
     }
 
     public BoolQueryBuilder should(QueryBuilder queryBuilder) {
-        if(queryBuilder == null) {
+        if (queryBuilder == null) {
             throw new IllegalArgumentException("inner bool query clause cannot be null");
         } else {
             this.shouldClauses.add(queryBuilder);

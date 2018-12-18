@@ -11,6 +11,7 @@ public class NestedLoopsElasticRequestBuilder extends JoinRequestBuilder {
 
     private Where connectedWhere;
     private int multiSearchMaxSize;
+
     public NestedLoopsElasticRequestBuilder() {
 
         multiSearchMaxSize = 100;
@@ -22,12 +23,12 @@ public class NestedLoopsElasticRequestBuilder extends JoinRequestBuilder {
         Where where = this.connectedWhere;
         QueryBuilder explan = null;
 //        try {
-            if(where!=null);
+        if (where != null) ;
 //                explan = QueryMaker.explan(where,false);
 //        } catch (SqlParseException e) {
 //        }
         String conditions = explan == null ? "Could not parse conditions" : explan.toString();
-        return "Nested Loops \n run first query , and for each result run second query with additional conditions :\n" +conditions +"\n"+  baseExplain;
+        return "Nested Loops \n run first query , and for each result run second query with additional conditions :\n" + conditions + "\n" + baseExplain;
     }
 
 

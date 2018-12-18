@@ -45,7 +45,7 @@ public class Index {
             if (opstatus.contains("CLOSE")) {
                 this.opstatus = "关闭";
             } else {
-                    this.opstatus=opstatus;
+                this.opstatus = opstatus;
             }
         }
 

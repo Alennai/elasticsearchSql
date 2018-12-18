@@ -14,24 +14,28 @@ import org.elasticsearch.search.aggregations.metrics.tophits.InternalTopHits;
 import org.elasticsearch.search.aggregations.metrics.valuecount.InternalValueCount;
 import org.parc.sqlrestes.exception.SqlParseException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 class SearchResult {
-	/**
-	 * 查询结果
-	 */
-	private List<Map<String, Object>> results;
+    /**
+     * 查询结果
+     */
+    private List<Map<String, Object>> results;
 
-	private long total;
+    private long total;
 
-	private double maxScore = 0;
+    private double maxScore = 0;
 
-	public SearchResult(SearchResponse resp) {
-		SearchHits hits = resp.getHits();
-		this.total = hits.getTotalHits();
-		results = new ArrayList<>(hits.getHits().length);
-		for (SearchHit searchHit : hits.getHits()) {
+    public SearchResult(SearchResponse resp) {
+        SearchHits hits = resp.getHits();
+        this.total = hits.getTotalHits();
+        results = new ArrayList<>(hits.getHits().length);
+        for (SearchHit searchHit : hits.getHits()) {
 //			if (searchHit.getSource() != null) {
 //				results.add(searchHit.getSource());
 //			} else if (searchHit.getFields() != null) {
@@ -39,36 +43,36 @@ class SearchResult {
 //				results.add(toFieldsMap(fields));
 //			}
 
-		}
-	}
+        }
+    }
 
-	public SearchResult(SearchResponse resp, Select select) throws SqlParseException {
-		Aggregations aggs = resp.getAggregations();
-		if (aggs.get("filter") != null) {
-			InternalFilter inf = aggs.get("filter");
-			aggs = inf.getAggregations();
-		}
-		if (aggs.get("group by") != null) {
-			InternalTerms terms = aggs.get("group by");
-			Collection<Bucket> buckets = terms.getBuckets();
-			this.total = buckets.size();
-			results = new ArrayList<>(buckets.size());
-			for (Bucket bucket : buckets) {
-				Map<String, Object> aggsMap = toAggsMap(bucket.getAggregations().getAsMap());
-				aggsMap.put("docCount", bucket.getDocCount());
-				results.add(aggsMap);
-			}
-		} else {
-			results = new ArrayList<>(1);
-			this.total = 1;
-			Map<String, Object> map = new HashMap<>();
-			for (Aggregation aggregation : aggs) {
-				map.put(aggregation.getName(), covenValue(aggregation));
-			}
-			results.add(map);
-		}
+    public SearchResult(SearchResponse resp, Select select) throws SqlParseException {
+        Aggregations aggs = resp.getAggregations();
+        if (aggs.get("filter") != null) {
+            InternalFilter inf = aggs.get("filter");
+            aggs = inf.getAggregations();
+        }
+        if (aggs.get("group by") != null) {
+            InternalTerms terms = aggs.get("group by");
+            Collection<Bucket> buckets = terms.getBuckets();
+            this.total = buckets.size();
+            results = new ArrayList<>(buckets.size());
+            for (Bucket bucket : buckets) {
+                Map<String, Object> aggsMap = toAggsMap(bucket.getAggregations().getAsMap());
+                aggsMap.put("docCount", bucket.getDocCount());
+                results.add(aggsMap);
+            }
+        } else {
+            results = new ArrayList<>(1);
+            this.total = 1;
+            Map<String, Object> map = new HashMap<>();
+            for (Aggregation aggregation : aggs) {
+                map.put(aggregation.getName(), covenValue(aggregation));
+            }
+            results.add(map);
+        }
 
-	}
+    }
 
 	/*
 	  讲es的field域转换为你Object
@@ -89,57 +93,57 @@ class SearchResult {
 //		return result;
 //	}
 
-	/**
-	 * 讲es的field域转换为你Object
-	 * 
-	 * @param fields
-	 * @return
-	 * @throws SqlParseException
-	 */
-	private Map<String, Object> toAggsMap(Map<String, Aggregation> fields) throws SqlParseException {
-		Map<String, Object> result = new HashMap<>();
-		for (Entry<String, Aggregation> entry : fields.entrySet()) {
-			result.put(entry.getKey(), covenValue(entry.getValue()));
-		}
-		return result;
-	}
+    /**
+     * 讲es的field域转换为你Object
+     *
+     * @param fields
+     * @return
+     * @throws SqlParseException
+     */
+    private Map<String, Object> toAggsMap(Map<String, Aggregation> fields) throws SqlParseException {
+        Map<String, Object> result = new HashMap<>();
+        for (Entry<String, Aggregation> entry : fields.entrySet()) {
+            result.put(entry.getKey(), covenValue(entry.getValue()));
+        }
+        return result;
+    }
 
-	private Object covenValue(Aggregation value) throws SqlParseException {
-		if (value instanceof InternalNumericMetricsAggregation.SingleValue) {
-			return ((InternalNumericMetricsAggregation.SingleValue) value).value();
-		} else if (value instanceof InternalValueCount) {
-			return ((InternalValueCount) value).getValue();
-		} else if (value instanceof InternalTopHits) {
-			return (value);
-		} else if (value instanceof LongTerms) {
-			return value;
-		} else {
-			throw new SqlParseException("unknow this agg type " + value.getClass());
-		}
-	}
+    private Object covenValue(Aggregation value) throws SqlParseException {
+        if (value instanceof InternalNumericMetricsAggregation.SingleValue) {
+            return ((InternalNumericMetricsAggregation.SingleValue) value).value();
+        } else if (value instanceof InternalValueCount) {
+            return ((InternalValueCount) value).getValue();
+        } else if (value instanceof InternalTopHits) {
+            return (value);
+        } else if (value instanceof LongTerms) {
+            return value;
+        } else {
+            throw new SqlParseException("unknow this agg type " + value.getClass());
+        }
+    }
 
-	public List<Map<String, Object>> getResults() {
-		return results;
-	}
+    public List<Map<String, Object>> getResults() {
+        return results;
+    }
 
-	public void setResults(List<Map<String, Object>> results) {
-		this.results = results;
-	}
+    public void setResults(List<Map<String, Object>> results) {
+        this.results = results;
+    }
 
-	public long getTotal() {
-		return total;
-	}
+    public long getTotal() {
+        return total;
+    }
 
-	public void setTotal(long total) {
-		this.total = total;
-	}
+    public void setTotal(long total) {
+        this.total = total;
+    }
 
-	public double getMaxScore() {
-		return maxScore;
-	}
+    public double getMaxScore() {
+        return maxScore;
+    }
 
-	public void setMaxScore(double maxScore) {
-		this.maxScore = maxScore;
-	}
+    public void setMaxScore(double maxScore) {
+        this.maxScore = maxScore;
+    }
 
 }

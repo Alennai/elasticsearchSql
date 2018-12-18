@@ -33,47 +33,45 @@ import java.util.List;
 
 public class ESActionFactory {
 
-	/**
-	 * Create the compatible Query object
-	 * based on the SQL query.
-	 *
-	 * @param sql The SQL query.
-	 * @return Query object.
-	 */
-	public static QueryAction create(RestClient client, String sql) throws SqlParseException, SQLFeatureNotSupportedException {
-		sql = sql.replaceAll("\n"," ");
+    /**
+     * Create the compatible Query object
+     * based on the SQL query.
+     *
+     * @param sql The SQL query.
+     * @return Query object.
+     */
+    public static QueryAction create(RestClient client, String sql) throws SqlParseException, SQLFeatureNotSupportedException {
+        sql = sql.replaceAll("\n", " ");
         String firstWord = sql.substring(0, sql.indexOf(' '));
         switch (firstWord.toUpperCase()) {
-			case "SELECT":
-				SQLQueryExpr sqlExpr = (SQLQueryExpr) toSqlExpr(sql);
-                if(isMulti(sqlExpr)){
+            case "SELECT":
+                SQLQueryExpr sqlExpr = (SQLQueryExpr) toSqlExpr(sql);
+                if (isMulti(sqlExpr)) {
                     MultiQuerySelect multiSelect = new SqlParser().parseMultiSelect((SQLUnionQuery) sqlExpr.getSubQuery().getQuery());
-                    handleSubQueries(client,multiSelect.getFirstSelect());
-                    handleSubQueries(client,multiSelect.getSecondSelect());
+                    handleSubQueries(client, multiSelect.getFirstSelect());
+                    handleSubQueries(client, multiSelect.getSecondSelect());
                     return new MultiQueryAction(client, multiSelect);
-                }
-                else if(isJoin(sqlExpr,sql)){
+                } else if (isJoin(sqlExpr, sql)) {
                     JoinSelect joinSelect = new SqlParser().parseJoinSelect(sqlExpr);
                     handleSubQueries(client, joinSelect.getFirstTable());
                     handleSubQueries(client, joinSelect.getSecondTable());
                     return ESJoinQueryActionFactory.createJoinAction(client, joinSelect);
-                }
-                else {
+                } else {
                     Select select = new SqlParser().parseSelect(sqlExpr);
                     handleSubQueries(client, select);
                     return handleSelect(client, select);
                 }
-			case "DELETE":
+            case "DELETE":
                 SQLStatementParser parser = createSqlStatementParser(sql);
-				SQLDeleteStatement deleteStatement = parser.parseDeleteStatement();
-				Delete delete = new SqlParser().parseDelete(deleteStatement);
-				return new DeleteQueryAction(client, delete);
+                SQLDeleteStatement deleteStatement = parser.parseDeleteStatement();
+                Delete delete = new SqlParser().parseDelete(deleteStatement);
+                return new DeleteQueryAction(client, delete);
             case "SHOW":
-                return new ShowQueryAction(client,sql);
-			default:
-				throw new SQLFeatureNotSupportedException(String.format("Unsupported query: %s", sql));
-		}
-	}
+                return new ShowQueryAction(client, sql);
+            default:
+                throw new SQLFeatureNotSupportedException(String.format("Unsupported query: %s", sql));
+        }
+    }
 
     private static boolean isMulti(SQLQueryExpr sqlExpr) {
         return sqlExpr.getSubQuery().getQuery() instanceof SQLUnionQuery;
@@ -81,32 +79,30 @@ public class ESActionFactory {
 
     //是否包含子查询
     private static void handleSubQueries(RestClient client, Select select) throws SqlParseException {
-        if (select.containsSubQueries())
-        {
-            for(SubQueryExpression subQueryExpression : select.getSubQueries()){
+        if (select.containsSubQueries()) {
+            for (SubQueryExpression subQueryExpression : select.getSubQueries()) {
                 QueryAction queryAction = handleSelect(client, subQueryExpression.getSelect());
-                executeAndFillSubQuery(client , subQueryExpression,queryAction);
+                executeAndFillSubQuery(client, subQueryExpression, queryAction);
             }
         }
     }
 
-    private static void executeAndFillSubQuery(RestClient client , SubQueryExpression subQueryExpression,QueryAction queryAction) throws SqlParseException {
+    private static void executeAndFillSubQuery(RestClient client, SubQueryExpression subQueryExpression, QueryAction queryAction) throws SqlParseException {
         List<Object> values = new ArrayList<>();
-        Object queryResult=null;
+        Object queryResult = null;
         try {
 //            queryResult = QueryActionElasticExecutor.executeAnyAction(client,queryAction);
         } catch (Exception e) {
-            throw new SqlParseException("could not execute SubQuery: " +  e.getMessage());
+            throw new SqlParseException("could not execute SubQuery: " + e.getMessage());
         }
 
         String returnField = subQueryExpression.getReturnField();
-        if(queryResult instanceof SearchHits) {
+        if (queryResult instanceof SearchHits) {
             SearchHits hits = (SearchHits) queryResult;
             for (SearchHit hit : hits) {
 //                values.add(ElasticResultHandler.getFieldValue(hit,returnField));
             }
-        }
-        else {
+        } else {
             throw new SqlParseException("on sub queries only support queries that return Hits and not aggregations");
         }
         subQueryExpression.setValues(values.toArray());
@@ -126,9 +122,9 @@ public class ESActionFactory {
         return new MySqlStatementParser(lexer);
     }
 
-    private static boolean isJoin(SQLQueryExpr sqlExpr,String sql) {
+    private static boolean isJoin(SQLQueryExpr sqlExpr, String sql) {
         MySqlSelectQueryBlock query = (MySqlSelectQueryBlock) sqlExpr.getSubQuery().getQuery();
-        return query.getFrom() instanceof  SQLJoinTableSource && sql.toLowerCase().contains("join");
+        return query.getFrom() instanceof SQLJoinTableSource && sql.toLowerCase().contains("join");
     }
 
     private static SQLExpr toSqlExpr(String sql) {
@@ -141,7 +137,6 @@ public class ESActionFactory {
 
         return expr;
     }
-
 
 
 }

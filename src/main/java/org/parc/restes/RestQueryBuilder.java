@@ -20,6 +20,20 @@ public class RestQueryBuilder {
     private JSONObject restJson = new JSONObject();
     private String indies = "", types = "";
 
+    public static void main(String[] args) {
+
+        String str = AggregationFactory.dateHistogram("hist")
+                .field("@timestamp")
+                .dateHistogramInterval(DateHistogram.DateHistogramInterval.hours(1))
+                .timeZone(DateTimeZone.forID("Asia/Shanghai"))
+                .keyOrder(true)
+                .subAggregation(AggregationFactory.terms("terms")
+                        .field("TERM").size(200).orderCount(false)
+                ).toString();
+
+        System.out.println(str);
+    }
+
     public void setQuery(QueryBuilder query) {
         restJson.put("query", JSONObject.parse(query.toString()));
     }
@@ -72,21 +86,6 @@ public class RestQueryBuilder {
         restJson.put("aggregations", JSONObject.parseObject(aggregation.toString()));
     }
 
-
-    public static void main(String[] args) {
-
-        String str = AggregationFactory.dateHistogram("hist")
-                .field("@timestamp")
-                .dateHistogramInterval(DateHistogram.DateHistogramInterval.hours(1))
-                .timeZone(DateTimeZone.forID("Asia/Shanghai"))
-                .keyOrder(true)
-                .subAggregation(AggregationFactory.terms("terms")
-                        .field("TERM").size(200).orderCount(false)
-                ).toString();
-
-        System.out.println(str);
-    }
-
     public void addSort(String rangeTime, SortOrder sortOrder) {
         JSONObject orderJson = new JSONObject();
         orderJson.put("order", sortOrder);
@@ -112,7 +111,7 @@ public class RestQueryBuilder {
     }
 
     public String getPath() {
-        return indies+types+TYPE_SEARCH;
+        return indies + types + TYPE_SEARCH;
     }
 
     public void setFrom(int from) {

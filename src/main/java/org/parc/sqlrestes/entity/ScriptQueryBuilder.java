@@ -9,12 +9,13 @@ public class ScriptQueryBuilder extends Query {
     private final Script script;
 
     public ScriptQueryBuilder(Script script) {
-        if(script == null) {
+        if (script == null) {
             throw new IllegalArgumentException("script cannot be null");
         } else {
             this.script = script;
         }
     }
+
     public String toString(String field) {
         String buffer = "ScriptQuery(" +
                 this.script +

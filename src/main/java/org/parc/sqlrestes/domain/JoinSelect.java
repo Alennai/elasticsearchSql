@@ -3,7 +3,6 @@ package org.parc.sqlrestes.domain;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import org.parc.sqlrestes.domain.hints.Hint;
 
-
 import java.util.List;
 
 /**
@@ -48,7 +47,6 @@ public class JoinSelect {
     }
 
 
-
     public SQLJoinTableSource.JoinType getJoinType() {
         return joinType;
     }
@@ -69,15 +67,15 @@ public class JoinSelect {
         return totalLimit;
     }
 
+    public void setTotalLimit(int totalLimit) {
+        this.totalLimit = totalLimit;
+    }
+
     public List<Condition> getConnectedConditions() {
         return connectedConditions;
     }
 
     public void setConnectedConditions(List<Condition> connectedConditions) {
         this.connectedConditions = connectedConditions;
-    }
-
-    public void setTotalLimit(int totalLimit) {
-        this.totalLimit = totalLimit;
     }
 }

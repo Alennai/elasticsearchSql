@@ -3,53 +3,54 @@ package org.parc.restes.entity;
 import java.util.Date;
 
 public class ElasticDateR {
-	private Date startTime;
-	private Date endTime;
-	private String units;
-	private int unitsNumber;
-	public Date getStartTime() {
-		return startTime;
-	}
+    private Date startTime;
+    private Date endTime;
+    private String units;
+    private int unitsNumber;
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
+    /**
+     * @param startTime
+     * @param endTime
+     * @param units
+     */
+    public ElasticDateR(Date startTime, Date endTime, String units, int unitsNumber) {
+        super();
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.units = units;
+        this.unitsNumber = unitsNumber;
+    }
 
-	public Date getEndTime() {
-		return endTime;
-	}
+    public Date getStartTime() {
+        return startTime;
+    }
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
 
-	public String getUnits() {
-		return units;
-	}
+    public Date getEndTime() {
+        return endTime;
+    }
 
-	public void setUnits(String units) {
-		this.units = units;
-	}
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
 
-	public int getUnitsNumber() {
-		return unitsNumber;
-	}
+    public String getUnits() {
+        return units;
+    }
 
-	public void setUnitsNumber(int unitsNumber) {
-		this.unitsNumber = unitsNumber;
-	}
+    public void setUnits(String units) {
+        this.units = units;
+    }
 
-	/**
-	 * @param startTime
-	 * @param endTime
-	 * @param units
-	 */
-	public ElasticDateR(Date startTime, Date endTime, String units, int unitsNumber) {
-		super();
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.units = units;
-		this.unitsNumber = unitsNumber;
-	}
+    public int getUnitsNumber() {
+        return unitsNumber;
+    }
+
+    public void setUnitsNumber(int unitsNumber) {
+        this.unitsNumber = unitsNumber;
+    }
 
 }

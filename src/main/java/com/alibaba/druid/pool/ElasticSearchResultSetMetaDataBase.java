@@ -10,18 +10,18 @@ import java.util.List;
  * Created by allwefantasy on 8/31/16.
  */
 class ElasticSearchResultSetMetaDataBase extends ResultSetMetaDataBase {
-	
+
     private final List<ColumnMetaData> columns = new ArrayList<>();
 
     public ElasticSearchResultSetMetaDataBase(List<String> headers) {
-        for(String column:headers){
+        for (String column : headers) {
             ColumnMetaData columnMetaData = new ColumnMetaData();
             columnMetaData.setColumnLabel(column);
             columnMetaData.setColumnName(column);
             columns.add(columnMetaData);
         }
     }
-    
+
     @Override
     public List<ColumnMetaData> getColumns() {
         return columns;
@@ -39,7 +39,7 @@ class ElasticSearchResultSetMetaDataBase extends ResultSetMetaDataBase {
 
         throw new SQLException("column '" + columnName + "' not found.");
     }
-    
+
     @Override
     public int getColumnCount() {
         return columns.size();

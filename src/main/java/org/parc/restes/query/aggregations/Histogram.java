@@ -4,10 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import org.parc.restes.query.Aggregation;
 
 public class Histogram extends Aggregation {
-    private static final String agg_operator="histogram";
+    private static final String agg_operator = "histogram";
+
     public Histogram(String aggName) {
         super(aggName);
-        aggContent.put(agg_operator,new JSONObject());
+        aggContent.put(agg_operator, new JSONObject());
     }
 
     public Histogram interval(double interval) {

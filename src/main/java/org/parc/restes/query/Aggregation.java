@@ -3,15 +3,19 @@ package org.parc.restes.query;
 import com.alibaba.fastjson.JSONObject;
 
 public abstract class Aggregation {
-    private String aggName;
     protected JSONObject aggContent;
+    private String aggName;
     private JSONObject content;
 
     protected Aggregation(String aggName) {
         aggContent = new JSONObject();
-        content=new JSONObject();
+        content = new JSONObject();
         this.aggName = aggName;
         content.put(aggName, aggContent);
+    }
+
+    public static Aggregation nested(String nestedAggName, String nestedPath) {
+        return null;
     }
 
     public String getAggName() {
@@ -19,12 +23,12 @@ public abstract class Aggregation {
         return aggName;
     }
 
-    public JSONObject getContent() {
-        return content;
-    }
-
     public void setAggName(String aggName) {
         this.aggName = aggName;
+    }
+
+    public JSONObject getContent() {
+        return content;
     }
 
     public JSONObject getAggContent() {
@@ -41,8 +45,4 @@ public abstract class Aggregation {
     }
 
     public abstract Aggregation subAggregation(Aggregation aggregation);
-
-    public static Aggregation nested(String nestedAggName, String nestedPath) {
-        return null;
-    }
 }

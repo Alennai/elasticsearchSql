@@ -16,46 +16,40 @@ import java.io.IOException;
 
 class ActionRequestRestExecuter {
 
-	private RestChannel channel;
-	private Client client;
-	private SqlElasticRequestBuilder requestBuilder;
+    private RestChannel channel;
+    private Client client;
+    private SqlElasticRequestBuilder requestBuilder;
 
-	public ActionRequestRestExecuter(SqlElasticRequestBuilder requestBuilder, RestChannel channel, final Client client) {
-		this.requestBuilder = requestBuilder;
-		this.channel = channel;
-		this.client = client;
-	}
-
+    public ActionRequestRestExecuter(SqlElasticRequestBuilder requestBuilder, RestChannel channel, final Client client) {
+        this.requestBuilder = requestBuilder;
+        this.channel = channel;
+        this.client = client;
+    }
 
 
     /**
-	 * Execute the ActionRequest and returns the REST response using the channel.
-	 */
-	public void execute() throws Exception {
+     * Execute the ActionRequest and returns the REST response using the channel.
+     */
+    public void execute() throws Exception {
         ActionRequest request = requestBuilder.request();
 
         //todo: maby change to instanceof multi?
-        if(requestBuilder instanceof JoinRequestBuilder){
+        if (requestBuilder instanceof JoinRequestBuilder) {
             executeJoinRequestAndSendResponse();
-        }
-		else if (request instanceof SearchRequest) {
-			client.search((SearchRequest) request, new RestStatusToXContentListener<>(channel));
-		} else if (requestBuilder instanceof SqlElasticDeleteByQueryRequestBuilder) {
+        } else if (request instanceof SearchRequest) {
+            client.search((SearchRequest) request, new RestStatusToXContentListener<>(channel));
+        } else if (requestBuilder instanceof SqlElasticDeleteByQueryRequestBuilder) {
             throw new UnsupportedOperationException("currently not support delete on elastic 2.0.0");
+        } else if (request instanceof GetIndexRequest) {
+            this.requestBuilder.getBuilder().execute(new GetIndexRequestRestListener(channel, (GetIndexRequest) request));
+        } else {
+            throw new Exception(String.format("Unsupported ActionRequest provided: %s", request.getClass().getName()));
         }
-        else if(request instanceof GetIndexRequest) {
-            this.requestBuilder.getBuilder().execute( new GetIndexRequestRestListener(channel, (GetIndexRequest) request));
-        }
-
-
-		else {
-			throw new Exception(String.format("Unsupported ActionRequest provided: %s", request.getClass().getName()));
-		}
-	}
+    }
 
     private void executeJoinRequestAndSendResponse() throws IOException, SqlParseException {
 //        ElasticJoinExecutor executor = ElasticJoinExecutor.createJoinExecutor(client,requestBuilder);
-		ElasticJoinExecutor executor = null;
+        ElasticJoinExecutor executor = null;
         executor.run();
         executor.sendResponse(channel);
     }

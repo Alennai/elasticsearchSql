@@ -2,36 +2,36 @@ package org.parc.sqlrestes.domain;
 
 /**
  * 排序规则
- * @author ansj
  *
+ * @author ansj
  */
 public class Order {
-	private String name;
-	private String type;
-	private String nestedPath;
+    private String name;
+    private String type;
+    private String nestedPath;
 
-	public Order(String name, String type) {
-		this.name = name;
-		this.type = type;
-	}
+    public Order(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public String getNestedPath() {
-		return nestedPath;
-	}
+    public String getNestedPath() {
+        return nestedPath;
+    }
 }

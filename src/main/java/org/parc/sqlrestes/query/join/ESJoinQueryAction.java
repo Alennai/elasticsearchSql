@@ -54,8 +54,8 @@ public abstract class ESJoinQueryAction extends QueryAction {
 
     }
 
-    void updateRequestWithHints(JoinRequestBuilder requestBuilder){
-        for(Hint hint : joinSelect.getHints()) {
+    void updateRequestWithHints(JoinRequestBuilder requestBuilder) {
+        for (Hint hint : joinSelect.getHints()) {
             if (hint.getType() == HintType.JOIN_LIMIT) {
                 Object[] params = hint.getParams();
                 requestBuilder.getFirstTable().setHintLimit((Integer) params[0]);
@@ -66,9 +66,9 @@ public abstract class ESJoinQueryAction extends QueryAction {
 
     private void fillTableInJoinRequestBuilder(TableInJoinRequestBuilder requestBuilder, TableOnJoinSelect tableOnJoinSelect) throws SqlParseException {
         List<Field> connectedFields = tableOnJoinSelect.getConnectedFields();
-        addFieldsToSelectIfMissing(tableOnJoinSelect,connectedFields);
+        addFieldsToSelectIfMissing(tableOnJoinSelect, connectedFields);
         requestBuilder.setOriginalSelect(tableOnJoinSelect);
-        DefaultQueryAction queryAction = new DefaultQueryAction(client,tableOnJoinSelect);
+        DefaultQueryAction queryAction = new DefaultQueryAction(client, tableOnJoinSelect);
         queryAction.explain();
         requestBuilder.setRequestBuilder(queryAction.getRequestBuilder());
         requestBuilder.setReturnedFields(tableOnJoinSelect.getSelectedFields());
@@ -77,11 +77,11 @@ public abstract class ESJoinQueryAction extends QueryAction {
 
     private void addFieldsToSelectIfMissing(Select select, List<Field> fields) {
         //this means all fields
-        if(select.getFields() == null || select.getFields().size() == 0) return;
+        if (select.getFields() == null || select.getFields().size() == 0) return;
 
         List<Field> selectedFields = select.getFields();
-        for(Field field : fields){
-            if(!selectedFields.contains(field)){
+        for (Field field : fields) {
+            if (!selectedFields.contains(field)) {
                 selectedFields.add(field);
             }
         }

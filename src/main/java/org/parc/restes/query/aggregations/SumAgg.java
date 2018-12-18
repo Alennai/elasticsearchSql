@@ -4,10 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import org.parc.restes.query.Aggregation;
 
 public class SumAgg extends Aggregation {
-    private static final String agg_operator="sum";
+    private static final String agg_operator = "sum";
+
     public SumAgg(String aggName) {
         super(aggName);
-        aggContent.put(agg_operator,new JSONObject());
+        aggContent.put(agg_operator, new JSONObject());
     }
 
     public SumAgg field(String field) {

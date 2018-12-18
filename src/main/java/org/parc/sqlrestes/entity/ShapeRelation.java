@@ -5,7 +5,7 @@ import java.util.Locale;
 /**
  * Created by xusiao on 2018/5/4.
  */
-public enum ShapeRelation  {
+public enum ShapeRelation {
     INTERSECTS("intersects"),
     DISJOINT("disjoint"),
     WITHIN("within"),

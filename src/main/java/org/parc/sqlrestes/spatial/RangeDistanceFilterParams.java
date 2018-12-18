@@ -3,10 +3,10 @@ package org.parc.sqlrestes.spatial;
 /**
  * Created by Eliran on 15/8/2015.
  */
-class RangeDistanceFilterParams extends  DistanceFilterParams {
+class RangeDistanceFilterParams extends DistanceFilterParams {
     private String distanceTo;
 
-    public RangeDistanceFilterParams(String distanceFrom,String distanceTo, Point from) {
+    public RangeDistanceFilterParams(String distanceFrom, String distanceTo, Point from) {
         super(distanceFrom, from);
         this.distanceTo = distanceTo;
     }

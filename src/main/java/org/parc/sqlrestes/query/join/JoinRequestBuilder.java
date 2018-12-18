@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * Created by Eliran on 15/9/2015.
  */
-public  class JoinRequestBuilder implements SqlElasticRequestBuilder {
+public class JoinRequestBuilder implements SqlElasticRequestBuilder {
 
     private MultiSearchRequest multi;
     private TableInJoinRequestBuilder firstTable;
@@ -31,7 +31,7 @@ public  class JoinRequestBuilder implements SqlElasticRequestBuilder {
 
     @Override
     public ActionRequest request() {
-        if(multi == null)
+        if (multi == null)
             buildMulti();
         return multi;
 

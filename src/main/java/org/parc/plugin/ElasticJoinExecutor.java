@@ -18,15 +18,20 @@ import org.parc.sqlrestes.query.join.NestedLoopsElasticRequestBuilder;
 import org.parc.sqlrestes.query.join.TableInJoinRequestBuilder;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by xusiao on 2018/6/20.
  */
-public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
-    private SearchHits results ;
-    private MetaSearchResult metaResults;
+public abstract class ElasticJoinExecutor implements ElasticHitsExecutor {
     final int MAX_RESULTS_ON_ONE_FETCH = 10000;
+    private SearchHits results;
+    private MetaSearchResult metaResults;
     private Set<String> aliasesOnReturn;
     private boolean allFieldsReturn;
 
@@ -39,9 +44,21 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
                 && (secondTableReturnedField == null || secondTableReturnedField.size() == 0);
     }
 
-    public void  sendResponse(RestChannel channel){
+    public static ElasticJoinExecutor createJoinExecutor(RestClient client, SqlElasticRequestBuilder requestBuilder) {
+        if (requestBuilder instanceof HashJoinElasticRequestBuilder) {
+            HashJoinElasticRequestBuilder hashJoin = (HashJoinElasticRequestBuilder) requestBuilder;
+            return new HashJoinElasticExecutor(client, hashJoin);
+        } else if (requestBuilder instanceof NestedLoopsElasticRequestBuilder) {
+            NestedLoopsElasticRequestBuilder nestedLoops = (NestedLoopsElasticRequestBuilder) requestBuilder;
+            return new NestedLoopsElasticExecutor(client, nestedLoops);
+        } else {
+            throw new RuntimeException("Unsuported requestBuilder of type: " + requestBuilder.getClass());
+        }
+    }
+
+    public void sendResponse(RestChannel channel) {
         try {
-            String json = ElasticUtils.hitsAsStringResult(results,metaResults);
+            String json = ElasticUtils.hitsAsStringResult(results, metaResults);
             BytesRestResponse bytesRestResponse = new BytesRestResponse(RestStatus.OK, json);
             channel.sendResponse(bytesRestResponse);
         } catch (IOException e) {
@@ -51,63 +68,48 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
 
     public void run() throws IOException, SqlParseException {
         long timeBefore = System.currentTimeMillis();
-        List<SearchHit> combinedSearchHits =  innerRun();
+        List<SearchHit> combinedSearchHits = innerRun();
         int resultsSize = combinedSearchHits.size();
         SearchHit[] hits = combinedSearchHits.toArray(new SearchHit[resultsSize]);
-        this.results = new SearchHits(hits, resultsSize,1.0f);
+        this.results = new SearchHits(hits, resultsSize, 1.0f);
         long joinTimeInMilli = System.currentTimeMillis() - timeBefore;
         this.metaResults.setTookImMilli(joinTimeInMilli);
     }
 
+    protected abstract List<SearchHit> innerRun() throws SqlParseException;
 
-    protected abstract List<SearchHit> innerRun() throws SqlParseException ;
-
-    public SearchHits getHits(){
+    public SearchHits getHits() {
         return results;
     }
 
-    public static ElasticJoinExecutor createJoinExecutor(RestClient client, SqlElasticRequestBuilder requestBuilder){
-        if(requestBuilder instanceof HashJoinElasticRequestBuilder) {
-            HashJoinElasticRequestBuilder hashJoin = (HashJoinElasticRequestBuilder) requestBuilder;
-            return new HashJoinElasticExecutor(client, hashJoin);
-        }
-        else if (requestBuilder instanceof NestedLoopsElasticRequestBuilder){
-            NestedLoopsElasticRequestBuilder nestedLoops = (NestedLoopsElasticRequestBuilder) requestBuilder;
-            return  new NestedLoopsElasticExecutor(client,nestedLoops);
-        }
-        else {
-            throw new RuntimeException("Unsuported requestBuilder of type: " + requestBuilder.getClass());
-        }
-    }
-
     void mergeSourceAndAddAliases(Map<String, Object> secondTableHitSource, SearchHit searchHit, String t1Alias, String t2Alias) {
-        Map<String,Object> results = mapWithAliases(searchHit.getSourceAsMap(), t1Alias);
+        Map<String, Object> results = mapWithAliases(searchHit.getSourceAsMap(), t1Alias);
         results.putAll(mapWithAliases(secondTableHitSource, t2Alias));
         searchHit.getSourceAsMap().clear();
         searchHit.getSourceAsMap().putAll(results);
     }
 
-    private Map<String,Object> mapWithAliases(Map<String, Object> source, String alias) {
-        Map<String,Object> mapWithAliases = new HashMap<>();
-        for(Map.Entry<String,Object> fieldNameToValue : source.entrySet()) {
-            if(!aliasesOnReturn.contains(fieldNameToValue.getKey()))
+    private Map<String, Object> mapWithAliases(Map<String, Object> source, String alias) {
+        Map<String, Object> mapWithAliases = new HashMap<>();
+        for (Map.Entry<String, Object> fieldNameToValue : source.entrySet()) {
+            if (!aliasesOnReturn.contains(fieldNameToValue.getKey()))
                 mapWithAliases.put(alias + "." + fieldNameToValue.getKey(), fieldNameToValue.getValue());
-            else mapWithAliases.put(fieldNameToValue.getKey(),fieldNameToValue.getValue());
+            else mapWithAliases.put(fieldNameToValue.getKey(), fieldNameToValue.getValue());
         }
         return mapWithAliases;
     }
 
-    void  onlyReturnedFields(Map<String, Object> fieldsMap, List<Field> required, boolean allRequired) {
-        HashMap<String,Object> filteredMap = new HashMap<>();
-        if(allFieldsReturn || allRequired) {
+    void onlyReturnedFields(Map<String, Object> fieldsMap, List<Field> required, boolean allRequired) {
+        HashMap<String, Object> filteredMap = new HashMap<>();
+        if (allFieldsReturn || allRequired) {
             filteredMap.putAll(fieldsMap);
             return;
         }
-        for(Field field: required){
+        for (Field field : required) {
             String name = field.getName();
             String returnName = name;
             String alias = field.getAlias();
-            if(alias !=null && alias !=""){
+            if (alias != null && alias != "") {
                 returnName = alias;
                 aliasesOnReturn.add(alias);
             }
@@ -119,16 +121,16 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
     }
 
     Object deepSearchInMap(Map<String, Object> fieldsMap, String name) {
-        if(name.contains(".")){
+        if (name.contains(".")) {
             String[] path = name.split("\\.");
-            Map<String,Object> currentObject = fieldsMap;
-            for(int i=0;i<path.length-1 ;i++){
+            Map<String, Object> currentObject = fieldsMap;
+            for (int i = 0; i < path.length - 1; i++) {
                 Object valueFromCurrentMap = currentObject.get(path[i]);
-                if(valueFromCurrentMap == null) return null;
-                if(!Map.class.isAssignableFrom(valueFromCurrentMap.getClass())) return null;
+                if (valueFromCurrentMap == null) return null;
+                if (!Map.class.isAssignableFrom(valueFromCurrentMap.getClass())) return null;
                 currentObject = (Map<String, Object>) valueFromCurrentMap;
             }
-            return currentObject.get(path[path.length-1]);
+            return currentObject.get(path[path.length - 1]);
         }
 
         return fieldsMap.get(name);
@@ -137,8 +139,8 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
 
     void addUnmatchedResults(List<SearchHit> combinedResults, Collection<SearchHitsResult> firstTableSearchHits, List<Field> secondTableReturnedFields, int currentNumOfIds, int totalLimit, String t1Alias, String t2Alias) {
         boolean limitReached = false;
-        for(SearchHitsResult hitsResult : firstTableSearchHits){
-            if(!hitsResult.isMatchedWithOtherTable())
+        for (SearchHitsResult hitsResult : firstTableSearchHits) {
+            if (!hitsResult.isMatchedWithOtherTable())
                 for (SearchHit hit : hitsResult.getSearchHits()) {
 
                     //todo: decide which id to put or type. or maby its ok this way. just need to doc.
@@ -151,7 +153,7 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
                     }
 
                 }
-            if(limitReached) break;
+            if (limitReached) break;
         }
     }
 
@@ -164,18 +166,18 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
         searchHit.sourceRef(hit.getSourceRef());
         searchHit.getSourceAsMap().clear();
         searchHit.getSourceAsMap().putAll(hit.getSourceAsMap());
-        Map<String,Object> emptySecondTableHitSource = createNullsSource(secondTableReturnedFields);
+        Map<String, Object> emptySecondTableHitSource = createNullsSource(secondTableReturnedFields);
 
-        mergeSourceAndAddAliases(emptySecondTableHitSource, searchHit,t1Alias,t2Alias);
+        mergeSourceAndAddAliases(emptySecondTableHitSource, searchHit, t1Alias, t2Alias);
 
         return searchHit;
     }
 
     private Map<String, Object> createNullsSource(List<Field> secondTableReturnedFields) {
-        Map<String,Object> nulledSource = new HashMap<>();
-        for(Field field : secondTableReturnedFields){
-            if(!field.getName().equals("*")){
-                nulledSource.put(field.getName(),null);
+        Map<String, Object> nulledSource = new HashMap<>();
+        for (Field field : secondTableReturnedFields) {
+            if (!field.getName().equals("*")) {
+                nulledSource.put(field.getName(), null);
             }
         }
         return nulledSource;
@@ -188,8 +190,8 @@ public abstract class ElasticJoinExecutor  implements ElasticHitsExecutor {
         this.metaResults.updateTimeOut(searchResponse.isTimedOut());
     }
 
-    protected SearchResponse scrollOneTimeWithMax(Client client,TableInJoinRequestBuilder tableRequest) {
-        SearchResponse responseWithHits=null;
+    protected SearchResponse scrollOneTimeWithMax(Client client, TableInJoinRequestBuilder tableRequest) {
+        SearchResponse responseWithHits = null;
 //        SearchRequestBuilder scrollRequest = tableRequest.getRequestBuilder()
 //                .setScroll(new TimeValue(60000))
 //                .setSize(MAX_RESULTS_ON_ONE_FETCH);

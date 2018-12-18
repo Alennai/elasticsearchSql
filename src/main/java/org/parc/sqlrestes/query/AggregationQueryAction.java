@@ -8,7 +8,12 @@ import org.parc.restes.RestQueryBuilder;
 import org.parc.restes.query.Aggregation;
 import org.parc.restes.query.AggregationFactory;
 import org.parc.restes.query.aggregations.TermsAgg;
-import org.parc.sqlrestes.domain.*;
+import org.parc.sqlrestes.domain.Field;
+import org.parc.sqlrestes.domain.KVValue;
+import org.parc.sqlrestes.domain.MethodField;
+import org.parc.sqlrestes.domain.Order;
+import org.parc.sqlrestes.domain.Select;
+import org.parc.sqlrestes.domain.Where;
 import org.parc.sqlrestes.domain.hints.Hint;
 import org.parc.sqlrestes.domain.hints.HintType;
 import org.parc.sqlrestes.exception.SqlParseException;
@@ -94,7 +99,7 @@ public class AggregationQueryAction extends QueryAction {
                 for (int i = 1; i < groupBy.size(); i++) {
                     field = groupBy.get(i);
                     Aggregation subAgg = getGroupAgg(field, select);
-                      //ES5.0 termsaggregation with size = 0 not supported anymore
+                    //ES5.0 termsaggregation with size = 0 not supported anymore
 //                    if (subAgg instanceof TermsAggregationBuilder && !(field instanceof MethodField)) {
 
 //                        //((TermsAggregationBuilder) subAgg).size(0);
@@ -183,7 +188,7 @@ public class AggregationQueryAction extends QueryAction {
         updateRequestWithPostFilter(select, request);
         return new SqlElasticSearchRequestBuilder(request);
     }
-    
+
     private Aggregation getGroupAgg(Field field, Select select2) {
         boolean refrence = false;
         Aggregation lastAgg = null;
@@ -200,9 +205,9 @@ public class AggregationQueryAction extends QueryAction {
             }
         }
 
-        if (!refrence);
+        if (!refrence) ;
 //            lastAgg = aggMaker.makeGroupAgg(field);
-        
+
         return lastAgg;
     }
 
@@ -223,7 +228,7 @@ public class AggregationQueryAction extends QueryAction {
             if (nestedPath == null || !nestedPath.startsWith("~")) {
 //                Aggregation reverseNestedAggregationBuilder = AggregationFactory.reverseNested(getNestedAggName(field));
                 Aggregation reverseNestedAggregationBuilder = AggregationFactory.terms(getNestedAggName(field));
-                if(nestedPath!=null){
+                if (nestedPath != null) {
 //                    reverseNestedAggregationBuilder.path(nestedPath);
                 }
                 return reverseNestedAggregationBuilder;
@@ -231,13 +236,13 @@ public class AggregationQueryAction extends QueryAction {
             nestedPath = nestedPath.substring(1);
         }
 
-        nestedBuilder = Aggregation.nested(getNestedAggName(field),nestedPath);
+        nestedBuilder = Aggregation.nested(getNestedAggName(field), nestedPath);
 
         return nestedBuilder;
     }
 
     private Aggregation createChildrenAggregation(Field field) {
-        Aggregation childrenBuilder=null;
+        Aggregation childrenBuilder = null;
 
         String childType = field.getChildType();
 
@@ -291,7 +296,7 @@ public class AggregationQueryAction extends QueryAction {
 
     private Aggregation updateAggIfNested(Aggregation lastAgg, Field field) {
         if (field.isNested()) {
-            lastAgg = AggregationFactory.nested(field.getName() + "Nested",field.getNestedPath())
+            lastAgg = AggregationFactory.nested(field.getName() + "Nested", field.getNestedPath())
                     .subAggregation(lastAgg);
         }
         return lastAgg;
@@ -352,7 +357,7 @@ public class AggregationQueryAction extends QueryAction {
      */
     private void setWhere(Where where) throws SqlParseException {
         if (where != null) {
-            QueryBuilder whereQuery = QueryMaker.explan(where,this.select.isQuery);
+            QueryBuilder whereQuery = QueryMaker.explan(where, this.select.isQuery);
             request.setQuery(whereQuery);
         }
     }

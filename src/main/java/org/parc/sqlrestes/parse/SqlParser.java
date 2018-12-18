@@ -4,11 +4,29 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
-import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlSelectGroupByExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import org.parc.sqlrestes.domain.*;
+import org.parc.sqlrestes.domain.Condition;
+import org.parc.sqlrestes.domain.Delete;
+import org.parc.sqlrestes.domain.Field;
+import org.parc.sqlrestes.domain.From;
+import org.parc.sqlrestes.domain.JoinSelect;
+import org.parc.sqlrestes.domain.Select;
+import org.parc.sqlrestes.domain.TableOnJoinSelect;
+import org.parc.sqlrestes.domain.Where;
 import org.parc.sqlrestes.domain.hints.Hint;
 import org.parc.sqlrestes.domain.hints.HintFactory;
 import org.parc.sqlrestes.exception.SqlParseException;
@@ -77,7 +95,7 @@ public class SqlParser {
     public MultiQuerySelect parseMultiSelect(SQLUnionQuery query) throws SqlParseException {
         Select firstTableSelect = this.parseSelect((MySqlSelectQueryBlock) query.getLeft());
         Select secondTableSelect = this.parseSelect((MySqlSelectQueryBlock) query.getRight());
-        return new MultiQuerySelect(query.getOperator(),firstTableSelect,secondTableSelect);
+        return new MultiQuerySelect(query.getOperator(), firstTableSelect, secondTableSelect);
     }
 
     private void findSelect(MySqlSelectQueryBlock query, Select select, String tableAlias) throws SqlParseException {

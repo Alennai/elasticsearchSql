@@ -10,22 +10,36 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
-import org.parc.restes.entity.*;
+import org.parc.restes.entity.Bucket;
+import org.parc.restes.entity.ElasticDate;
+import org.parc.restes.entity.IField;
+import org.parc.restes.entity.Result;
+import org.parc.restes.entity.TraceParam;
 import org.parc.restes.util.FieldComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 
 public class DataAdapter {
-    private static DecimalFormat df = new DecimalFormat("#.00");
     private static final Comparator<IField> comparator = new FieldComparator();
     private static final List<String> INCLUDE = Arrays.asList("responseCode", "destGeoRegion",
             "destHostName", "severity", "warningType", "destAddress", "requestUrl", "deviceName ", "ruleId",
             "srcAddress", "srcGeoRegion", "warning", "predictCount", "visitCount");
     private static final Logger logger = LoggerFactory.getLogger(DataAdapter.class);
+    private static DecimalFormat df = new DecimalFormat("#.00");
 
     public static List<IField> json2Fields(String json, String _type) {
         List<IField> fields = new ArrayList<>();
@@ -223,7 +237,7 @@ public class DataAdapter {
         }
         return ImmutableMap.of("time", time, "msg", msg, "sign",
 //                DictionaryCache.fieldByCategory("stageCode", stageCode + "")
- "");
+                "");
     }
 
     public static Map<String, Object> adapterGangsAnalysis(List<JSONObject> documents) {
@@ -252,7 +266,6 @@ public class DataAdapter {
         }
         return outer.isEmpty() ? adapterNV("团伙分析") : adapterKC("团伙分析", outer);
     }
-
 
 
     private static Map<String, Object> adapterNV(String value) {

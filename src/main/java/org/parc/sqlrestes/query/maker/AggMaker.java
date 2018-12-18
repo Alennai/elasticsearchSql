@@ -33,10 +33,16 @@ import org.parc.sqlrestes.parse.NestedType;
 
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 public class AggMaker {
 
+    private static final String TIME_FARMAT = "yyyy-MM-dd HH:mm:ss";
     private Map<String, KVValue> groupMap = new HashMap<>();
 
     /**
@@ -72,7 +78,6 @@ public class AggMaker {
             return termsBuilder;
         }
     }
-
 
     /**
      * Create aggregation according to the SQL function.
@@ -169,18 +174,18 @@ public class AggMaker {
             if (nestedType.isReverse()) {
                 if (nestedType.path != null && nestedType.path.startsWith("~")) {
                     String realPath = nestedType.path.substring(1);
-                    nestedBuilder = AggregationBuilders.nested(nestedAggName,realPath);
+                    nestedBuilder = AggregationBuilders.nested(nestedAggName, realPath);
                     nestedBuilder = nestedBuilder.subAggregation(builder);
                     return AggregationBuilders.reverseNested(nestedAggName + "_REVERSED").subAggregation(nestedBuilder);
                 } else {
                     ReverseNestedAggregationBuilder reverseNestedAggregationBuilder = AggregationBuilders.reverseNested(nestedAggName);
-                    if (nestedType.path!=null){
+                    if (nestedType.path != null) {
                         reverseNestedAggregationBuilder.path(nestedType.path);
                     }
                     nestedBuilder = reverseNestedAggregationBuilder;
                 }
             } else {
-                nestedBuilder = AggregationBuilders.nested(nestedAggName,nestedType.path);
+                nestedBuilder = AggregationBuilders.nested(nestedAggName, nestedType.path);
             }
 
             return nestedBuilder.subAggregation(builder);
@@ -321,25 +326,25 @@ public class AggMaker {
                     scriptedMetricBuilder.mapScript(new Script(paramValue));
                     break;
                 case "map_script_id":
-                    scriptedMetricBuilder.mapScript(new Script(ScriptType.STORED, Script.DEFAULT_SCRIPT_LANG,paramValue, new HashMap<>()));
+                    scriptedMetricBuilder.mapScript(new Script(ScriptType.STORED, Script.DEFAULT_SCRIPT_LANG, paramValue, new HashMap<>()));
                     break;
                 case "init_script":
                     scriptedMetricBuilder.initScript(new Script(paramValue));
                     break;
                 case "init_script_id":
-                    scriptedMetricBuilder.initScript(new Script(ScriptType.STORED,Script.DEFAULT_SCRIPT_LANG,paramValue, new HashMap<>()));
+                    scriptedMetricBuilder.initScript(new Script(ScriptType.STORED, Script.DEFAULT_SCRIPT_LANG, paramValue, new HashMap<>()));
                     break;
                 case "combine_script":
                     scriptedMetricBuilder.combineScript(new Script(paramValue));
                     break;
                 case "combine_script_id":
-                    scriptedMetricBuilder.combineScript(new Script(ScriptType.STORED, Script.DEFAULT_SCRIPT_LANG,paramValue, new HashMap<>()));
+                    scriptedMetricBuilder.combineScript(new Script(ScriptType.STORED, Script.DEFAULT_SCRIPT_LANG, paramValue, new HashMap<>()));
                     break;
                 case "reduce_script":
-                    scriptedMetricBuilder.reduceScript(new Script(ScriptType.INLINE,  Script.DEFAULT_SCRIPT_LANG , paramValue, reduceScriptAdditionalParams));
+                    scriptedMetricBuilder.reduceScript(new Script(ScriptType.INLINE, Script.DEFAULT_SCRIPT_LANG, paramValue, reduceScriptAdditionalParams));
                     break;
                 case "reduce_script_id":
-                    scriptedMetricBuilder.reduceScript(new Script(ScriptType.STORED,  Script.DEFAULT_SCRIPT_LANG,paramValue, reduceScriptAdditionalParams));
+                    scriptedMetricBuilder.reduceScript(new Script(ScriptType.STORED, Script.DEFAULT_SCRIPT_LANG, paramValue, reduceScriptAdditionalParams));
                     break;
                 case "alias":
                 case "nested":
@@ -388,8 +393,6 @@ public class AggMaker {
         }
         return geoHashGrid;
     }
-
-    private static final String TIME_FARMAT = "yyyy-MM-dd HH:mm:ss";
 
     private ValuesSourceAggregationBuilder dateRange(MethodField field) {
         String alias = gettAggNameFromParamsOrAlias(field);

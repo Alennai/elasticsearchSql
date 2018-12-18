@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Created by xusiao on 2018/5/4.
  */
-public class Loggers{
+public class Loggers {
     public static final String SPACE = " ";
 
     public Loggers() {
@@ -14,7 +14,7 @@ public class Loggers{
     public static Logger getLogger(Logger parentLogger, String s) {
         assert parentLogger instanceof PrefixLogger;
 
-        return ESLoggerFactory.getLogger(((PrefixLogger)parentLogger).prefix(), parentLogger.getName() + s);
+        return ESLoggerFactory.getLogger(((PrefixLogger) parentLogger).prefix(), parentLogger.getName() + s);
     }
 
     public static Logger getLogger(String s) {
@@ -35,7 +35,7 @@ public class Loggers{
 
     private static String formatPrefix(String... prefixes) {
         String prefix = null;
-        if(prefixes != null && prefixes.length > 0) {
+        if (prefixes != null && prefixes.length > 0) {
             StringBuilder sb = new StringBuilder();
 
             for (String prefixX : prefixes) {
@@ -48,7 +48,7 @@ public class Loggers{
                 }
             }
 
-            if(sb.length() > 0) {
+            if (sb.length() > 0) {
                 sb.append(" ");
                 prefix = sb.toString();
             }

@@ -1,14 +1,32 @@
 package org.parc.sqlrestes.parse;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLTextLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.parc.sqlrestes.SQLFunctions;
 import org.parc.sqlrestes.Util;
-import org.parc.sqlrestes.domain.*;
+import org.parc.sqlrestes.domain.Condition;
+import org.parc.sqlrestes.domain.KVValue;
+import org.parc.sqlrestes.domain.MethodField;
+import org.parc.sqlrestes.domain.Select;
+import org.parc.sqlrestes.domain.Where;
 import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.spatial.SpatialParamsFactory;
 
@@ -96,7 +114,7 @@ class WhereParser {
     private boolean explanSpecialCondWithBothSidesAreLiterals(SQLBinaryOpExpr bExpr, Where where) throws SqlParseException {
         if ((bExpr.getLeft() instanceof SQLNumericLiteralExpr || bExpr.getLeft() instanceof SQLCharExpr) &&
                 (bExpr.getRight() instanceof SQLNumericLiteralExpr || bExpr.getRight() instanceof SQLCharExpr)
-                ) {
+        ) {
             SQLMethodInvokeExpr sqlMethodInvokeExpr = new SQLMethodInvokeExpr("script", null);
             String operator = bExpr.getOperator().getName();
             if (operator.equals("=")) {
@@ -122,7 +140,7 @@ class WhereParser {
                 Sets.newHashSet("=", "<", ">", ">=", "<=").contains(bExpr.getOperator().getName()) &&
                 !Util.isFromJoinOrUnionTable(bExpr)
 
-                ) {
+        ) {
             SQLMethodInvokeExpr sqlMethodInvokeExpr = new SQLMethodInvokeExpr("script", null);
             String operator = bExpr.getOperator().getName();
             if (operator.equals("=")) {
@@ -349,11 +367,11 @@ class WhereParser {
                 Condition condition = null;
 
                 if (isNested)
-                    condition = new Condition(Where.CONN.valueOf(opear), fieldName,null, methodName, spatialParamsObject, null,nestedType);
+                    condition = new Condition(Where.CONN.valueOf(opear), fieldName, null, methodName, spatialParamsObject, null, nestedType);
                 else if (isChildren)
-                    condition = new Condition(Where.CONN.valueOf(opear), fieldName,null, methodName, spatialParamsObject, null,childrenType);
+                    condition = new Condition(Where.CONN.valueOf(opear), fieldName, null, methodName, spatialParamsObject, null, childrenType);
                 else
-                    condition = new Condition(Where.CONN.valueOf(opear), fieldName,null ,methodName, spatialParamsObject,null, null);
+                    condition = new Condition(Where.CONN.valueOf(opear), fieldName, null, methodName, spatialParamsObject, null, null);
 
                 where.addWhere(condition);
             } else if (methodName.toLowerCase().equals("nested")) {
@@ -363,7 +381,7 @@ class WhereParser {
                     throw new SqlParseException("could not fill nested from expr:" + expr);
                 }
 
-                Condition condition = new Condition(Where.CONN.valueOf(opear), nestedType.path,null, methodName.toUpperCase(), nestedType.where,null);
+                Condition condition = new Condition(Where.CONN.valueOf(opear), nestedType.path, null, methodName.toUpperCase(), nestedType.where, null);
 
                 where.addWhere(condition);
             } else if (methodName.toLowerCase().equals("children")) {
@@ -373,7 +391,7 @@ class WhereParser {
                     throw new SqlParseException("could not fill children from expr:" + expr);
                 }
 
-                Condition condition = new Condition(Where.CONN.valueOf(opear), childrenType.childType,null, methodName.toUpperCase(), childrenType.where,null);
+                Condition condition = new Condition(Where.CONN.valueOf(opear), childrenType.childType, null, methodName.toUpperCase(), childrenType.where, null);
 
                 where.addWhere(condition);
             } else if (methodName.toLowerCase().equals("script")) {
@@ -381,7 +399,7 @@ class WhereParser {
                 if (!scriptFilter.tryParseFromMethodExpr(methodExpr)) {
                     throw new SqlParseException("could not parse script filter");
                 }
-                Condition condition = new Condition(Where.CONN.valueOf(opear), null, null,"SCRIPT", scriptFilter,null);
+                Condition condition = new Condition(Where.CONN.valueOf(opear), null, null, "SCRIPT", scriptFilter, null);
                 where.addWhere(condition);
             } else {
                 throw new SqlParseException("unsupported method: " + methodName);
@@ -418,11 +436,11 @@ class WhereParser {
             Condition condition = null;
 
             if (isNested)
-                condition = new Condition(Where.CONN.valueOf(opear), leftSide,null, sqlIn.isNot() ? "NOT IN" : "IN", subQueryExpression, null,nestedType);
+                condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, sqlIn.isNot() ? "NOT IN" : "IN", subQueryExpression, null, nestedType);
             else if (isChildren)
-                condition = new Condition(Where.CONN.valueOf(opear), leftSide,null, sqlIn.isNot() ? "NOT IN" : "IN", subQueryExpression, null, childrenType);
+                condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, sqlIn.isNot() ? "NOT IN" : "IN", subQueryExpression, null, childrenType);
             else
-                condition = new Condition(Where.CONN.valueOf(opear), leftSide,null, sqlIn.isNot() ? "NOT IN" : "IN", subQueryExpression, null, null);
+                condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, sqlIn.isNot() ? "NOT IN" : "IN", subQueryExpression, null, null);
 
             where.addWhere(condition);
         } else {

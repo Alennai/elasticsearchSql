@@ -2,65 +2,64 @@ package org.parc.sqlrestes.domain;
 
 import java.util.LinkedList;
 
-public class Where implements Cloneable{
+public class Where implements Cloneable {
 
-	public enum CONN {
-		AND, OR;
+    CONN conn;
+    private LinkedList<Where> wheres = new LinkedList<>();
 
-		public CONN negative() {
-			return this == AND ? OR : AND;
-		}
-	}
+    public Where(String connStr) {
+        this.conn = CONN.valueOf(connStr.toUpperCase());
+    }
 
-	public static Where newInstance() {
-		return new Where(CONN.AND);
-	}
+    Where(CONN conn) {
+        this.conn = conn;
+    }
 
-	private LinkedList<Where> wheres = new LinkedList<>();
+    public static Where newInstance() {
+        return new Where(CONN.AND);
+    }
 
-	CONN conn;
+    public void addWhere(Where where) {
+        wheres.add(where);
+    }
 
-	public Where(String connStr) {
-		this.conn = CONN.valueOf(connStr.toUpperCase());
-	}
+    public CONN getConn() {
+        return this.conn;
+    }
 
-	Where(CONN conn) {
-		this.conn = conn;
-	}
+    public void setConn(CONN conn) {
+        this.conn = conn;
+    }
 
-	public void addWhere(Where where) {
-		wheres.add(where);
-	}
+    public LinkedList<Where> getWheres() {
+        return wheres;
+    }
 
-	public CONN getConn() {
-		return this.conn;
-	}
+    @Override
+    public String toString() {
+        if (wheres.size() > 0) {
+            String whereStr = wheres.toString();
+            return this.conn + " ( " + whereStr.substring(1, whereStr.length() - 1) + " ) ";
+        } else {
+            return "";
+        }
 
-	public void setConn(CONN conn) {
-		this.conn = conn;
-	}
-	
-	public LinkedList<Where> getWheres() {
-		return wheres;
-	}
-
-	@Override
-	public String toString(){
-		if(wheres.size()>0){
-			String whereStr = wheres.toString() ;
-			return this.conn + " ( "+whereStr.substring(1,whereStr.length()-1)+" ) " ;
-		}else{
-			return "" ;
-		}
-		
-	}
+    }
 
     @Override
     public Object clone() {
         Where clonedWhere = new Where(this.getConn());
-        for (Where innerWhere : this.getWheres()){
-            clonedWhere.addWhere((Where)innerWhere.clone());
+        for (Where innerWhere : this.getWheres()) {
+            clonedWhere.addWhere((Where) innerWhere.clone());
         }
         return clonedWhere;
+    }
+
+    public enum CONN {
+        AND, OR;
+
+        public CONN negative() {
+            return this == AND ? OR : AND;
+        }
     }
 }

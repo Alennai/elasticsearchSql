@@ -29,7 +29,7 @@ public class ElasticLexer extends MySqlLexer {
             mark = pos;
             bufPos = 1;
             char ch;
-            for (;;) {
+            for (; ; ) {
                 ch = charAt(++pos);
 
                 if (ch == '`') {
@@ -63,7 +63,7 @@ public class ElasticLexer extends MySqlLexer {
             mark = pos;
             bufPos = 1;
             char ch;
-            for (;;) {
+            for (; ; ) {
                 ch = charAt(++pos);
 
                 if (!isElasticIdentifierChar(ch)) {
@@ -88,6 +88,6 @@ public class ElasticLexer extends MySqlLexer {
 
 
     private boolean isElasticIdentifierChar(char ch) {
-        return ch == '*' || ch == ':' || ch == '-'  || ch == '.' || ch == ';' || isIdentifierChar(ch);
+        return ch == '*' || ch == ':' || ch == '-' || ch == '.' || ch == ';' || isIdentifierChar(ch);
     }
 }

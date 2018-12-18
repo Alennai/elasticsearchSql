@@ -6,7 +6,21 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Date;
+import java.sql.NClob;
+import java.sql.Ref;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.RowId;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -327,23 +341,23 @@ class ElasticSearchResultSet implements ResultSet {
     }
 
     @Override
-    public void setFetchDirection(int direction) {
-
-    }
-
-    @Override
     public int getFetchDirection() {
         return 0;
     }
 
     @Override
-    public void setFetchSize(int rows) {
+    public void setFetchDirection(int direction) {
 
     }
 
     @Override
     public int getFetchSize() {
         return 0;
+    }
+
+    @Override
+    public void setFetchSize(int rows) {
+
     }
 
     @Override

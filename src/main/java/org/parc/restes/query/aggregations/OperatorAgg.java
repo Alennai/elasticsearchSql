@@ -10,9 +10,10 @@ import org.parc.restes.query.Aggregation;
 public class OperatorAgg extends Aggregation {
     //默认算子为sum
     private String operator = "sum";
+
     public OperatorAgg(String aggName, String operator) {
         super(aggName);
-        aggContent.put(operator,new JSONObject());
+        aggContent.put(operator, new JSONObject());
         this.operator = operator;
     }
 

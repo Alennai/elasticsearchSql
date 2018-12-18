@@ -14,7 +14,14 @@ import org.apache.http.util.EntityUtils;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
 import org.parc.restes.adapter.DataAdapter;
-import org.parc.restes.entity.*;
+import org.parc.restes.entity.Bucket;
+import org.parc.restes.entity.ESResult;
+import org.parc.restes.entity.ElasticDate;
+import org.parc.restes.entity.Field;
+import org.parc.restes.entity.ICategory;
+import org.parc.restes.entity.IField;
+import org.parc.restes.entity.Index;
+import org.parc.restes.entity.TraceParam;
 import org.parc.restes.service.IEsService;
 import org.parc.restes.util.CurlUtil;
 import org.slf4j.Logger;
@@ -22,8 +29,16 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.parc.restes.util.ESConstant.ALERT_INDEX_MAPPING_POINT;
@@ -31,24 +46,47 @@ import static org.parc.restes.util.ESConstant.ALL_INDEX_MAPPING_POINT;
 
 
 public class IEsServiceImpl implements IEsService {
-    private Map<String, Map<String, Field>> FIELD_GROUP_MAP = new ConcurrentHashMap<>();
-    private RestClient client;
+    private static final Logger logger = LoggerFactory.getLogger(IEsServiceImpl.class);
     private static Map<String, List<Map<String, Object>>> fields = new ConcurrentHashMap<>();
     private final ICategory OTHER_FIELD = new ICategory("other_field", "其他字段", 9999);
-    private static final Logger logger = LoggerFactory.getLogger(IEsServiceImpl.class);
-    private String ip,restPort;
+    private Map<String, Map<String, Field>> FIELD_GROUP_MAP = new ConcurrentHashMap<>();
+    private RestClient client;
+    private String ip, restPort;
 
     private IEsServiceImpl(String jdbcUrl) {
         String hostAndPortArrayStr = jdbcUrl.split("/")[2];
         String[] hostAndPortArray = hostAndPortArrayStr.split(",");
         HttpHost[] hosts = new HttpHost[hostAndPortArray.length];
-        for ( int i=0;i<hostAndPortArray.length;i++) {
-            String hostAndPort=hostAndPortArray[i];
+        for (int i = 0; i < hostAndPortArray.length; i++) {
+            String hostAndPort = hostAndPortArray[i];
             String host = hostAndPort.split(":")[i];
             String port = hostAndPort.split(":")[i];
             hosts[i] = new HttpHost(host, Integer.parseInt(port), "http");
         }
         client = RestClient.builder(hosts).setMaxRetryTimeoutMillis(10000).build();
+    }
+
+    private static String getFieldPointByType(String type) {
+        if (StringUtils.isBlank(type)) {
+            return ALL_INDEX_MAPPING_POINT;
+        } else {
+            switch (type) {
+                case "search":
+                    return ALL_INDEX_MAPPING_POINT;
+                case "alert":
+                    return ALERT_INDEX_MAPPING_POINT;
+                case "scenes":
+//                return SCENES_INDEX_MAPPING_POINT;
+                    break;
+                case "incident":
+//                return INCIDENT_INDEX_MAPPING_POINT;
+                    break;
+                default:
+//                return ALL_INDEX_MAPPING_POINT;
+                    break;
+            }
+            return null;
+        }
     }
 
     @Override
@@ -68,7 +106,7 @@ public class IEsServiceImpl implements IEsService {
         if (_fields != null && !_fields.isEmpty()) {
             return _fields;
         }
-        Response resp = client.performRequest("GET", getFieldPointByType(type), Collections.<String, String>emptyMap());
+        Response resp = client.performRequest("GET", getFieldPointByType(type), Collections.emptyMap());
         Map<ICategory, List<IField>> ic_l_if = json2Fields(EntityUtils.toString(resp.getEntity()), type);
         _fields = new ArrayList<>();
         for (Entry<ICategory, List<IField>> entry : ic_l_if.entrySet()) {
@@ -130,35 +168,12 @@ public class IEsServiceImpl implements IEsService {
         return map;
     }
 
-    private static String getFieldPointByType(String type) {
-        if (StringUtils.isBlank(type)) {
-            return ALL_INDEX_MAPPING_POINT;
-        } else {
-            switch (type) {
-                case "search":
-                    return ALL_INDEX_MAPPING_POINT;
-                case "alert":
-                    return ALERT_INDEX_MAPPING_POINT;
-                case "scenes":
-//                return SCENES_INDEX_MAPPING_POINT;
-                    break;
-                case "incident":
-//                return INCIDENT_INDEX_MAPPING_POINT;
-                    break;
-                default:
-//                return ALL_INDEX_MAPPING_POINT;
-                    break;
-            }
-            return null;
-        }
-    }
-
     @Override
     public ESResult hitsByQuery(String query, String path) throws Exception {
         logger.info("hitsByQuery" + " POST" + " " + path + " " + query);
         HttpEntity entity = new NStringEntity(query,
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
-        Response resp = client.performRequest("POST", path, Collections.<String, String>emptyMap(), entity);
+        Response resp = client.performRequest("POST", path, Collections.emptyMap(), entity);
         return DataAdapter.json2Result(EntityUtils.toString(resp.getEntity()));
     }
 
@@ -167,7 +182,7 @@ public class IEsServiceImpl implements IEsService {
         logger.info("updateByQuery" + " POST" + " " + path + " " + query);
         HttpEntity entity = new NStringEntity(query,
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
-        Response resp = client.performRequest("POST", path, Collections.<String, String>emptyMap(), entity);
+        Response resp = client.performRequest("POST", path, Collections.emptyMap(), entity);
         JSONArray documents = DataAdapter.jsonUpdate(EntityUtils.toString(resp.getEntity()), traceParam);
         StringBuilder result = new StringBuilder();
         for (Object document : documents) {
@@ -184,7 +199,7 @@ public class IEsServiceImpl implements IEsService {
         logger.info("updateByQuery" + " POST" + " " + path + " " + query);
         HttpEntity entity = new NStringEntity(query,
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
-        Response resp = client.performRequest("POST", path, Collections.<String, String>emptyMap(), entity);
+        Response resp = client.performRequest("POST", path, Collections.emptyMap(), entity);
         JSONObject jsonObject = JSON.parseObject(EntityUtils.toString(resp.getEntity()));
         JSONArray jsonArray = jsonObject.getJSONObject("hits").getJSONArray("hits");
         StringBuilder result = new StringBuilder();
@@ -229,7 +244,7 @@ public class IEsServiceImpl implements IEsService {
         HttpEntity entity = new NStringEntity(source,
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
         Response resp = client.performRequest("PUT", "/" + index + "/" + type,
-                Collections.<String, String>emptyMap(), entity);
+                Collections.emptyMap(), entity);
         return EntityUtils.toString(resp.getEntity());
     }
 
@@ -281,34 +296,35 @@ public class IEsServiceImpl implements IEsService {
     }
 
     @Override
-    public boolean scrollDelete(String scrollid)throws Exception {
-        JSONObject jsonObject=new JSONObject();
-        jsonObject.put("scroll_id",scrollid);
+    public boolean scrollDelete(String scrollid) throws Exception {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("scroll_id", scrollid);
         HttpEntity entity = new NStringEntity(jsonObject.toString(),
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
-        Response resp = client.performRequest("DELETE", "/_search/scroll",Collections.<String, String>emptyMap(), entity);
+        Response resp = client.performRequest("DELETE", "/_search/scroll", Collections.emptyMap(), entity);
         JSONObject object = JSONObject.parseObject(EntityUtils.toString(resp.getEntity()));
         return !object.containsKey("error");
     }
 
     @Override
     public long indexCount(String indexes) throws Exception {
-        Response resp = client.performRequest("GET","/"+indexes+ "/_search");
-        JSONObject object =  JSONObject.parseObject(EntityUtils.toString(resp.getEntity()));
+        Response resp = client.performRequest("GET", "/" + indexes + "/_search");
+        JSONObject object = JSONObject.parseObject(EntityUtils.toString(resp.getEntity()));
         if (object.containsKey("hits")) {
             return object.getJSONObject("hits").getLongValue("total");
-        }        return 0;
+        }
+        return 0;
     }
 
     @Override
     public List<Index> indexList() {
-        return CurlUtil.indexList(ip,restPort);
+        return CurlUtil.indexList(ip, restPort);
     }
 
     @Override
-    public Map<String, String> getNodeStats()throws Exception {
+    public Map<String, String> getNodeStats() throws Exception {
         Response resp = client.performRequest("GET", "/_nodes/stats");
-        return  DataAdapter.json2Map(EntityUtils.toString(resp.getEntity()));
+        return DataAdapter.json2Map(EntityUtils.toString(resp.getEntity()));
     }
 
     @Override
@@ -316,7 +332,7 @@ public class IEsServiceImpl implements IEsService {
         logger.info("POST" + " " + typePoint + "\t" + query);
         HttpEntity entity = new NStringEntity(query,
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
-        Response resp = client.performRequest("POST", typePoint, Collections.<String, String>emptyMap(), entity);
+        Response resp = client.performRequest("POST", typePoint, Collections.emptyMap(), entity);
         return DataAdapter.json2SingleField(EntityUtils.toString(resp.getEntity()), field);
 
     }
@@ -337,7 +353,7 @@ public class IEsServiceImpl implements IEsService {
         if (!path.contains("_count")) {
             logger.info(method + " " + path + "\t" + query);
         }
-        Response resp = client.performRequest(method, path, Collections.<String, String>emptyMap(), entity);
+        Response resp = client.performRequest(method, path, Collections.emptyMap(), entity);
         return EntityUtils.toString(resp.getEntity());
     }
 
@@ -347,7 +363,7 @@ public class IEsServiceImpl implements IEsService {
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
         Response resp = client.performRequest("POST",
                 "/.ailpha/" + type + "/" + UUID.randomUUID().toString().replaceAll("-", ""),
-                Collections.<String, String>emptyMap(), entity);
+                Collections.emptyMap(), entity);
         return EntityUtils.toString(resp.getEntity());
     }
 
@@ -356,14 +372,14 @@ public class IEsServiceImpl implements IEsService {
         HttpEntity entity = new NStringEntity(template,
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
         Response resp = client.performRequest("PUT", "/" + index + "/" + type + "/" + uuid,
-                Collections.<String, String>emptyMap(), entity);
+                Collections.emptyMap(), entity);
         return EntityUtils.toString(resp.getEntity());
     }
 
     @Override
     public String command(String method, String path) throws Exception {
         return EntityUtils
-                .toString(client.performRequest(method, path, Collections.<String, String>emptyMap()).getEntity());
+                .toString(client.performRequest(method, path, Collections.emptyMap()).getEntity());
     }
 
     @Override
@@ -432,7 +448,7 @@ public class IEsServiceImpl implements IEsService {
             if (interval == null || "".equals(interval.trim())) {
                 return 1L;
             }
-            String suffix = interval.substring(interval.length() - 1, interval.length());
+            String suffix = interval.substring(interval.length() - 1);
             String time = interval.substring(0, interval.length() - 1);
             switch (suffix) {
                 case "s":
@@ -465,7 +481,7 @@ public class IEsServiceImpl implements IEsService {
         logger.info("hitsByQuery" + " POST" + " " + path + " " + query);
         HttpEntity entity = new NStringEntity(query,
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
-        Response resp = client.performRequest("POST", path, Collections.<String, String>emptyMap(), entity);
+        Response resp = client.performRequest("POST", path, Collections.emptyMap(), entity);
         return DataAdapter.seriesByDateHistogram(EntityUtils.toString(resp.getEntity()), "yyyy-MM-dd HH:mm:ss");
     }
 

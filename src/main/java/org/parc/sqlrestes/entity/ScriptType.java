@@ -3,10 +3,10 @@ package org.parc.sqlrestes.entity;
 /**
  * Created by xusiao on 2018/5/4.
  */
-public class ScriptType  {
+public class ScriptType {
 
-    public static ScriptType INLINE=new ScriptType(0, new ParseField("source", "inline"), false);
-    public static ScriptType STORED=new ScriptType(1, new ParseField("id", "stored"), false);
+    public static ScriptType INLINE = new ScriptType(0, new ParseField("source", "inline"), false);
+    public static ScriptType STORED = new ScriptType(1, new ParseField("id", "stored"), false);
     private final int id;
     private final ParseField parseField;
     private final boolean defaultEnabled;
@@ -26,7 +26,6 @@ public class ScriptType  {
         this.parseField = parseField;
         this.defaultEnabled = defaultEnabled;
     }
-
 
 
     public int getId() {

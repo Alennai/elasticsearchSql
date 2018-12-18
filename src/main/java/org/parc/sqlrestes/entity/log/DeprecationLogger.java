@@ -11,7 +11,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
 import java.time.temporal.ChronoField;
-import java.util.*;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,154 +27,13 @@ import java.util.regex.Pattern;
  * Created by xusiao on 2018/5/4.
  */
 public class DeprecationLogger {
-    private final Logger logger;
     private static final CopyOnWriteArraySet<ThreadContext> THREAD_CONTEXT = new CopyOnWriteArraySet();
-    private Set<String> keys = Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap() {
-        protected boolean removeEldestEntry( ) {
-            return this.size() > 128;
-        }
-    }));
     private static final String WARNING_FORMAT;
     private static final DateTimeFormatter RFC_7231_DATE_TIME;
     private static final ZoneId GMT;
+    private static final Charset UTF_8;
     private static Pattern WARNING_HEADER_PATTERN;
     private static BitSet doesNotNeedEncoding;
-    private static final Charset UTF_8;
-
-    public static void setThreadContext(ThreadContext threadContext) {
-        Objects.requireNonNull(threadContext, "Cannot register a null ThreadContext");
-        if(!THREAD_CONTEXT.add(threadContext)) {
-            throw new IllegalStateException("Double-setting ThreadContext not allowed!");
-        }
-    }
-
-    public static void removeThreadContext(ThreadContext threadContext) {
-        assert threadContext != null;
-
-        if(!THREAD_CONTEXT.remove(threadContext)) {
-            throw new IllegalStateException("Removing unknown ThreadContext not allowed!");
-        }
-    }
-
-    public DeprecationLogger(Logger parentLogger) {
-        String name = parentLogger.getName();
-        if(name.startsWith("org.elasticsearch")) {
-            name = name.replace("org.elasticsearch.", "org.elasticsearch.deprecation.");
-        } else {
-            name = "deprecation." + name;
-        }
-
-        this.logger = LogManager.getLogger(name);
-    }
-
-    public void deprecated(String msg, Object... params) {
-        this.deprecated(THREAD_CONTEXT, msg, params);
-    }
-
-    public void deprecatedAndMaybeLog(String key, String msg, Object... params) {
-        this.deprecated(THREAD_CONTEXT, msg, this.keys.add(key), params);
-    }
-
-    private static String extractWarningValueFromWarningHeader(String s) {
-        int firstQuote = s.indexOf(34);
-        int lastQuote = s.lastIndexOf(34);
-        int penultimateQuote = s.lastIndexOf(34, lastQuote - 1);
-        String warningValue = s.substring(firstQuote + 1, penultimateQuote - 2);
-
-        assert assertWarningValue(s, warningValue);
-
-        return warningValue;
-    }
-
-    private static boolean assertWarningValue(String s, String warningValue) {
-        Matcher matcher = WARNING_HEADER_PATTERN.matcher(s);
-        boolean matches = matcher.matches();
-
-        assert matches;
-
-        return matcher.group(1).equals(warningValue);
-    }
-
-    private void deprecated(Set<ThreadContext> threadContexts, String message, Object... params) {
-        this.deprecated(threadContexts, message, true, params);
-    }
-
-    @SuppressLoggerChecks(
-            reason = "safely delegates to logger"
-    )
-    private void deprecated(Set<ThreadContext> threadContexts, String message, boolean log, Object... params) {
-        Iterator iterator = threadContexts.iterator();
-        if(iterator.hasNext()) {
-            String formattedMessage = LoggerMessageFormat.format(message, params);
-            String warningHeaderValue = formatWarning(formattedMessage);
-
-            assert WARNING_HEADER_PATTERN.matcher(warningHeaderValue).matches();
-
-            assert extractWarningValueFromWarningHeader(warningHeaderValue).equals(escapeAndEncode(formattedMessage));
-
-            while(iterator.hasNext()) {
-                try {
-                    ThreadContext next = (ThreadContext)iterator.next();
-//                    next.addResponseHeader("Warning", warningHeaderValue, DeprecationLogger::extractWarningValueFromWarningHeader);
-                } catch (IllegalStateException ignored) {
-                }
-            }
-        }
-
-        if(log) {
-            this.logger.warn(message, params);
-        }
-
-    }
-
-    private static String formatWarning(String s) {
-        return String.format(Locale.ROOT, WARNING_FORMAT, escapeAndEncode(s), RFC_7231_DATE_TIME.format(ZonedDateTime.now(GMT)));
-    }
-
-    private static String escapeAndEncode(String s) {
-        return encode(escapeBackslashesAndQuotes(s));
-    }
-
-    private static String escapeBackslashesAndQuotes(String s) {
-        return s.replaceAll("([\"\\\\])", "\\\\$1");
-    }
-
-    private static String encode(String s) {
-        StringBuilder sb = new StringBuilder(s.length());
-        boolean encodingNeeded = false;
-        int i = 0;
-
-        while(true) {
-            while(i < s.length()) {
-                char current = s.charAt(i);
-                if(doesNotNeedEncoding.get(current)) {
-                    sb.append((char)current);
-                    ++i;
-                } else {
-                    int startIndex = i;
-
-                    do {
-                        ++i;
-                    } while(i < s.length() && !doesNotNeedEncoding.get(s.charAt(i)));
-
-                    byte[] bytes = s.substring(startIndex, i).getBytes(UTF_8);
-
-                    for(int j = 0; j < bytes.length; ++j) {
-                        sb.append('%').append(hex(bytes[j] >> 4)).append(hex(bytes[j]));
-                    }
-
-                    encodingNeeded = true;
-                }
-            }
-
-            return encodingNeeded?sb.toString():s;
-        }
-    }
-
-    private static char hex(int b) {
-        char ch = Character.forDigit(b & 15, 16);
-        return Character.isLetter(ch)?Character.toUpperCase(ch):ch;
-    }
 
     static {
         WARNING_FORMAT = String.format(Locale.ROOT, "299 Elasticsearch-%s%s-%s ") + "\"%s\" \"%s\"";
@@ -203,25 +69,167 @@ public class DeprecationLogger {
         doesNotNeedEncoding.set(34);
 
         int var2;
-        for(var2 = 35; var2 <= 36; ++var2) {
+        for (var2 = 35; var2 <= 36; ++var2) {
             doesNotNeedEncoding.set(var2);
         }
 
-        for(var2 = 38; var2 <= 91; ++var2) {
+        for (var2 = 38; var2 <= 91; ++var2) {
             doesNotNeedEncoding.set(var2);
         }
 
-        for(var2 = 93; var2 <= 126; ++var2) {
+        for (var2 = 93; var2 <= 126; ++var2) {
             doesNotNeedEncoding.set(var2);
         }
 
-        for(var2 = 128; var2 <= 255; ++var2) {
+        for (var2 = 128; var2 <= 255; ++var2) {
             doesNotNeedEncoding.set(var2);
         }
 
         assert !doesNotNeedEncoding.get(37);
 
         UTF_8 = Charset.forName("UTF-8");
+    }
+
+    private final Logger logger;
+    private Set<String> keys = Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap() {
+        protected boolean removeEldestEntry() {
+            return this.size() > 128;
+        }
+    }));
+
+    public DeprecationLogger(Logger parentLogger) {
+        String name = parentLogger.getName();
+        if (name.startsWith("org.elasticsearch")) {
+            name = name.replace("org.elasticsearch.", "org.elasticsearch.deprecation.");
+        } else {
+            name = "deprecation." + name;
+        }
+
+        this.logger = LogManager.getLogger(name);
+    }
+
+    public static void setThreadContext(ThreadContext threadContext) {
+        Objects.requireNonNull(threadContext, "Cannot register a null ThreadContext");
+        if (!THREAD_CONTEXT.add(threadContext)) {
+            throw new IllegalStateException("Double-setting ThreadContext not allowed!");
+        }
+    }
+
+    public static void removeThreadContext(ThreadContext threadContext) {
+        assert threadContext != null;
+
+        if (!THREAD_CONTEXT.remove(threadContext)) {
+            throw new IllegalStateException("Removing unknown ThreadContext not allowed!");
+        }
+    }
+
+    private static String extractWarningValueFromWarningHeader(String s) {
+        int firstQuote = s.indexOf(34);
+        int lastQuote = s.lastIndexOf(34);
+        int penultimateQuote = s.lastIndexOf(34, lastQuote - 1);
+        String warningValue = s.substring(firstQuote + 1, penultimateQuote - 2);
+
+        assert assertWarningValue(s, warningValue);
+
+        return warningValue;
+    }
+
+    private static boolean assertWarningValue(String s, String warningValue) {
+        Matcher matcher = WARNING_HEADER_PATTERN.matcher(s);
+        boolean matches = matcher.matches();
+
+        assert matches;
+
+        return matcher.group(1).equals(warningValue);
+    }
+
+    private static String formatWarning(String s) {
+        return String.format(Locale.ROOT, WARNING_FORMAT, escapeAndEncode(s), RFC_7231_DATE_TIME.format(ZonedDateTime.now(GMT)));
+    }
+
+    private static String escapeAndEncode(String s) {
+        return encode(escapeBackslashesAndQuotes(s));
+    }
+
+    private static String escapeBackslashesAndQuotes(String s) {
+        return s.replaceAll("([\"\\\\])", "\\\\$1");
+    }
+
+    private static String encode(String s) {
+        StringBuilder sb = new StringBuilder(s.length());
+        boolean encodingNeeded = false;
+        int i = 0;
+
+        while (true) {
+            while (i < s.length()) {
+                char current = s.charAt(i);
+                if (doesNotNeedEncoding.get(current)) {
+                    sb.append(current);
+                    ++i;
+                } else {
+                    int startIndex = i;
+
+                    do {
+                        ++i;
+                    } while (i < s.length() && !doesNotNeedEncoding.get(s.charAt(i)));
+
+                    byte[] bytes = s.substring(startIndex, i).getBytes(UTF_8);
+
+                    for (int j = 0; j < bytes.length; ++j) {
+                        sb.append('%').append(hex(bytes[j] >> 4)).append(hex(bytes[j]));
+                    }
+
+                    encodingNeeded = true;
+                }
+            }
+
+            return encodingNeeded ? sb.toString() : s;
+        }
+    }
+
+    private static char hex(int b) {
+        char ch = Character.forDigit(b & 15, 16);
+        return Character.isLetter(ch) ? Character.toUpperCase(ch) : ch;
+    }
+
+    public void deprecated(String msg, Object... params) {
+        this.deprecated(THREAD_CONTEXT, msg, params);
+    }
+
+    public void deprecatedAndMaybeLog(String key, String msg, Object... params) {
+        this.deprecated(THREAD_CONTEXT, msg, this.keys.add(key), params);
+    }
+
+    private void deprecated(Set<ThreadContext> threadContexts, String message, Object... params) {
+        this.deprecated(threadContexts, message, true, params);
+    }
+
+    @SuppressLoggerChecks(
+            reason = "safely delegates to logger"
+    )
+    private void deprecated(Set<ThreadContext> threadContexts, String message, boolean log, Object... params) {
+        Iterator iterator = threadContexts.iterator();
+        if (iterator.hasNext()) {
+            String formattedMessage = LoggerMessageFormat.format(message, params);
+            String warningHeaderValue = formatWarning(formattedMessage);
+
+            assert WARNING_HEADER_PATTERN.matcher(warningHeaderValue).matches();
+
+            assert extractWarningValueFromWarningHeader(warningHeaderValue).equals(escapeAndEncode(formattedMessage));
+
+            while (iterator.hasNext()) {
+                try {
+                    ThreadContext next = (ThreadContext) iterator.next();
+//                    next.addResponseHeader("Warning", warningHeaderValue, DeprecationLogger::extractWarningValueFromWarningHeader);
+                } catch (IllegalStateException ignored) {
+                }
+            }
+        }
+
+        if (log) {
+            this.logger.warn(message, params);
+        }
+
     }
 }
 

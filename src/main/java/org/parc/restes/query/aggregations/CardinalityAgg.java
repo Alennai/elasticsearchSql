@@ -4,10 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import org.parc.restes.query.Aggregation;
 
 public class CardinalityAgg extends Aggregation {
-    private static final String agg_operator="cardinality";
+    private static final String agg_operator = "cardinality";
+
     public CardinalityAgg(String aggName) {
         super(aggName);
-        aggContent.put(agg_operator,new JSONObject());
+        aggContent.put(agg_operator, new JSONObject());
     }
 
     public CardinalityAgg field(String field) {

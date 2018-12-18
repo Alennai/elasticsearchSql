@@ -3,7 +3,7 @@ package org.parc.sqlrestes.entity;
 /**
  * Created by xusiao on 2018/5/4.
  */
-abstract class  Query {
+abstract class Query {
     private final int CLASS_NAME_HASH = this.getClass().getName().hashCode();
 
     Query() {

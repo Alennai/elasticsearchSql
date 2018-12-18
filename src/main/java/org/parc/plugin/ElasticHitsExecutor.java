@@ -10,4 +10,6 @@ import java.io.IOException;
  */
 public interface ElasticHitsExecutor {
     void run() throws IOException, SqlParseException;
-    SearchHits getHits();}
+
+    SearchHits getHits();
+}

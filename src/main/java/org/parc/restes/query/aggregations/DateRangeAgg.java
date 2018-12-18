@@ -5,11 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import org.parc.restes.query.Aggregation;
 
 public class DateRangeAgg extends Aggregation {
-    private static final String agg_operator="date_range";
+    private static final String agg_operator = "date_range";
 
     public DateRangeAgg(String aggName) {
         super(aggName);
-        aggContent.put("date_range",new JSONObject());
+        aggContent.put("date_range", new JSONObject());
     }
 
     public DateRangeAgg field(String field) {
@@ -30,7 +30,7 @@ public class DateRangeAgg extends Aggregation {
         if (to != null) {
             rangeObj.put("to", to);
         }
-        if ( aggContent.getJSONObject(agg_operator).containsKey("ranges")) {
+        if (aggContent.getJSONObject(agg_operator).containsKey("ranges")) {
             JSONArray ranges = aggContent.getJSONObject(agg_operator).getJSONArray("ranges");
             ranges.add(rangeObj);
         } else {

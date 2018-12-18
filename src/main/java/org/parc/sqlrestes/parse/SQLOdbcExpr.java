@@ -29,11 +29,11 @@ class SQLOdbcExpr extends SQLCharExpr {
 
     private static final long serialVersionUID = 1L;
 
-    public SQLOdbcExpr(){
+    public SQLOdbcExpr() {
 
     }
 
-    public SQLOdbcExpr(String text){
+    public SQLOdbcExpr(String text) {
         super(text);
     }
 

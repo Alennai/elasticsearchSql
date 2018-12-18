@@ -5,10 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import org.parc.restes.query.Aggregation;
 
 public class RangeAgg extends Aggregation {
-    private static final String agg_operator="range";
+    private static final String agg_operator = "range";
+
     public RangeAgg(String aggName) {
         super(aggName);
-        aggContent.put(agg_operator,new JSONObject());
+        aggContent.put(agg_operator, new JSONObject());
     }
 
     public RangeAgg field(String field) {

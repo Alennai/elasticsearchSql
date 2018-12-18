@@ -34,12 +34,12 @@ public class SqlElasticSearchRequestBuilder implements SqlElasticRequestBuilder 
 
     @Override
     public ActionRequestBuilder getBuilder() {
-     return null;
+        return null;
 //        return requestBuilder;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.requestBuilder.toString();
     }
 }

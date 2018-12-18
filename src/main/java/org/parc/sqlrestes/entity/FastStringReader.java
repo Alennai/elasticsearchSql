@@ -19,7 +19,7 @@ class FastStringReader extends Reader implements CharSequence {
     }
 
     private void ensureOpen() throws IOException {
-        if(this.closed) {
+        if (this.closed) {
             throw new IOException("Stream closed");
         }
     }
@@ -38,14 +38,14 @@ class FastStringReader extends Reader implements CharSequence {
 
     public int read() throws IOException {
         this.ensureOpen();
-        return this.next >= this.length?-1:this.str.charAt(this.next++);
+        return this.next >= this.length ? -1 : this.str.charAt(this.next++);
     }
 
     public int read(char[] cbuf, int off, int len) throws IOException {
         this.ensureOpen();
-        if(len == 0) {
+        if (len == 0) {
             return 0;
-        } else if(this.next >= this.length) {
+        } else if (this.next >= this.length) {
             return -1;
         } else {
             int n = Math.min(this.length - this.next, len);
@@ -57,12 +57,12 @@ class FastStringReader extends Reader implements CharSequence {
 
     public long skip(long ns) throws IOException {
         this.ensureOpen();
-        if(this.next >= this.length) {
+        if (this.next >= this.length) {
             return 0L;
         } else {
-            long n = Math.min((long)(this.length - this.next), ns);
-            n = Math.max((long)(-this.next), n);
-            this.next = (int)((long)this.next + n);
+            long n = Math.min((long) (this.length - this.next), ns);
+            n = Math.max((long) (-this.next), n);
+            this.next = (int) ((long) this.next + n);
             return n;
         }
     }
@@ -77,7 +77,7 @@ class FastStringReader extends Reader implements CharSequence {
     }
 
     public void mark(int readAheadLimit) throws IOException {
-        if(readAheadLimit < 0) {
+        if (readAheadLimit < 0) {
             throw new IllegalArgumentException("Read-ahead limit < 0");
         } else {
             this.ensureOpen();

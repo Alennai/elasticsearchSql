@@ -1,10 +1,21 @@
 package org.parc.sqlrestes.entity;
 
-import org.joda.time.*;
+import org.joda.time.Chronology;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeField;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.DateTimeZone;
+import org.joda.time.DurationField;
+import org.joda.time.DurationFieldType;
+import org.joda.time.ReadablePartial;
 import org.joda.time.field.DividedDateTimeField;
 import org.joda.time.field.OffsetDateTimeField;
 import org.joda.time.field.ScaledDurationField;
-import org.joda.time.format.*;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.DateTimeParser;
+import org.joda.time.format.DateTimeParserBucket;
+import org.joda.time.format.DateTimePrinter;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -399,29 +410,29 @@ class Joda {
         }
 
         public int estimatePrintedLength() {
-            return this.hasMilliSecondPrecision?19:16;
+            return this.hasMilliSecondPrecision ? 19 : 16;
         }
 
         public void printTo(StringBuffer buf, long instant, Chronology chrono, int displayOffset, DateTimeZone displayZone, Locale locale) {
-            if(this.hasMilliSecondPrecision) {
-                buf.append(instant - (long)displayOffset);
+            if (this.hasMilliSecondPrecision) {
+                buf.append(instant - (long) displayOffset);
             } else {
-                buf.append((instant - (long)displayOffset) / 1000L);
+                buf.append((instant - (long) displayOffset) / 1000L);
             }
 
         }
 
         public void printTo(Writer out, long instant, Chronology chrono, int displayOffset, DateTimeZone displayZone, Locale locale) throws IOException {
-            if(this.hasMilliSecondPrecision) {
-                out.write(String.valueOf(instant - (long)displayOffset));
+            if (this.hasMilliSecondPrecision) {
+                out.write(String.valueOf(instant - (long) displayOffset));
             } else {
-                out.append(String.valueOf((instant - (long)displayOffset) / 1000L));
+                out.append(String.valueOf((instant - (long) displayOffset) / 1000L));
             }
 
         }
 
         public void printTo(StringBuffer buf, ReadablePartial partial, Locale locale) {
-            if(this.hasMilliSecondPrecision) {
+            if (this.hasMilliSecondPrecision) {
                 buf.append(this.getDateTimeMillis(partial));
             } else {
                 buf.append(this.getDateTimeMillis(partial) / 1000L);
@@ -430,7 +441,7 @@ class Joda {
         }
 
         public void printTo(Writer out, ReadablePartial partial, Locale locale) throws IOException {
-            if(this.hasMilliSecondPrecision) {
+            if (this.hasMilliSecondPrecision) {
                 out.append(String.valueOf(this.getDateTimeMillis(partial)));
             } else {
                 out.append(String.valueOf(this.getDateTimeMillis(partial) / 1000L));
@@ -458,23 +469,23 @@ class Joda {
         }
 
         public int estimateParsedLength() {
-            return this.hasMilliSecondPrecision?19:16;
+            return this.hasMilliSecondPrecision ? 19 : 16;
         }
 
         public int parseInto(DateTimeParserBucket bucket, String text, int position) {
             boolean isPositive = !text.startsWith("-");
             int firstDotIndex = text.indexOf(46);
-            boolean isTooLong = (firstDotIndex == -1?text.length():firstDotIndex) > this.estimateParsedLength();
-            if(bucket.getZone() != DateTimeZone.UTC) {
-                String factor1 = this.hasMilliSecondPrecision?"epoch_millis":"epoch_second";
+            boolean isTooLong = (firstDotIndex == -1 ? text.length() : firstDotIndex) > this.estimateParsedLength();
+            if (bucket.getZone() != DateTimeZone.UTC) {
+                String factor1 = this.hasMilliSecondPrecision ? "epoch_millis" : "epoch_second";
                 throw new IllegalArgumentException("time_zone must be UTC for format [" + factor1 + "]");
-            } else if(isPositive && isTooLong) {
+            } else if (isPositive && isTooLong) {
                 return -1;
             } else {
-                int factor = this.hasMilliSecondPrecision?1:1000;
+                int factor = this.hasMilliSecondPrecision ? 1 : 1000;
 
                 try {
-                    long e = (new BigDecimal(text)).longValue() * (long)factor;
+                    long e = (new BigDecimal(text)).longValue() * (long) factor;
                     DateTime dt = new DateTime(e, DateTimeZone.UTC);
                     bucket.saveField(DateTimeFieldType.year(), dt.getYear());
                     bucket.saveField(DateTimeFieldType.monthOfYear(), dt.getMonthOfYear());

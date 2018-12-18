@@ -1,31 +1,32 @@
 package org.parc.restes.entity;
 
 class BdResponse {
-	private String code;
-	private String message;
-	private String respMsg;
-	public String getRespMsg() {
-		return respMsg;
-	}
+    private String code;
+    private String message;
+    private String respMsg;
 
-	public void setRespMsg(String respMsg) {
-		this.respMsg = respMsg;
-	}
+    public String getRespMsg() {
+        return respMsg;
+    }
 
-	public String getCode() {
-		return code;
-	}
+    public void setRespMsg(String respMsg) {
+        this.respMsg = respMsg;
+    }
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
 }

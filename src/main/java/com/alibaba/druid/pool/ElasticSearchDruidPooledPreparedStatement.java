@@ -57,12 +57,12 @@ class ElasticSearchDruidPooledPreparedStatement extends DruidPooledPreparedState
         }
     }
 
-    private ObjectResult getObjectResult(boolean flat, String query, boolean includeScore, boolean includeType, boolean includeId) throws SqlParseException, SQLFeatureNotSupportedException, Exception {
+    private ObjectResult getObjectResult(boolean flat, String query, boolean includeScore, boolean includeType, boolean includeId) throws Exception {
         SearchDao searchDao = new org.parc.sqlrestes.SearchDao(client);
 
         //String rewriteSQL = searchDao.explain(getSql()).explain().explain();
 
-       QueryAction queryAction = searchDao.explain(query);
+        QueryAction queryAction = searchDao.explain(query);
         Object execution = QueryActionElasticExecutor.executeAnyAction(searchDao.getClient(), queryAction);
         return new ObjectResultsExtractor(includeScore, includeType, includeId).extractResults(execution, flat);
     }

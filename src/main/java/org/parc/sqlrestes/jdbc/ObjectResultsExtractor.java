@@ -15,7 +15,12 @@ import org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStat
 import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
 import org.parc.sqlrestes.Util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by allwefantasy on 8/30/16.
@@ -46,9 +51,9 @@ public class ObjectResultsExtractor {
             List<List<Object>> lines = new ArrayList<>();
             lines.add(new ArrayList<>());
             handleAggregations((Aggregations) queryResult, headers, lines);
-            
+
             // remove empty line。
-            if(lines.get(0).size() == 0) {
+            if (lines.get(0).size() == 0) {
                 lines.remove(0);
             }
             //todo: need to handle more options for aggregations:

@@ -22,4 +22,4 @@ public class QueryBuilder {
 //default QueryBuilder rewrite(QueryRewriteContext queryShardContext) throws IOException {
 //        return this;
 //        }
-        }
+}

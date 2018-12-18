@@ -11,54 +11,52 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.List;
 
 public class ESResult {
-	private int total;
-	private String scrollid;
-	private List<JSONObject> documents;
-	private JSONObject aggregation;
+    private int total;
+    private String scrollid;
+    private List<JSONObject> documents;
+    private JSONObject aggregation;
 
-	public JSONObject getAggregation() {
-		return aggregation;
-	}
+    public JSONObject getAggregation() {
+        return aggregation;
+    }
 
-	void setAggregation(JSONObject aggregation) {
-		this.aggregation = aggregation;
-	}
+    void setAggregation(JSONObject aggregation) {
+        this.aggregation = aggregation;
+    }
 
-	/**
-	 * @return the total
-	 */
-	public int getTotal() {
-		return total;
-	}
+    /**
+     * @return the total
+     */
+    public int getTotal() {
+        return total;
+    }
 
-	/**
-	 * @param total
-	 *            the total to set
-	 */
+    /**
+     * @param total the total to set
+     */
     void setTotal(int total) {
-		this.total = total;
-	}
+        this.total = total;
+    }
 
-	/**
-	 * @return the documents
-	 */
-	public List<JSONObject> getDocuments() {
-		return documents;
-	}
+    /**
+     * @return the documents
+     */
+    public List<JSONObject> getDocuments() {
+        return documents;
+    }
 
-	public String getScrollid() {
-		return scrollid;
-	}
-
-	/**
-	 * @param documents
-
-	 *            the documents to set
-	 */
+    /**
+     * @param documents the documents to set
+     */
     void setDocuments(List<JSONObject> documents) {
-		this.documents = documents;
-	}
+        this.documents = documents;
+    }
 
-	void setScrollid(String scrollid) {this.scrollid=scrollid;
-	}
+    public String getScrollid() {
+        return scrollid;
+    }
+
+    void setScrollid(String scrollid) {
+        this.scrollid = scrollid;
+    }
 }

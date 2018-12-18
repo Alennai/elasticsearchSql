@@ -6,10 +6,11 @@ import org.joda.time.DateTimeZone;
 import org.parc.restes.query.Aggregation;
 
 public class DateHistogram extends Aggregation {
-    private static final String agg_operator="date_histogram";
+    private static final String agg_operator = "date_histogram";
+
     public DateHistogram(String aggName) {
         super(aggName);
-        aggContent.put(agg_operator,new JSONObject());
+        aggContent.put(agg_operator, new JSONObject());
     }
 
     public DateHistogram field(String field) {
@@ -59,6 +60,12 @@ public class DateHistogram extends Aggregation {
         return this;
     }
 
+    @Override
+    public DateHistogram subAggregation(Aggregation aggregation) {
+        aggContent.put("aggregations", aggregation.getContent());
+        return this;
+    }
+
     public static class DateHistogramInterval {
 
         public static DateHistogramInterval SECOND = new DateHistogramInterval("1s");
@@ -69,6 +76,11 @@ public class DateHistogram extends Aggregation {
         public static DateHistogramInterval MONTH = new DateHistogramInterval("1M");
         public static DateHistogramInterval QUARTER = new DateHistogramInterval("1q");
         public static DateHistogramInterval YEAR = new DateHistogramInterval("1y");
+        private final String expression;
+
+        DateHistogramInterval(String expression) {
+            this.expression = expression;
+        }
 
         public static DateHistogramInterval seconds(int sec) {
             return new DateHistogramInterval(sec + "s");
@@ -90,22 +102,10 @@ public class DateHistogram extends Aggregation {
             return new DateHistogramInterval(weeks + "w");
         }
 
-        private final String expression;
-
-        DateHistogramInterval(String expression) {
-            this.expression = expression;
-        }
-
         @Override
         public String toString() {
             return expression;
         }
-    }
-
-    @Override
-    public DateHistogram subAggregation(Aggregation aggregation) {
-        aggContent.put("aggregations", aggregation.getContent());
-        return this;
     }
 
 }

@@ -12,104 +12,101 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Map;
 
 public class IField {
-	private String alias;
-	private String name;
-	private String type;
-	private Map<String, Object> meta;
-	private boolean agg;
+    private String alias;
+    private String name;
+    private String type;
+    private Map<String, Object> meta;
+    private boolean agg;
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     *
+     */
+    public IField() {
+        super();
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	/**
-	 * @return the meta
-	 */
-	public Map<String, Object> getMeta() {
-		return meta;
-	}
-
-	/**
-	 * @param meta
-	 *            the meta to set
-	 */
-	public void setMeta(Map<String, Object> meta) {
-		this.meta = meta;
-	}
-
-	/**
-	 * 
-	 */
-	public IField() {
-		super();
-	}
-
-	public IField(String name, JSONObject mt) {
-		this.name = name;
+    public IField(String name, JSONObject mt) {
+        this.name = name;
 //		this.alias = DictionaryCache.field(name);
-		this.meta = mt;
-	}
+        this.meta = mt;
+    }
 
-	public IField(String name, String alias, JSONObject mt) {
-		this.name = name;
-		if (StringUtils.isBlank(alias)) {
+    public IField(String name, String alias, JSONObject mt) {
+        this.name = name;
+        if (StringUtils.isBlank(alias)) {
 //			this.alias = DictionaryCache.field(name);
-		} else {
-			this.alias = alias;
-		}
-		this.meta = mt;
-	}
+        } else {
+            this.alias = alias;
+        }
+        this.meta = mt;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return name + ":" + alias;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	public String getAlias() {
-		return alias;
-	}
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	public boolean isAgg() {
-		return agg;
-	}
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public void setAgg(boolean agg) {
-		this.agg = agg;
-	}
+    /**
+     * @return the meta
+     */
+    public Map<String, Object> getMeta() {
+        return meta;
+    }
+
+    /**
+     * @param meta the meta to set
+     */
+    public void setMeta(Map<String, Object> meta) {
+        this.meta = meta;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return name + ":" + alias;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public boolean isAgg() {
+        return agg;
+    }
+
+    public void setAgg(boolean agg) {
+        this.agg = agg;
+    }
 
 }

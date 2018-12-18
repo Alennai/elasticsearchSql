@@ -11,10 +11,10 @@ import org.parc.sqlrestes.query.QueryAction;
 class ESMultiQueryActionFactory {
 
     public static QueryAction createMultiQueryAction(Client client, MultiQuerySelect multiSelect) throws SqlParseException {
-        switch (multiSelect.getOperation()){
+        switch (multiSelect.getOperation()) {
             case UNION_ALL:
             case UNION:
-                return new MultiQueryAction((RestClient) client,multiSelect);
+                return new MultiQueryAction((RestClient) client, multiSelect);
             default:
                 throw new SqlParseException("only supports union and union all");
         }

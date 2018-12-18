@@ -12,28 +12,29 @@ import org.elasticsearch.client.RestClient;
  */
 public class ShowQueryAction extends QueryAction {
     private String sql;
+
     public ShowQueryAction(RestClient client, String sql) {
-        super(client,null);
+        super(client, null);
         this.sql = sql;
     }
 
     @Override
     public SqlElasticRequestBuilder explain() {
-        String sql = this.sql.replaceAll("\\s+"," ");
+        String sql = this.sql.replaceAll("\\s+", " ");
         //todo: support indices with space?
         String indexName = sql.split(" ")[1];
-        final GetIndexRequestBuilder indexRequestBuilder ;
+        final GetIndexRequestBuilder indexRequestBuilder;
         String type = null;
-        if(indexName.contains("/")){
+        if (indexName.contains("/")) {
             String[] indexAndType = indexName.split("\\/");
             indexName = indexAndType[0];
             type = indexAndType[1];
         }
 //        indexRequestBuilder = client.admin().indices().prepareGetIndex();
-        indexRequestBuilder =null;
-        if(!indexName.equals("*")){
+        indexRequestBuilder = null;
+        if (!indexName.equals("*")) {
             indexRequestBuilder.addIndices(indexName);
-            if(type!=null && !type.equals("")){
+            if (type != null && !type.equals("")) {
                 indexRequestBuilder.setTypes(type);
             }
         }

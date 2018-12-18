@@ -16,10 +16,10 @@ public class RangeQueryBuilder {
     public static final ParseField GTE_FIELD = new ParseField("gte");
     public static final ParseField FROM_FIELD = new ParseField("from");
     public static final ParseField TO_FIELD = new ParseField("to");
-    private static final ParseField INCLUDE_LOWER_FIELD = new ParseField("include_lower");
-    private static final ParseField INCLUDE_UPPER_FIELD = new ParseField("include_upper");
     public static final ParseField GT_FIELD = new ParseField("gt");
     public static final ParseField LT_FIELD = new ParseField("lt");
+    private static final ParseField INCLUDE_LOWER_FIELD = new ParseField("include_lower");
+    private static final ParseField INCLUDE_UPPER_FIELD = new ParseField("include_upper");
     private static final ParseField TIME_ZONE_FIELD = new ParseField("time_zone");
     private static final ParseField FORMAT_FIELD = new ParseField("format");
     private static final ParseField RELATION_FIELD = new ParseField("relation");
@@ -33,7 +33,7 @@ public class RangeQueryBuilder {
     private ShapeRelation relation;
 
     public RangeQueryBuilder(String fieldName) {
-        if(Strings.isEmpty(fieldName)) {
+        if (Strings.isEmpty(fieldName)) {
             throw new IllegalArgumentException("field name is null or empty");
         } else {
             this.fieldName = fieldName;
@@ -160,7 +160,7 @@ public class RangeQueryBuilder {
     }
 
     public RangeQueryBuilder timeZone(String timeZone) {
-        if(timeZone == null) {
+        if (timeZone == null) {
             throw new IllegalArgumentException("timezone cannot be null");
         } else {
             this.timeZone = DateTimeZone.forID(timeZone);
@@ -169,7 +169,7 @@ public class RangeQueryBuilder {
     }
 
     private String timeZone() {
-        return this.timeZone == null?null:this.timeZone.getID();
+        return this.timeZone == null ? null : this.timeZone.getID();
     }
 
     DateTimeZone getDateTimeZone() {
@@ -177,7 +177,7 @@ public class RangeQueryBuilder {
     }
 
     public RangeQueryBuilder format(String format) {
-        if(format == null) {
+        if (format == null) {
             throw new IllegalArgumentException("format cannot be null");
         } else {
             this.format = Joda.forPattern(format);
@@ -186,11 +186,11 @@ public class RangeQueryBuilder {
     }
 
     private String format() {
-        return this.format == null?null:this.format.format();
+        return this.format == null ? null : this.format.format();
     }
 
     DateMathParser getForceDateParser() {
-        return this.format != null?new DateMathParser(this.format):null;
+        return this.format != null ? new DateMathParser(this.format) : null;
     }
 
     public ShapeRelation relation() {
@@ -198,13 +198,13 @@ public class RangeQueryBuilder {
     }
 
     public RangeQueryBuilder relation(String relation) {
-        if(relation == null) {
+        if (relation == null) {
             throw new IllegalArgumentException("relation cannot be null");
         } else {
             this.relation = ShapeRelation.getRelationByName(relation);
-            if(this.relation == null) {
+            if (this.relation == null) {
                 throw new IllegalArgumentException(relation + " is not a valid relation");
-            } else if(!this.isRelationAllowed(this.relation)) {
+            } else if (!this.isRelationAllowed(this.relation)) {
                 throw new IllegalArgumentException("[range] query does not support relation [" + relation + "]");
             } else {
                 return this;
@@ -397,14 +397,14 @@ public class RangeQueryBuilder {
 //    }
 
     protected int doHashCode() {
-        String timeZoneId = this.timeZone == null?null:this.timeZone.getID();
-        String formatString = this.format == null?null:this.format.format();
+        String timeZoneId = this.timeZone == null ? null : this.timeZone.getID();
+        String formatString = this.format == null ? null : this.format.format();
         return Objects.hash(this.fieldName, this.from, this.to, timeZoneId, this.includeLower, this.includeUpper, formatString);
     }
 
     protected boolean doEquals(RangeQueryBuilder other) {
-        String timeZoneId = this.timeZone == null?null:this.timeZone.getID();
-        String formatString = this.format == null?null:this.format.format();
+        String timeZoneId = this.timeZone == null ? null : this.timeZone.getID();
+        String formatString = this.format == null ? null : this.format.format();
         return Objects.equals(this.fieldName, other.fieldName) && Objects.equals(this.from, other.from) && Objects.equals(this.to, other.to) && Objects.equals(timeZoneId, other.timeZone()) && Objects.equals(this.includeLower, other.includeLower) && Objects.equals(this.includeUpper, other.includeUpper) && Objects.equals(formatString, other.format());
     }
 }

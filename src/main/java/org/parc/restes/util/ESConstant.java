@@ -51,10 +51,9 @@ public class ESConstant {
     //index manage
 //	public final static Pattern ptn1 = Pattern.compile("xwd-index-2\\d{7}");
     public final static Pattern ptn1 = Pattern.compile("ailpha-securitylog-2\\d{7}");
-    public static DecimalFormat df = new DecimalFormat("#.00");
-
     public static final String TYPE_SEARCH = "/_search";
     public static final String TYPE_COUNT = "/_count";
     public static final String TYPE_DELETE = "/_delete";
     public static final String TYPE_INSERT = "/_insert";
+    public static DecimalFormat df = new DecimalFormat("#.00");
 }

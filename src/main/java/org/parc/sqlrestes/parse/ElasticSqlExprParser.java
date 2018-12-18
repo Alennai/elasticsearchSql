@@ -1,16 +1,47 @@
 package org.parc.sqlrestes.parse;
 
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
+import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
+import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalUnit;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlSelectGroupByExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
@@ -19,6 +50,8 @@ import java.util.List;
  * Created by Eliran on 18/8/2015.
  */
 public class ElasticSqlExprParser extends SQLExprParser {
+    private static String[] AGGREGATE_FUNCTIONS = {"AVG", "COUNT", "GROUP_CONCAT", "MAX", "MIN", "STDDEV", "SUM"};
+
     private ElasticSqlExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
@@ -74,7 +107,6 @@ public class ElasticSqlExprParser extends SQLExprParser {
         throw new ParserException("not support token:" + lexer.token());
     }
 
-
     public SQLExpr primary() {
 
         if (lexer.token() == Token.LBRACE) {
@@ -83,7 +115,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
             if (lexer.stringVal().equals("ts")) {
                 String current = lexer.stringVal();
                 do {
-                    if (current.equals(lexer.token().RBRACE.name())) {
+                    if (current.equals(Token.RBRACE.name())) {
                         foundRBrace = true;
                         break;
                     }
@@ -154,9 +186,6 @@ public class ElasticSqlExprParser extends SQLExprParser {
 
         return expr;
     }
-
-    private static String[] AGGREGATE_FUNCTIONS = {"AVG", "COUNT", "GROUP_CONCAT", "MAX", "MIN", "STDDEV", "SUM"};
-
 
     public SQLExpr relationalRest(SQLExpr expr) {
         if (identifierEquals("REGEXP")) {
@@ -542,7 +571,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
             lexer.nextToken();
             MySqlUserName userName = new MySqlUserName();
             if (expr instanceof SQLCharExpr) {
-                userName.setUserName(((SQLCharExpr) expr).toString());
+                userName.setUserName(expr.toString());
             } else {
                 userName.setUserName(((SQLIdentifierExpr) expr).getName());
             }

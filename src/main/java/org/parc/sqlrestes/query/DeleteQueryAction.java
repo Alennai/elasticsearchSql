@@ -13,56 +13,56 @@ import org.parc.sqlrestes.query.maker.QueryMaker;
 
 public class DeleteQueryAction extends QueryAction {
 
-	private final Delete delete;
-	private DeleteByQueryRequestBuilder request;
+    private final Delete delete;
+    private DeleteByQueryRequestBuilder request;
 
-	public DeleteQueryAction(RestClient client, Delete delete) {
-		super(client, delete);
-		this.delete = delete;
-	}
+    public DeleteQueryAction(RestClient client, Delete delete) {
+        super(client, delete);
+        this.delete = delete;
+    }
 
-	@Override
-	public SqlElasticDeleteByQueryRequestBuilder explain() throws SqlParseException {
+    @Override
+    public SqlElasticDeleteByQueryRequestBuilder explain() throws SqlParseException {
 //		this.request = new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE);
 
-		setIndicesAndTypes();
-		setWhere(delete.getWhere());
+        setIndicesAndTypes();
+        setWhere(delete.getWhere());
         return new SqlElasticDeleteByQueryRequestBuilder(request);
-	}
+    }
 
 
-	/**
-	 * Set indices and types to the delete by query request.
-	 */
-	private void setIndicesAndTypes() {
+    /**
+     * Set indices and types to the delete by query request.
+     */
+    private void setIndicesAndTypes() {
 
         DeleteByQueryRequest innerRequest = request.request();
         innerRequest.indices(query.getIndexArr());
         String[] typeArr = query.getTypeArr();
-        if (typeArr!=null){
+        if (typeArr != null) {
             innerRequest.getSearchRequest().types(typeArr);
         }
 //		String[] typeArr = query.getTypeArr();
 //		if (typeArr != null) {
 //            request.set(typeArr);
 //		}
-	}
+    }
 
 
-	/**
-	 * Create filters based on
-	 * the Where clause.
-	 *
-	 * @param where the 'WHERE' part of the SQL query.
-	 * @throws SqlParseException
-	 */
-	private void setWhere(Where where) throws SqlParseException {
-		if (where != null) {
-			QueryBuilder whereQuery = QueryMaker.explan(where);
-			request.filter(whereQuery);
-		} else {
-			request.filter(QueryBuilders.matchAllQuery());
-		}
-	}
+    /**
+     * Create filters based on
+     * the Where clause.
+     *
+     * @param where the 'WHERE' part of the SQL query.
+     * @throws SqlParseException
+     */
+    private void setWhere(Where where) throws SqlParseException {
+        if (where != null) {
+            QueryBuilder whereQuery = QueryMaker.explan(where);
+            request.filter(whereQuery);
+        } else {
+            request.filter(QueryBuilders.matchAllQuery());
+        }
+    }
 
 }

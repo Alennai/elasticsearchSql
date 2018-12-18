@@ -5,10 +5,10 @@ package org.parc.plugin.executors;
  */
 public class ActionRequestRestExecuterFactory {
     public static RestExecutor createExecutor(String format) {
-        if(format == null || format.equals("")){
+        if (format == null || format.equals("")) {
             return new ElasticDefaultRestExecutor();
         }
-        if(format.equalsIgnoreCase("csv")){
+        if (format.equalsIgnoreCase("csv")) {
             return new CSVResultRestExecutor();
         }
         return null;

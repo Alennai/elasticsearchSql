@@ -13,54 +13,54 @@ import java.util.List;
 
 
 public class Paramer {
-	private String analysis;
-	private Float boost;
-	public String value;
+    public String value;
+    private String analysis;
+    private Float boost;
 
-	public static Paramer parseParamer(SQLMethodInvokeExpr method) {
-		Paramer instance = new Paramer();
-		List<SQLExpr> parameters = method.getParameters();
-		instance.value = ((SQLCharExpr) parameters.get(0)).getText();
-		SQLExpr sqlExpr = null;
-		for (int i = 1; i < parameters.size(); i++) {
-			sqlExpr = parameters.get(i);
-			if (sqlExpr instanceof SQLCharExpr) {
-				instance.analysis = ((SQLCharExpr) sqlExpr).getText();
-			} else {
-				instance.boost = ((SQLNumericLiteralExpr) sqlExpr).getNumber().floatValue();
-			}
-		}
+    public static Paramer parseParamer(SQLMethodInvokeExpr method) {
+        Paramer instance = new Paramer();
+        List<SQLExpr> parameters = method.getParameters();
+        instance.value = ((SQLCharExpr) parameters.get(0)).getText();
+        SQLExpr sqlExpr = null;
+        for (int i = 1; i < parameters.size(); i++) {
+            sqlExpr = parameters.get(i);
+            if (sqlExpr instanceof SQLCharExpr) {
+                instance.analysis = ((SQLCharExpr) sqlExpr).getText();
+            } else {
+                instance.boost = ((SQLNumericLiteralExpr) sqlExpr).getNumber().floatValue();
+            }
+        }
 
-		return instance;
-	}
+        return instance;
+    }
 
-	public static ToXContent fullParamer(QueryStringQueryBuilder query, Paramer paramer) {
-		if (paramer.analysis != null) {
-			query.analyzer(paramer.analysis);
-		}
+    public static ToXContent fullParamer(QueryStringQueryBuilder query, Paramer paramer) {
+        if (paramer.analysis != null) {
+            query.analyzer(paramer.analysis);
+        }
 
-		if (paramer.boost != null) {
-			query.boost(paramer.boost);
-		}
-		return query;
-	}
+        if (paramer.boost != null) {
+            query.boost(paramer.boost);
+        }
+        return query;
+    }
 
-	public static ToXContent fullParamer(MatchQueryBuilder query, Paramer paramer) {
-		if (paramer.analysis != null) {
-			query.analyzer(paramer.analysis);
-		}
+    public static ToXContent fullParamer(MatchQueryBuilder query, Paramer paramer) {
+        if (paramer.analysis != null) {
+            query.analyzer(paramer.analysis);
+        }
 
-		if (paramer.boost != null) {
-			query.boost(paramer.boost);
-		}
-		return query;
-	}
+        if (paramer.boost != null) {
+            query.boost(paramer.boost);
+        }
+        return query;
+    }
 
-	public static ToXContent fullParamer(WildcardQueryBuilder query, Paramer paramer) {
-		if (paramer.boost != null) {
-			query.boost(paramer.boost);
-		}
-		return query;
-	}
+    public static ToXContent fullParamer(WildcardQueryBuilder query, Paramer paramer) {
+        if (paramer.boost != null) {
+            query.boost(paramer.boost);
+        }
+        return query;
+    }
 
 }

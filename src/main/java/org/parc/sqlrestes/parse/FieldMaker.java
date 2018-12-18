@@ -1,7 +1,18 @@
 package org.parc.sqlrestes.parse;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.google.common.collect.Lists;
 import org.elasticsearch.common.collect.Tuple;
 import org.parc.sqlrestes.SQLFunctions;
@@ -61,7 +72,7 @@ class FieldMaker {
             methodParameters.add(new KVValue(alias));
             methodParameters.add(new KVValue(scriptCode));
             return new MethodField("script", methodParameters, null, alias);
-        }else if (expr instanceof SQLCastExpr) {
+        } else if (expr instanceof SQLCastExpr) {
             SQLCastExpr castExpr = (SQLCastExpr) expr;
             if (alias == null) {
                 alias = "cast_" + castExpr.getExpr().toString();
@@ -260,10 +271,10 @@ class FieldMaker {
                 } else throw new SqlParseException("only support script/nested/children as inner functions");
             } else if (object instanceof SQLCaseExpr) {
                 String scriptCode = new CaseWhenParser((SQLCaseExpr) object, alias, tableAlias).parse();
-                paramers.add(new KVValue("script",new SQLCharExpr(scriptCode)));
-            } else if(object instanceof SQLCastExpr) {
+                paramers.add(new KVValue("script", new SQLCharExpr(scriptCode)));
+            } else if (object instanceof SQLCastExpr) {
                 String scriptCode = new CastParser((SQLCastExpr) object, alias, tableAlias).parse(false);
-                paramers.add(new KVValue("script",new SQLCharExpr(scriptCode)));
+                paramers.add(new KVValue("script", new SQLCharExpr(scriptCode)));
             } else {
                 paramers.add(new KVValue(Util.removeTableAilasFromField(object, tableAlias)));
             }
@@ -277,7 +288,7 @@ class FieldMaker {
             }
             //should check if field and first .
             Tuple<String, String> newFunctions = SQLFunctions.function(finalMethodName, paramers,
-                    paramers.get(0).key,first);
+                    paramers.get(0).key, first);
             paramers.clear();
             if (!first) {
                 //variance

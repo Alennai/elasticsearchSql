@@ -6,8 +6,11 @@ import org.elasticsearch.action.ActionResponse;
 
 public interface SqlElasticRequestBuilder {
     ActionRequest request();
+
     String explain();
+
     ActionResponse get();
+
     ActionRequestBuilder getBuilder();
 
 }

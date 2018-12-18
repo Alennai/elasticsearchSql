@@ -18,6 +18,7 @@ import java.util.Set;
  */
 public class MultiQueryAction extends QueryAction {
     private MultiQuerySelect multiQuerySelect;
+
     public MultiQueryAction(RestClient client, MultiQuerySelect multiSelect) {
         super(client, null);
         this.multiQuerySelect = multiSelect;
@@ -25,13 +26,13 @@ public class MultiQueryAction extends QueryAction {
 
     @Override
     public SqlElasticRequestBuilder explain() throws SqlParseException {
-        if(!isValidMultiSelectReturnFields()){
+        if (!isValidMultiSelectReturnFields()) {
             throw new SqlParseException("on multi query fields/aliases of one table should be subset of other");
         }
         MultiQueryRequestBuilder requestBuilder = new MultiQueryRequestBuilder(this.multiQuerySelect);
 //        requestBuilder.setFirstSearchRequest(createRequestBuilder(this.multiQuerySelect.getFirstSelect()));
 //        requestBuilder.setSecondSearchRequest(createRequestBuilder(this.multiQuerySelect.getSecondSelect()));
-        requestBuilder.fillTableAliases(this.multiQuerySelect.getFirstSelect().getFields(),this.multiQuerySelect.getSecondSelect().getFields());
+        requestBuilder.fillTableAliases(this.multiQuerySelect.getFirstSelect().getFields(), this.multiQuerySelect.getSecondSelect().getFields());
 
         return requestBuilder;
     }
@@ -39,7 +40,7 @@ public class MultiQueryAction extends QueryAction {
     private boolean isValidMultiSelectReturnFields() {
         List<Field> firstQueryFields = multiQuerySelect.getFirstSelect().getFields();
         List<Field> secondQueryFields = multiQuerySelect.getSecondSelect().getFields();
-        if(firstQueryFields.size() > secondQueryFields.size()){
+        if (firstQueryFields.size() > secondQueryFields.size()) {
             return isSubsetFields(firstQueryFields, secondQueryFields);
         }
         return isSubsetFields(secondQueryFields, firstQueryFields);
@@ -47,13 +48,13 @@ public class MultiQueryAction extends QueryAction {
 
     private boolean isSubsetFields(List<Field> bigGroup, List<Field> smallerGroup) {
         Set<String> biggerGroup = new HashSet<>();
-        for(Field field : bigGroup){
+        for (Field field : bigGroup) {
             String fieldName = getNameOrAlias(field);
             biggerGroup.add(fieldName);
         }
-        for(Field field : smallerGroup){
+        for (Field field : smallerGroup) {
             String fieldName = getNameOrAlias(field);
-            if(!biggerGroup.contains(fieldName)){
+            if (!biggerGroup.contains(fieldName)) {
                 return false;
             }
         }
@@ -62,14 +63,14 @@ public class MultiQueryAction extends QueryAction {
 
     private String getNameOrAlias(Field field) {
         String fieldName = field.getName();
-        if(field.getAlias() != null && !field.getAlias().isEmpty()){
+        if (field.getAlias() != null && !field.getAlias().isEmpty()) {
             fieldName = field.getAlias();
         }
         return fieldName;
     }
 
     protected RestQueryBuilder createRequestBuilder(Select select) throws SqlParseException {
-        DefaultQueryAction queryAction = new DefaultQueryAction(client,select);
+        DefaultQueryAction queryAction = new DefaultQueryAction(client, select);
         queryAction.explain();
         return queryAction.getRequestBuilder();
     }

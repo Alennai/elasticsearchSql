@@ -5,7 +5,8 @@ import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.AutoLoad;
 import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.pool.vendor.*;
+import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
+import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
@@ -21,26 +22,37 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.*;
+import com.alibaba.druid.util.JMXUtils;
+import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.WallFilter;
 import com.alibaba.druid.wall.WallProviderStatValue;
-
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
-
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.PooledConnection;
-
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ConcurrentModificationException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -58,23 +70,23 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
     private final static Log LOG = LogFactory.getLog(DruidDataSource.class);
 
     private static final long serialVersionUID = 1L;
-
+    private static ThreadLocal<Long> waitNanosLocal = new ThreadLocal<>();
     // stats
     private final AtomicLong recycleErrorCount = new AtomicLong();
+    private final AtomicLong connectErrorCount = new AtomicLong();
+    private final CountDownLatch initedLatch = new CountDownLatch(2);
+    private final AtomicLong resetCount = new AtomicLong();
     private long connectCount = 0L;
     private long closeCount = 0L;
-    private final AtomicLong connectErrorCount = new AtomicLong();
     private long recycleCount = 0L;
     private long removeAbandonedCount = 0L;
     private long notEmptyWaitCount = 0L;
     private long notEmptySignalCount = 0L;
     private long notEmptyWaitNanos = 0L;
-
     private int activePeak = 0;
     private long activePeakTime = 0;
     private int poolingPeak = 0;
     private long poolingPeakTime = 0;
-
     // store
     private volatile DruidConnectionHolder[] connections;
     private int poolingCount = 0;
@@ -82,37 +94,26 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
     private long discardCount = 0;
     private int notEmptyWaitThreadCount = 0;
     private int notEmptyWaitThreadPeak = 0;
-
     // threads
     private ScheduledFuture<?> destroySchedulerFuture;
     private DestroyTask destoryTask;
-
     private CreateConnectionThread createConnectionThread;
     private DestroyConnectionThread destroyConnectionThread;
     private LogStatsThread logStatsThread;
     private int createTaskCount;
-
-    private final CountDownLatch initedLatch = new CountDownLatch(2);
-
     private volatile boolean enable = true;
-
     private boolean resetStatEnable = true;
-    private final AtomicLong resetCount = new AtomicLong();
-
     private String initStackTrace;
-
     private volatile boolean closed = false;
     private long closeTimeMillis = -1L;
-
     private JdbcDataSourceStat dataSourceStat;
-
     private boolean useGlobalDataSourceStat = false;
-
     private boolean mbeanRegistered = false;
-
-    private static ThreadLocal<Long> waitNanosLocal = new ThreadLocal<>();
-
     private boolean logDifferentThread = true;
+    /**
+     * Instance key
+     */
+    private String instanceKey = null;
 
     public ElasticSearchDruidDataSource() {
         this(false);
@@ -1118,7 +1119,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         if (logDifferentThread //
                 && (!isAsyncCloseConnectionEnable()) //
                 && pooledConnection.getOwnerThread() != Thread.currentThread()//
-                ) {
+        ) {
             LOG.warn("get/close not same thread");
         }
 
@@ -1658,242 +1659,6 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
-    class CreateConnectionTask implements Runnable {
-
-        private int errorCount = 0;
-
-        @Override
-        public void run() {
-            for (; ; ) {
-                // addLast
-                try {
-                    lock.lockInterruptibly();
-                } catch (InterruptedException e2) {
-                    LOG.error("interrupt: ", e2);
-                    lock.lock();
-                    try {
-                        createTaskCount--;
-                    } finally {
-                        lock.unlock();
-                    }
-                    break;
-                }
-
-                try {
-                    // 必须存在线程等待，才创建连接
-                    if (poolingCount >= notEmptyWaitThreadCount) {
-                        createTaskCount--;
-                        return;
-                    }
-
-                    // 防止创建超过maxActive数量的连接
-                    if (activeCount + poolingCount >= maxActive) {
-                        createTaskCount--;
-                        return;
-                    }
-                } finally {
-                    lock.unlock();
-                }
-
-                Connection connection = null;
-
-                try {
-                    connection = createPhysicalConnection();
-                } catch (SQLException e) {
-                    LOG.error("create connection error, url: " + jdbcUrl, e);
-
-                    errorCount++;
-
-                    if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
-                        if (breakAfterAcquireFailure) {
-                            lock.lock();
-                            try {
-                                createTaskCount--;
-                            } finally {
-                                lock.unlock();
-                            }
-                            return;
-                        }
-
-                        this.errorCount = 0; // reset errorCount
-                        createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
-                        return;
-                    }
-                } catch (RuntimeException e) {
-                    LOG.error("create connection error", e);
-                    continue;
-                } catch (Error e) {
-                    lock.lock();
-                    try {
-                        createTaskCount--;
-                    } finally {
-                        lock.unlock();
-                    }
-                    LOG.error("create connection error", e);
-                    break;
-                }
-
-                if (connection == null) {
-                    continue;
-                }
-
-                put(connection);
-                break;
-            }
-        }
-    }
-
-    class CreateConnectionThread extends Thread {
-
-        CreateConnectionThread(String name) {
-            super(name);
-            this.setDaemon(true);
-        }
-
-        public void run() {
-            initedLatch.countDown();
-
-            int errorCount = 0;
-            for (; ; ) {
-                // addLast
-                try {
-                    lock.lockInterruptibly();
-                } catch (InterruptedException e2) {
-                    break;
-                }
-
-                try {
-                    // 必须存在线程等待，才创建连接
-                    if (poolingCount >= notEmptyWaitThreadCount) {
-                        empty.await();
-                    }
-
-                    // 防止创建超过maxActive数量的连接
-                    if (activeCount + poolingCount >= maxActive) {
-                        empty.await();
-                        continue;
-                    }
-
-                } catch (InterruptedException e) {
-                    lastCreateError = e;
-                    lastErrorTimeMillis = System.currentTimeMillis();
-                    break;
-                } finally {
-                    lock.unlock();
-                }
-
-                Connection connection = null;
-
-                try {
-                    connection = createPhysicalConnection();
-                } catch (SQLException e) {
-                    LOG.error("create connection error, url: " + jdbcUrl, e);
-
-                    errorCount++;
-
-                    if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
-                        if (breakAfterAcquireFailure) {
-                            break;
-                        }
-
-                        try {
-                            Thread.sleep(timeBetweenConnectErrorMillis);
-                        } catch (InterruptedException interruptEx) {
-                            break;
-                        }
-                    }
-                } catch (RuntimeException e) {
-                    LOG.error("create connection error", e);
-                    continue;
-                } catch (Error e) {
-                    LOG.error("create connection error", e);
-                    break;
-                }
-
-                if (connection == null) {
-                    continue;
-                }
-
-                put(connection);
-
-                errorCount = 0; // reset errorCount
-            }
-        }
-    }
-
-    class DestroyConnectionThread extends Thread {
-
-        DestroyConnectionThread(String name) {
-            super(name);
-            this.setDaemon(true);
-        }
-
-        public void run() {
-            initedLatch.countDown();
-
-            for (; ; ) {
-                // 从前面开始删除
-                try {
-                    if (closed) {
-                        break;
-                    }
-
-                    if (timeBetweenEvictionRunsMillis > 0) {
-                        Thread.sleep(timeBetweenEvictionRunsMillis);
-                    } else {
-                        Thread.sleep(1000); //
-                    }
-
-                    if (Thread.interrupted()) {
-                        break;
-                    }
-
-                    destoryTask.run();
-                } catch (InterruptedException e) {
-                    break;
-                }
-            }
-        }
-
-    }
-
-    class DestroyTask implements Runnable {
-
-        @Override
-        public void run() {
-            shrink(true);
-
-            if (isRemoveAbandoned()) {
-                removeAbandoned();
-            }
-        }
-
-    }
-
-    class LogStatsThread extends Thread {
-
-        LogStatsThread(String name) {
-            super(name);
-            this.setDaemon(true);
-        }
-
-        public void run() {
-            try {
-                for (; ; ) {
-                    try {
-                        logStats();
-                    } catch (Exception e) {
-                        LOG.error("logStats error", e);
-                    }
-
-                    Thread.sleep(timeBetweenLogStatsMillis);
-                }
-            } catch (InterruptedException e) {
-                // skip
-            }
-        }
-    }
-
     public int removeAbandoned() {
         int removeCount = 0;
 
@@ -1956,11 +1721,6 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
 
         return removeCount;
     }
-
-    /**
-     * Instance key
-     */
-    private String instanceKey = null;
 
     public Reference getReference() {
         final String className = getClass().getName();
@@ -2675,6 +2435,242 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
     @Override
     public void postDeregister() {
 
+    }
+
+    class CreateConnectionTask implements Runnable {
+
+        private int errorCount = 0;
+
+        @Override
+        public void run() {
+            for (; ; ) {
+                // addLast
+                try {
+                    lock.lockInterruptibly();
+                } catch (InterruptedException e2) {
+                    LOG.error("interrupt: ", e2);
+                    lock.lock();
+                    try {
+                        createTaskCount--;
+                    } finally {
+                        lock.unlock();
+                    }
+                    break;
+                }
+
+                try {
+                    // 必须存在线程等待，才创建连接
+                    if (poolingCount >= notEmptyWaitThreadCount) {
+                        createTaskCount--;
+                        return;
+                    }
+
+                    // 防止创建超过maxActive数量的连接
+                    if (activeCount + poolingCount >= maxActive) {
+                        createTaskCount--;
+                        return;
+                    }
+                } finally {
+                    lock.unlock();
+                }
+
+                Connection connection = null;
+
+                try {
+                    connection = createPhysicalConnection();
+                } catch (SQLException e) {
+                    LOG.error("create connection error, url: " + jdbcUrl, e);
+
+                    errorCount++;
+
+                    if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
+                        if (breakAfterAcquireFailure) {
+                            lock.lock();
+                            try {
+                                createTaskCount--;
+                            } finally {
+                                lock.unlock();
+                            }
+                            return;
+                        }
+
+                        this.errorCount = 0; // reset errorCount
+                        createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
+                        return;
+                    }
+                } catch (RuntimeException e) {
+                    LOG.error("create connection error", e);
+                    continue;
+                } catch (Error e) {
+                    lock.lock();
+                    try {
+                        createTaskCount--;
+                    } finally {
+                        lock.unlock();
+                    }
+                    LOG.error("create connection error", e);
+                    break;
+                }
+
+                if (connection == null) {
+                    continue;
+                }
+
+                put(connection);
+                break;
+            }
+        }
+    }
+
+    class CreateConnectionThread extends Thread {
+
+        CreateConnectionThread(String name) {
+            super(name);
+            this.setDaemon(true);
+        }
+
+        public void run() {
+            initedLatch.countDown();
+
+            int errorCount = 0;
+            for (; ; ) {
+                // addLast
+                try {
+                    lock.lockInterruptibly();
+                } catch (InterruptedException e2) {
+                    break;
+                }
+
+                try {
+                    // 必须存在线程等待，才创建连接
+                    if (poolingCount >= notEmptyWaitThreadCount) {
+                        empty.await();
+                    }
+
+                    // 防止创建超过maxActive数量的连接
+                    if (activeCount + poolingCount >= maxActive) {
+                        empty.await();
+                        continue;
+                    }
+
+                } catch (InterruptedException e) {
+                    lastCreateError = e;
+                    lastErrorTimeMillis = System.currentTimeMillis();
+                    break;
+                } finally {
+                    lock.unlock();
+                }
+
+                Connection connection = null;
+
+                try {
+                    connection = createPhysicalConnection();
+                } catch (SQLException e) {
+                    LOG.error("create connection error, url: " + jdbcUrl, e);
+
+                    errorCount++;
+
+                    if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
+                        if (breakAfterAcquireFailure) {
+                            break;
+                        }
+
+                        try {
+                            Thread.sleep(timeBetweenConnectErrorMillis);
+                        } catch (InterruptedException interruptEx) {
+                            break;
+                        }
+                    }
+                } catch (RuntimeException e) {
+                    LOG.error("create connection error", e);
+                    continue;
+                } catch (Error e) {
+                    LOG.error("create connection error", e);
+                    break;
+                }
+
+                if (connection == null) {
+                    continue;
+                }
+
+                put(connection);
+
+                errorCount = 0; // reset errorCount
+            }
+        }
+    }
+
+    class DestroyConnectionThread extends Thread {
+
+        DestroyConnectionThread(String name) {
+            super(name);
+            this.setDaemon(true);
+        }
+
+        public void run() {
+            initedLatch.countDown();
+
+            for (; ; ) {
+                // 从前面开始删除
+                try {
+                    if (closed) {
+                        break;
+                    }
+
+                    if (timeBetweenEvictionRunsMillis > 0) {
+                        Thread.sleep(timeBetweenEvictionRunsMillis);
+                    } else {
+                        Thread.sleep(1000); //
+                    }
+
+                    if (Thread.interrupted()) {
+                        break;
+                    }
+
+                    destoryTask.run();
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        }
+
+    }
+
+    class DestroyTask implements Runnable {
+
+        @Override
+        public void run() {
+            shrink(true);
+
+            if (isRemoveAbandoned()) {
+                removeAbandoned();
+            }
+        }
+
+    }
+
+    class LogStatsThread extends Thread {
+
+        LogStatsThread(String name) {
+            super(name);
+            this.setDaemon(true);
+        }
+
+        public void run() {
+            try {
+                for (; ; ) {
+                    try {
+                        logStats();
+                    } catch (Exception e) {
+                        LOG.error("logStats error", e);
+                    }
+
+                    Thread.sleep(timeBetweenLogStatsMillis);
+                }
+            } catch (InterruptedException e) {
+                // skip
+            }
+        }
     }
 
 }

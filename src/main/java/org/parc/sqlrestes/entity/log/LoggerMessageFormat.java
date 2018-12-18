@@ -16,57 +16,57 @@ class LoggerMessageFormat {
     }
 
     public static String format(String messagePattern, Object... argArray) {
-        return format((String)null, messagePattern, argArray);
+        return format(null, messagePattern, argArray);
     }
 
     private static String format(String prefix, String messagePattern, Object... argArray) {
-        if(messagePattern == null) {
+        if (messagePattern == null) {
             return null;
-        } else if(argArray == null) {
-            return prefix == null?messagePattern:prefix + messagePattern;
+        } else if (argArray == null) {
+            return prefix == null ? messagePattern : prefix + messagePattern;
         } else {
             int i = 0;
             StringBuilder sbuf = new StringBuilder(messagePattern.length() + 50);
-            if(prefix != null) {
+            if (prefix != null) {
                 sbuf.append(prefix);
             }
 
-            for(int L = 0; L < argArray.length; ++L) {
+            for (int L = 0; L < argArray.length; ++L) {
                 int j = messagePattern.indexOf("{}", i);
-                if(j == -1) {
-                    if(i == 0) {
+                if (j == -1) {
+                    if (i == 0) {
                         return messagePattern;
                     }
 
-                    sbuf.append(messagePattern.substring(i, messagePattern.length()));
+                    sbuf.append(messagePattern.substring(i));
                     return sbuf.toString();
                 }
 
-                if(isEscapedDelimiter(messagePattern, j)) {
-                    if(!isDoubleEscaped(messagePattern, j)) {
+                if (isEscapedDelimiter(messagePattern, j)) {
+                    if (!isDoubleEscaped(messagePattern, j)) {
                         --L;
-                        sbuf.append(messagePattern.substring(i, j - 1));
+                        sbuf.append(messagePattern, i, j - 1);
                         sbuf.append('{');
                         i = j + 1;
                     } else {
-                        sbuf.append(messagePattern.substring(i, j - 1));
+                        sbuf.append(messagePattern, i, j - 1);
                         deeplyAppendParameter(sbuf, argArray[L], new HashSet());
                         i = j + 2;
                     }
                 } else {
-                    sbuf.append(messagePattern.substring(i, j));
+                    sbuf.append(messagePattern, i, j);
                     deeplyAppendParameter(sbuf, argArray[L], new HashSet());
                     i = j + 2;
                 }
             }
 
-            sbuf.append(messagePattern.substring(i, messagePattern.length()));
+            sbuf.append(messagePattern.substring(i));
             return sbuf.toString();
         }
     }
 
     private static boolean isEscapedDelimiter(String messagePattern, int delimiterStartIndex) {
-        if(delimiterStartIndex == 0) {
+        if (delimiterStartIndex == 0) {
             return false;
         } else {
             char potentialEscape = messagePattern.charAt(delimiterStartIndex - 1);
@@ -79,29 +79,29 @@ class LoggerMessageFormat {
     }
 
     private static void deeplyAppendParameter(StringBuilder sbuf, Object o, Set<Object[]> seen) {
-        if(o == null) {
+        if (o == null) {
             sbuf.append("null");
         } else {
-            if(!o.getClass().isArray()) {
+            if (!o.getClass().isArray()) {
                 safeObjectAppend(sbuf, o);
-            } else if(o instanceof boolean[]) {
-                booleanArrayAppend(sbuf, (boolean[])o);
-            } else if(o instanceof byte[]) {
-                byteArrayAppend(sbuf, (byte[])o);
-            } else if(o instanceof char[]) {
-                charArrayAppend(sbuf, (char[])o);
-            } else if(o instanceof short[]) {
-                shortArrayAppend(sbuf, (short[])o);
-            } else if(o instanceof int[]) {
-                intArrayAppend(sbuf, (int[])o);
-            } else if(o instanceof long[]) {
-                longArrayAppend(sbuf, (long[])o);
-            } else if(o instanceof float[]) {
-                floatArrayAppend(sbuf, (float[])o);
-            } else if(o instanceof double[]) {
-                doubleArrayAppend(sbuf, (double[])o);
+            } else if (o instanceof boolean[]) {
+                booleanArrayAppend(sbuf, (boolean[]) o);
+            } else if (o instanceof byte[]) {
+                byteArrayAppend(sbuf, (byte[]) o);
+            } else if (o instanceof char[]) {
+                charArrayAppend(sbuf, (char[]) o);
+            } else if (o instanceof short[]) {
+                shortArrayAppend(sbuf, (short[]) o);
+            } else if (o instanceof int[]) {
+                intArrayAppend(sbuf, (int[]) o);
+            } else if (o instanceof long[]) {
+                longArrayAppend(sbuf, (long[]) o);
+            } else if (o instanceof float[]) {
+                floatArrayAppend(sbuf, (float[]) o);
+            } else if (o instanceof double[]) {
+                doubleArrayAppend(sbuf, (double[]) o);
             } else {
-                objectArrayAppend(sbuf, (Object[])o, seen);
+                objectArrayAppend(sbuf, (Object[]) o, seen);
             }
 
         }
@@ -119,13 +119,13 @@ class LoggerMessageFormat {
 
     private static void objectArrayAppend(StringBuilder sbuf, Object[] a, Set<Object[]> seen) {
         sbuf.append('[');
-        if(!seen.contains(a)) {
+        if (!seen.contains(a)) {
             seen.add(a);
             int len = a.length;
 
-            for(int i = 0; i < len; ++i) {
+            for (int i = 0; i < len; ++i) {
                 deeplyAppendParameter(sbuf, a[i], seen);
-                if(i != len - 1) {
+                if (i != len - 1) {
                     sbuf.append(", ");
                 }
             }
@@ -142,9 +142,9 @@ class LoggerMessageFormat {
         sbuf.append('[');
         int len = a.length;
 
-        for(int i = 0; i < len; ++i) {
+        for (int i = 0; i < len; ++i) {
             sbuf.append(a[i]);
-            if(i != len - 1) {
+            if (i != len - 1) {
                 sbuf.append(", ");
             }
         }
@@ -156,9 +156,9 @@ class LoggerMessageFormat {
         sbuf.append('[');
         int len = a.length;
 
-        for(int i = 0; i < len; ++i) {
+        for (int i = 0; i < len; ++i) {
             sbuf.append(a[i]);
-            if(i != len - 1) {
+            if (i != len - 1) {
                 sbuf.append(", ");
             }
         }
@@ -170,9 +170,9 @@ class LoggerMessageFormat {
         sbuf.append('[');
         int len = a.length;
 
-        for(int i = 0; i < len; ++i) {
+        for (int i = 0; i < len; ++i) {
             sbuf.append(a[i]);
-            if(i != len - 1) {
+            if (i != len - 1) {
                 sbuf.append(", ");
             }
         }
@@ -184,9 +184,9 @@ class LoggerMessageFormat {
         sbuf.append('[');
         int len = a.length;
 
-        for(int i = 0; i < len; ++i) {
+        for (int i = 0; i < len; ++i) {
             sbuf.append(a[i]);
-            if(i != len - 1) {
+            if (i != len - 1) {
                 sbuf.append(", ");
             }
         }
@@ -198,9 +198,9 @@ class LoggerMessageFormat {
         sbuf.append('[');
         int len = a.length;
 
-        for(int i = 0; i < len; ++i) {
+        for (int i = 0; i < len; ++i) {
             sbuf.append(a[i]);
-            if(i != len - 1) {
+            if (i != len - 1) {
                 sbuf.append(", ");
             }
         }
@@ -212,9 +212,9 @@ class LoggerMessageFormat {
         sbuf.append('[');
         int len = a.length;
 
-        for(int i = 0; i < len; ++i) {
+        for (int i = 0; i < len; ++i) {
             sbuf.append(a[i]);
-            if(i != len - 1) {
+            if (i != len - 1) {
                 sbuf.append(", ");
             }
         }
@@ -226,9 +226,9 @@ class LoggerMessageFormat {
         sbuf.append('[');
         int len = a.length;
 
-        for(int i = 0; i < len; ++i) {
+        for (int i = 0; i < len; ++i) {
             sbuf.append(a[i]);
-            if(i != len - 1) {
+            if (i != len - 1) {
                 sbuf.append(", ");
             }
         }
@@ -240,9 +240,9 @@ class LoggerMessageFormat {
         sbuf.append('[');
         int len = a.length;
 
-        for(int i = 0; i < len; ++i) {
+        for (int i = 0; i < len; ++i) {
             sbuf.append(a[i]);
-            if(i != len - 1) {
+            if (i != len - 1) {
                 sbuf.append(", ");
             }
         }

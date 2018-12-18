@@ -73,7 +73,7 @@ public class SQLFunctions {
             case "pow":
             case "exp":
             case "sqrt":
-                functionStr = mathSingleValueTemplate("Math."+methodName,methodName,Util.expr2Object((SQLExpr) paramers.get(0).value).toString(), name);
+                functionStr = mathSingleValueTemplate("Math." + methodName, methodName, Util.expr2Object((SQLExpr) paramers.get(0).value).toString(), name);
                 break;
 
 
@@ -112,9 +112,9 @@ public class SQLFunctions {
             default:
 
         }
-        if(returnValue){
+        if (returnValue) {
             String generatedFieldName = functionStr.v1();
-            String returnCommand = ";return " + generatedFieldName +";" ;
+            String returnCommand = ";return " + generatedFieldName + ";";
             String newScript = functionStr.v2() + returnCommand;
             functionStr = new Tuple<>(generatedFieldName, newScript);
         }
@@ -200,7 +200,7 @@ public class SQLFunctions {
         return new Tuple<>(name,
                 scriptDeclare(a) + scriptDeclare(b) +
                         convertType(a) + convertType(b) +
-                        " def " + name + " = " + extractName(a) + " " + operator + " " + extractName(b) ) ;
+                        " def " + name + " = " + extractName(a) + " " + operator + " " + extractName(b));
     }
 
     private static boolean isProperty(SQLExpr expr) {
@@ -255,13 +255,13 @@ public class SQLFunctions {
 
     public static Tuple<String, String> sqrt(String strColumn, String valueName) {
 
-        return mathSingleValueTemplate("Math.sqrt", "sqrt",  strColumn, valueName);
+        return mathSingleValueTemplate("Math.sqrt", "sqrt", strColumn, valueName);
 
     }
 
     public static Tuple<String, String> round(String strColumn, String valueName) {
 
-        return mathSingleValueTemplate("Math.round","round", strColumn, valueName);
+        return mathSingleValueTemplate("Math.round", "round", strColumn, valueName);
 
     }
 
@@ -272,8 +272,9 @@ public class SQLFunctions {
     }
 
     private static Tuple<String, String> mathSingleValueTemplate(String methodName, String strColumn, String valueName) {
-        return mathSingleValueTemplate(methodName,methodName, strColumn,valueName);
+        return mathSingleValueTemplate(methodName, methodName, strColumn, valueName);
     }
+
     private static Tuple<String, String> mathSingleValueTemplate(String methodName, String fieldName, String strColumn, String valueName) {
         String name = fieldName + "_" + random();
         if (valueName == null) {
@@ -287,7 +288,7 @@ public class SQLFunctions {
     private static Tuple<String, String> strSingleValueTemplate(String methodName, String strColumn, String valueName) {
         String name = methodName + "_" + random();
         if (valueName == null) {
-            return new Tuple(name, "def " + name + " = doc['" + strColumn + "'].value." + methodName + "()" );
+            return new Tuple(name, "def " + name + " = doc['" + strColumn + "'].value." + methodName + "()");
         } else {
             return new Tuple(name, strColumn + "; def " + name + " = " + valueName + "." + methodName + "()");
         }
@@ -296,7 +297,7 @@ public class SQLFunctions {
 
     public static Tuple<String, String> floor(String strColumn, String valueName) {
 
-        return mathSingleValueTemplate("Math.floor", "floor",strColumn, valueName);
+        return mathSingleValueTemplate("Math.floor", "floor", strColumn, valueName);
 
     }
 
@@ -316,7 +317,7 @@ public class SQLFunctions {
     private static Tuple<String, String> split(String strColumn, String pattern, String valueName) {
         String name = "split_" + random();
         if (valueName == null) {
-            return new Tuple(name, "def " + name + " = doc['" + strColumn + "'].value.split('" + pattern + "')" );
+            return new Tuple(name, "def " + name + " = doc['" + strColumn + "'].value.split('" + pattern + "')");
         } else {
             return new Tuple(name, strColumn + "; def " + name + " = " + valueName + ".split('" + pattern + "')");
         }

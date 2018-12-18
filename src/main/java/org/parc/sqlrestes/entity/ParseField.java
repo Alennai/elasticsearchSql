@@ -16,16 +16,16 @@ public class ParseField {
     private static final DeprecationLogger DEPRECATION_LOGGER = new DeprecationLogger(Loggers.getLogger(ParseField.class));
     private final String name;
     private final String[] deprecatedNames;
-    private String allReplacedWith = null;
     private final String[] allNames;
+    private String allReplacedWith = null;
 
     public ParseField(String name, String... deprecatedNames) {
         this.name = name;
         HashSet allNames;
-        if(deprecatedNames != null && deprecatedNames.length != 0) {
+        if (deprecatedNames != null && deprecatedNames.length != 0) {
             allNames = new HashSet();
             Collections.addAll(allNames, deprecatedNames);
-            this.deprecatedNames = (String[])allNames.toArray(new String[0]);
+            this.deprecatedNames = (String[]) allNames.toArray(new String[0]);
         } else {
             this.deprecatedNames = Strings.EMPTY_ARRAY;
         }
@@ -33,7 +33,7 @@ public class ParseField {
         allNames = new HashSet();
         allNames.add(name);
         Collections.addAll(allNames, this.deprecatedNames);
-        this.allNames = (String[])allNames.toArray(new String[0]);
+        this.allNames = (String[]) allNames.toArray(new String[0]);
     }
 
     public String getPreferredName() {
@@ -56,7 +56,7 @@ public class ParseField {
 
     public boolean match(String fieldName) {
         Objects.requireNonNull(fieldName, "fieldName cannot be null");
-        if(this.allReplacedWith == null && fieldName.equals(this.name)) {
+        if (this.allReplacedWith == null && fieldName.equals(this.name)) {
             return true;
         } else {
             String[] var3 = this.deprecatedNames;

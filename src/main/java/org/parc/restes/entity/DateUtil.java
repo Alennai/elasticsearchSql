@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 /**
  * Created by xusiao on 2018/6/23.
  */
-public class DateUtil  {
+public class DateUtil {
 
     public static Date dayStartDate(Date date) {
         Calendar c = Calendar.getInstance();
@@ -75,6 +75,7 @@ public class DateUtil  {
 
     /**
      * 时间戳转换成标准时间
+     *
      * @param timestamp
      * @return
      */

@@ -16,8 +16,9 @@ class ComperableHitResult {
     private SearchHit hit;
     private String comperator;
     private boolean isAllNull;
-    private Map<String,Object> flattenMap;
-    public ComperableHitResult(SearchHit hit , String[] fieldsOrder , String seperator) {
+    private Map<String, Object> flattenMap;
+
+    public ComperableHitResult(SearchHit hit, String[] fieldsOrder, String seperator) {
         this.hit = hit;
         Map<String, Object> hitAsMap = hit.getSourceAsMap();
         this.flattenMap = new HashMap<>();
@@ -64,7 +65,7 @@ class ComperableHitResult {
         return flattenMap;
     }
 
-    public SearchHit getOriginalHit(){
+    public SearchHit getOriginalHit() {
         return hit;
     }
 }

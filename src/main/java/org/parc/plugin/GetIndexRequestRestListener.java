@@ -60,6 +60,7 @@ public class GetIndexRequestRestListener extends RestBuilderListener<GetIndexRes
 
         return new BytesRestResponse(RestStatus.OK, builder);
     }
+
     private void writeAliases(List<AliasMetaData> aliases, XContentBuilder builder, ToXContent.Params params) throws IOException {
         builder.startObject(Fields.ALIASES);
         if (aliases != null) {

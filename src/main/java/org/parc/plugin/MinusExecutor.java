@@ -17,7 +17,14 @@ import org.parc.sqlrestes.exception.SqlParseException;
 import org.parc.sqlrestes.query.DefaultQueryAction;
 import org.parc.sqlrestes.query.multi.MultiQueryRequestBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by Eliran on 26/8/2016.
@@ -34,6 +41,7 @@ public class MinusExecutor implements ElasticHitsExecutor {
     private String[] fieldsOrderFirstTable;
     private String[] fieldsOrderSecondTable;
     private String seperator;
+
     public MinusExecutor(RestClient client, MultiQueryRequestBuilder builder) {
         this.client = client;
         this.builder = builder;
@@ -47,21 +55,20 @@ public class MinusExecutor implements ElasticHitsExecutor {
 
     @Override
     public void run() throws SqlParseException {
-        if(this.useTermsOptimization && this.fieldsOrderFirstTable.length != 1){
+        if (this.useTermsOptimization && this.fieldsOrderFirstTable.length != 1) {
             throw new SqlParseException("terms optimization supports minus with only one field");
         }
         if (this.useTermsOptimization && !this.useScrolling) {
             throw new SqlParseException("terms optimization work only with scrolling add scrolling hint");
         }
-        if(!this.useScrolling || !this.useTermsOptimization){
+        if (!this.useScrolling || !this.useTermsOptimization) {
             Set<ComperableHitResult> comperableHitResults;
-            if(!this.useScrolling){
+            if (!this.useScrolling) {
                 //1. get results from first search , put in set
                 //2. get reults from second search
                 //2.1 for each result remove from set
                 comperableHitResults = simpleOneTimeQueryEach();
-            }
-            else {
+            } else {
                 //if scrolling
                 //1. get all results in scrolls (till some limit) . put on set
                 //2. scroll on second table
@@ -69,10 +76,7 @@ public class MinusExecutor implements ElasticHitsExecutor {
                 comperableHitResults = runWithScrollings();
             }
             fillMinusHitsFromResults(comperableHitResults);
-        }
-
-
-        else {
+        } else {
             //if scrolling and optimization
             // 0. save the original second table where , init set
             // 1. on each scroll on first table , create miniSet
@@ -99,41 +103,41 @@ public class MinusExecutor implements ElasticHitsExecutor {
     private void fillMinusHitsFromOneField(String fieldName, Set<Object> fieldValues, SearchHit someHit) {
         List<SearchHit> minusHitsList = new ArrayList<>();
         int currentId = 1;
-        for(Object result : fieldValues){
-            Map<String,DocumentField> fields = new HashMap<>();
+        for (Object result : fieldValues) {
+            Map<String, DocumentField> fields = new HashMap<>();
             ArrayList<Object> values = new ArrayList<>();
             values.add(result);
-            fields.put(fieldName,new DocumentField(fieldName, values));
-            SearchHit searchHit = new SearchHit(currentId,currentId+"", new Text(someHit.getType()), fields);
+            fields.put(fieldName, new DocumentField(fieldName, values));
+            SearchHit searchHit = new SearchHit(currentId, currentId + "", new Text(someHit.getType()), fields);
             searchHit.sourceRef(someHit.getSourceRef());
             searchHit.getSourceAsMap().clear();
             Map<String, Object> sourceAsMap = new HashMap<>();
-            sourceAsMap.put(fieldName,result);
+            sourceAsMap.put(fieldName, result);
             searchHit.getSourceAsMap().putAll(sourceAsMap);
             currentId++;
             minusHitsList.add(searchHit);
         }
         int totalSize = currentId - 1;
         SearchHit[] unionHitsArr = minusHitsList.toArray(new SearchHit[totalSize]);
-        this.minusHits = new SearchHits(unionHitsArr, totalSize,1.0f);
+        this.minusHits = new SearchHits(unionHitsArr, totalSize, 1.0f);
     }
 
     private void fillMinusHitsFromResults(Set<ComperableHitResult> comperableHitResults) {
         int currentId = 1;
         List<SearchHit> minusHitsList = new ArrayList<>();
-        for(ComperableHitResult result : comperableHitResults){
+        for (ComperableHitResult result : comperableHitResults) {
             ArrayList<Object> values = new ArrayList<>();
             values.add(result);
             SearchHit originalHit = result.getOriginalHit();
-            SearchHit searchHit = new SearchHit(currentId,originalHit.getId(), new Text(originalHit.getType()), originalHit.getFields());
+            SearchHit searchHit = new SearchHit(currentId, originalHit.getId(), new Text(originalHit.getType()), originalHit.getFields());
             searchHit.sourceRef(originalHit.getSourceRef());
             searchHit.getSourceAsMap().clear();
             Map<String, Object> sourceAsMap = result.getFlattenMap();
-            for(Map.Entry<String,String> entry : this.builder.getFirstTableFieldToAlias().entrySet()){
-                if(sourceAsMap.containsKey(entry.getKey())){
+            for (Map.Entry<String, String> entry : this.builder.getFirstTableFieldToAlias().entrySet()) {
+                if (sourceAsMap.containsKey(entry.getKey())) {
                     Object value = sourceAsMap.get(entry.getKey());
                     sourceAsMap.remove(entry.getKey());
-                    sourceAsMap.put(entry.getValue(),value);
+                    sourceAsMap.put(entry.getValue(), value);
                 }
             }
 
@@ -143,7 +147,7 @@ public class MinusExecutor implements ElasticHitsExecutor {
         }
         int totalSize = currentId - 1;
         SearchHit[] unionHitsArr = minusHitsList.toArray(new SearchHit[totalSize]);
-        this.minusHits = new SearchHits(unionHitsArr, totalSize,1.0f);
+        this.minusHits = new SearchHits(unionHitsArr, totalSize, 1.0f);
     }
 
     private Set<ComperableHitResult> runWithScrollings() {
@@ -155,16 +159,16 @@ public class MinusExecutor implements ElasticHitsExecutor {
         Set<ComperableHitResult> results = new HashSet<>();
 
         SearchHit[] hits = scrollResp.getHits().getHits();
-        if(hits == null || hits.length == 0){
+        if (hits == null || hits.length == 0) {
             return new HashSet<>();
         }
         int totalDocsFetchedFromFirstTable = 0;
 
         //fetch from first table . fill set.
-        while (hits != null && hits.length != 0 ) {
+        while (hits != null && hits.length != 0) {
             totalDocsFetchedFromFirstTable += hits.length;
-            fillComperableSetFromHits(this.fieldsOrderFirstTable,hits,results);
-            if(totalDocsFetchedFromFirstTable > this.maxDocsToFetchOnFirstTable){
+            fillComperableSetFromHits(this.fieldsOrderFirstTable, hits, results);
+            if (totalDocsFetchedFromFirstTable > this.maxDocsToFetchOnFirstTable) {
                 break;
             }
 //            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
@@ -174,20 +178,20 @@ public class MinusExecutor implements ElasticHitsExecutor {
 //         scrollResp = ElasticUtils.scrollOneTimeWithHits(this.client, this.builder.getSecondSearchRequest(),
 //                builder.getOriginalSelect(false), this.maxDocsToFetchOnEachScrollShard);
 
-        scrollResp =null;
+        scrollResp = null;
         hits = scrollResp.getHits().getHits();
-        if(hits == null || hits.length == 0){
+        if (hits == null || hits.length == 0) {
             return results;
         }
         int totalDocsFetchedFromSecondTable = 0;
-        while (hits!= null && hits.length != 0 ) {
+        while (hits != null && hits.length != 0) {
             totalDocsFetchedFromSecondTable += hits.length;
-            removeValuesFromSetAccordingToHits(this.fieldsOrderSecondTable,results,hits);
-            if(totalDocsFetchedFromSecondTable > this.maxDocsToFetchOnSecondTable){
+            removeValuesFromSetAccordingToHits(this.fieldsOrderSecondTable, results, hits);
+            if (totalDocsFetchedFromSecondTable > this.maxDocsToFetchOnSecondTable) {
                 break;
             }
 //            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
-            scrollResp =null;
+            scrollResp = null;
             hits = scrollResp.getHits().getHits();
         }
 
@@ -196,36 +200,36 @@ public class MinusExecutor implements ElasticHitsExecutor {
 
     private Set<ComperableHitResult> simpleOneTimeQueryEach() {
 //        SearchHit[] firstTableHits = this.builder.getFirstSearchRequest().get().getHits().getHits();
-                SearchHit[] firstTableHits =null;
-        if(firstTableHits == null || firstTableHits.length == 0){
+        SearchHit[] firstTableHits = null;
+        if (firstTableHits == null || firstTableHits.length == 0) {
             return new HashSet<>();
         }
 
         Set<ComperableHitResult> result = new HashSet<>();
         fillComperableSetFromHits(this.fieldsOrderFirstTable, firstTableHits, result);
 //        SearchHit[] secondTableHits = this.builder.getSecondSearchRequest().get().getHits().getHits();
-        SearchHit[] secondTableHits =null;
-        if(secondTableHits == null || secondTableHits.length == 0){
+        SearchHit[] secondTableHits = null;
+        if (secondTableHits == null || secondTableHits.length == 0) {
 
             return result;
         }
-        removeValuesFromSetAccordingToHits(this.fieldsOrderSecondTable,result,secondTableHits);
+        removeValuesFromSetAccordingToHits(this.fieldsOrderSecondTable, result, secondTableHits);
         return result;
     }
 
     private void removeValuesFromSetAccordingToHits(String[] fieldsOrder, Set<ComperableHitResult> set, SearchHit[] hits) {
-        for(SearchHit hit: hits){
-            ComperableHitResult comperableHitResult = new ComperableHitResult(hit,fieldsOrder,this.seperator);
-            if(!comperableHitResult.isAllNull()) {
+        for (SearchHit hit : hits) {
+            ComperableHitResult comperableHitResult = new ComperableHitResult(hit, fieldsOrder, this.seperator);
+            if (!comperableHitResult.isAllNull()) {
                 set.remove(comperableHitResult);
             }
         }
     }
 
     private void fillComperableSetFromHits(String[] fieldsOrder, SearchHit[] hits, Set<ComperableHitResult> setToFill) {
-        for(SearchHit hit: hits){
-            ComperableHitResult comperableHitResult = new ComperableHitResult(hit,fieldsOrder,this.seperator);
-            if(!comperableHitResult.isAllNull()) {
+        for (SearchHit hit : hits) {
+            ComperableHitResult comperableHitResult = new ComperableHitResult(hit, fieldsOrder, this.seperator);
+            if (!comperableHitResult.isAllNull()) {
                 setToFill.add(comperableHitResult);
             }
         }
@@ -233,13 +237,13 @@ public class MinusExecutor implements ElasticHitsExecutor {
 
     private String getFieldName(Field field) {
         String alias = field.getAlias();
-        if(alias!=null && !alias.isEmpty()){
+        if (alias != null && !alias.isEmpty()) {
             return alias;
         }
         return field.getName();
     }
 
-    private boolean checkIfOnlyOneField(Select firstSelect ,Select secondSelect) {
+    private boolean checkIfOnlyOneField(Select firstSelect, Select secondSelect) {
         return firstSelect.getFields().size() == 1 && secondSelect.getFields().size() == 1;
     }
 
@@ -249,24 +253,24 @@ public class MinusExecutor implements ElasticHitsExecutor {
     //1.1 build where from all results (terms filter) , and run query
     //1.1.1 on each result remove from miniSet
     //1.1.2 add all results left from miniset to bigset
-    private MinusOneFieldAndOptimizationResult runWithScrollingAndAddFilter(String firstFieldName ,String secondFieldName) throws SqlParseException {
+    private MinusOneFieldAndOptimizationResult runWithScrollingAndAddFilter(String firstFieldName, String secondFieldName) throws SqlParseException {
 //        SearchResponse scrollResp = ElasticUtils.scrollOneTimeWithHits(this.client, this.builder.getFirstSearchRequest(),
 //        builder.getOriginalSelect(true), this.maxDocsToFetchOnEachScrollShard);
-        SearchResponse scrollResp =null;
+        SearchResponse scrollResp = null;
 
         Set<Object> results = new HashSet<>();
         int currentNumOfResults = 0;
         SearchHit[] hits = scrollResp.getHits().getHits();
         SearchHit someHit = null;
-        if(hits.length!=0){
+        if (hits.length != 0) {
             //we need some hit for creating InnerResults.
             someHit = hits[0];
         }
         int totalDocsFetchedFromFirstTable = 0;
         int totalDocsFetchedFromSecondTable = 0;
         Where originalWhereSecondTable = this.builder.getOriginalSelect(false).getWhere();
-        while (hits.length != 0 ) {
-            totalDocsFetchedFromFirstTable+=hits.length;
+        while (hits.length != 0) {
+            totalDocsFetchedFromFirstTable += hits.length;
             Set<Object> currentSetFromResults = new HashSet<>();
             fillSetFromHits(firstFieldName, hits, currentSetFromResults);
             //fetch from second
@@ -275,18 +279,18 @@ public class MinusExecutor implements ElasticHitsExecutor {
             secondQuerySelect.setWhere(where);
             DefaultQueryAction queryAction = new DefaultQueryAction(this.client, secondQuerySelect);
             queryAction.explain();
-            if(totalDocsFetchedFromSecondTable > this.maxDocsToFetchOnSecondTable){
+            if (totalDocsFetchedFromSecondTable > this.maxDocsToFetchOnSecondTable) {
                 break;
             }
 //            SearchResponse responseForSecondTable = ElasticUtils.scrollOneTimeWithHits(this.client, queryAction.getRequestBuilder(),secondQuerySelect,this.maxDocsToFetchOnEachScrollShard);
-            SearchResponse responseForSecondTable =null;
+            SearchResponse responseForSecondTable = null;
             SearchHits secondQuerySearchHits = responseForSecondTable.getHits();
 
             SearchHit[] secondQueryHits = secondQuerySearchHits.getHits();
-            while(secondQueryHits.length > 0){
-                totalDocsFetchedFromSecondTable+=secondQueryHits.length;
+            while (secondQueryHits.length > 0) {
+                totalDocsFetchedFromSecondTable += secondQueryHits.length;
                 removeValuesFromSetAccordingToHits(secondFieldName, currentSetFromResults, secondQueryHits);
-                if(totalDocsFetchedFromSecondTable > this.maxDocsToFetchOnSecondTable){
+                if (totalDocsFetchedFromSecondTable > this.maxDocsToFetchOnSecondTable) {
                     break;
                 }
 //                responseForSecondTable = client.prepareSearchScroll(responseForSecondTable.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
@@ -294,35 +298,33 @@ public class MinusExecutor implements ElasticHitsExecutor {
                 secondQueryHits = responseForSecondTable.getHits().getHits();
             }
             results.addAll(currentSetFromResults);
-            if(totalDocsFetchedFromFirstTable > this.maxDocsToFetchOnFirstTable){
+            if (totalDocsFetchedFromFirstTable > this.maxDocsToFetchOnFirstTable) {
                 System.out.println("too many results for first table, stoping at:" + totalDocsFetchedFromFirstTable);
                 break;
             }
 
 //            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
-            scrollResp =null;
+            scrollResp = null;
             hits = scrollResp.getHits().getHits();
         }
-        return new MinusOneFieldAndOptimizationResult(results,someHit);
+        return new MinusOneFieldAndOptimizationResult(results, someHit);
 
 
     }
 
     private void removeValuesFromSetAccordingToHits(String fieldName, Set<Object> setToRemoveFrom, SearchHit[] hits) {
-        for(SearchHit hit : hits){
+        for (SearchHit hit : hits) {
             Object fieldValue = getFieldValue(hit, fieldName);
-            if(fieldValue!=null) {
-                if(setToRemoveFrom.contains(fieldValue)){
-                    setToRemoveFrom.remove(fieldValue);
-                }
+            if (fieldValue != null) {
+                setToRemoveFrom.remove(fieldValue);
             }
         }
     }
 
     private void fillSetFromHits(String fieldName, SearchHit[] hits, Set<Object> setToFill) {
-        for(SearchHit hit: hits){
+        for (SearchHit hit : hits) {
             Object fieldValue = getFieldValue(hit, fieldName);
-            if(fieldValue!=null) {
+            if (fieldValue != null) {
                 setToFill.add(fieldValue);
             }
         }
@@ -332,21 +334,20 @@ public class MinusExecutor implements ElasticHitsExecutor {
         Where where = Where.newInstance();
         where.setConn(Where.CONN.AND);
         where.addWhere(originalWhereSecondTable);
-        where.addWhere(buildTermsFilterFromResults(currentSetFromResults,secondFieldName));
+        where.addWhere(buildTermsFilterFromResults(currentSetFromResults, secondFieldName));
         return where;
     }
 
-    private Where buildTermsFilterFromResults(Set<Object> results,String fieldName) throws SqlParseException {
-        return new Condition(Where.CONN.AND ,fieldName,null, Condition.OPEAR.IN_TERMS,results.toArray(),null);
+    private Where buildTermsFilterFromResults(Set<Object> results, String fieldName) throws SqlParseException {
+        return new Condition(Where.CONN.AND, fieldName, null, Condition.OPEAR.IN_TERMS, results.toArray(), null);
     }
 
     private Object getFieldValue(SearchHit hit, String fieldName) {
-        Map<String,Object> sourceAsMap = hit.getSourceAsMap();
-        if(fieldName.contains(".")){
+        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+        if (fieldName.contains(".")) {
             String[] split = fieldName.split("\\.");
             return Util.searchPathInMap(sourceAsMap, split);
-        }
-        else if(sourceAsMap.containsKey(fieldName)){
+        } else if (sourceAsMap.containsKey(fieldName)) {
             return sourceAsMap.get(fieldName);
         }
         return null;
@@ -357,11 +358,10 @@ public class MinusExecutor implements ElasticHitsExecutor {
         Map<String, String> firstTableFieldToAlias = this.builder.getFirstTableFieldToAlias();
         List<Field> firstTableFields = this.builder.getOriginalSelect(true).getFields();
 
-        for(Field field : firstTableFields){
-            if(firstTableFieldToAlias.containsKey(field.getName())){
+        for (Field field : firstTableFields) {
+            if (firstTableFieldToAlias.containsKey(field.getName())) {
                 fieldsOrAliases.add(field.getAlias());
-            }
-            else {
+            } else {
                 fieldsOrAliases.add(field.getName());
             }
         }
@@ -375,10 +375,10 @@ public class MinusExecutor implements ElasticHitsExecutor {
     }
 
     private void fillFieldsArray(List<String> fieldsOrAliases, Map<String, String> fieldsToAlias, String[] fields) {
-        Map<String,String> aliasToField = inverseMap(fieldsToAlias);
-        for(int i = 0; i < fields.length ; i++) {
+        Map<String, String> aliasToField = inverseMap(fieldsToAlias);
+        for (int i = 0; i < fields.length; i++) {
             String field = fieldsOrAliases.get(i);
-            if(aliasToField.containsKey(field)){
+            if (aliasToField.containsKey(field)) {
                 field = aliasToField.get(field);
             }
             fields[i] = field;
@@ -387,22 +387,21 @@ public class MinusExecutor implements ElasticHitsExecutor {
 
     private Map<String, String> inverseMap(Map<String, String> mapToInverse) {
         Map<String, String> inversedMap = new HashMap<>();
-        for(Map.Entry<String, String> entry : mapToInverse.entrySet()){
+        for (Map.Entry<String, String> entry : mapToInverse.entrySet()) {
             inversedMap.put(entry.getValue(), entry.getKey());
         }
         return inversedMap;
     }
 
     private void parseHintsIfAny(List<Hint> hints) {
-        if(hints == null) return;
-        for(Hint hint : hints){
-            if(hint.getType() == HintType.MINUS_USE_TERMS_OPTIMIZATION){
+        if (hints == null) return;
+        for (Hint hint : hints) {
+            if (hint.getType() == HintType.MINUS_USE_TERMS_OPTIMIZATION) {
                 Object[] params = hint.getParams();
-                if(params!=null && params.length == 1){
+                if (params != null && params.length == 1) {
                     this.termsOptimizationWithToLower = (boolean) params[0];
                 }
-            }
-            else if (hint.getType() == HintType.MINUS_FETCH_AND_RESULT_LIMITS){
+            } else if (hint.getType() == HintType.MINUS_FETCH_AND_RESULT_LIMITS) {
                 Object[] params = hint.getParams();
                 this.useScrolling = true;
                 this.maxDocsToFetchOnFirstTable = (int) params[0];
@@ -414,12 +413,11 @@ public class MinusExecutor implements ElasticHitsExecutor {
 
 }
 
-class MinusOneFieldAndOptimizationResult
-{
+class MinusOneFieldAndOptimizationResult {
     private Set<Object> fieldValues;
     private SearchHit someHit;
 
-    MinusOneFieldAndOptimizationResult( Set<Object> fieldValues, SearchHit someHit) {
+    MinusOneFieldAndOptimizationResult(Set<Object> fieldValues, SearchHit someHit) {
         this.fieldValues = fieldValues;
         this.someHit = someHit;
     }

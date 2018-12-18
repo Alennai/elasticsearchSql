@@ -7,7 +7,27 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.CallableStatement;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.Date;
+import java.sql.NClob;
+import java.sql.ParameterMetaData;
+import java.sql.PreparedStatement;
+import java.sql.Ref;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.RowId;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Savepoint;
+import java.sql.Statement;
+import java.sql.Struct;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.Properties;
@@ -24,13 +44,13 @@ class RestClientConnection implements Connection {
         String hostAndPortArrayStr = jdbcUrl.split("/")[2];
         String[] hostAndPortArray = hostAndPortArrayStr.split(",");
         HttpHost[] hosts = new HttpHost[hostAndPortArray.length];
-        for ( int i=0;i<hostAndPortArray.length;i++) {
-            String hostAndPort=hostAndPortArray[i];
+        for (int i = 0; i < hostAndPortArray.length; i++) {
+            String hostAndPort = hostAndPortArray[i];
             String host = hostAndPort.split(":")[i];
             String port = hostAndPort.split(":")[i];
             hosts[i] = new HttpHost(host, Integer.parseInt(port), "http");
         }
-         client = RestClient.builder(hosts).setMaxRetryTimeoutMillis(10000).build();
+        client = RestClient.builder(hosts).setMaxRetryTimeoutMillis(10000).build();
     }
 
     public RestClient getClient() {
@@ -408,23 +428,23 @@ class RestClientConnection implements Connection {
             }
 
             @Override
-            public void setFetchDirection(int direction) {
-
-            }
-
-            @Override
             public int getFetchDirection() {
                 return 0;
             }
 
             @Override
-            public void setFetchSize(int rows) {
+            public void setFetchDirection(int direction) {
 
             }
 
             @Override
             public int getFetchSize() {
                 return 0;
+            }
+
+            @Override
+            public void setFetchSize(int rows) {
+
             }
 
             @Override
@@ -508,13 +528,13 @@ class RestClientConnection implements Connection {
             }
 
             @Override
-            public void setPoolable(boolean poolable) {
-
+            public boolean isPoolable() {
+                return false;
             }
 
             @Override
-            public boolean isPoolable() {
-                return false;
+            public void setPoolable(boolean poolable) {
+
             }
 
             @Override
@@ -547,12 +567,12 @@ class RestClientConnection implements Connection {
         return null;
     }
 
-    public void setAutoCommit(boolean autoCommit) {
-
-    }
-
     public boolean getAutoCommit() {
         return false;
+    }
+
+    public void setAutoCommit(boolean autoCommit) {
+
     }
 
     public void commit() {
@@ -575,15 +595,11 @@ class RestClientConnection implements Connection {
         return null;
     }
 
-    public void setReadOnly(boolean readOnly) {
-
-    }
-
     public boolean isReadOnly() {
         return false;
     }
 
-    public void setCatalog(String catalog) {
+    public void setReadOnly(boolean readOnly) {
 
     }
 
@@ -591,12 +607,16 @@ class RestClientConnection implements Connection {
         return null;
     }
 
-    public void setTransactionIsolation(int level) {
+    public void setCatalog(String catalog) {
 
     }
 
     public int getTransactionIsolation() {
         return 0;
+    }
+
+    public void setTransactionIsolation(int level) {
+
     }
 
     public SQLWarning getWarnings() {
@@ -627,12 +647,12 @@ class RestClientConnection implements Connection {
 
     }
 
-    public void setHoldability(int holdability) {
-
-    }
-
     public int getHoldability() {
         return 0;
+    }
+
+    public void setHoldability(int holdability) {
+
     }
 
     public Savepoint setSavepoint() {
@@ -699,16 +719,16 @@ class RestClientConnection implements Connection {
 
     }
 
-    public void setClientInfo(Properties properties) {
-
-    }
-
     public String getClientInfo(String name) {
         return null;
     }
 
     public Properties getClientInfo() {
         return null;
+    }
+
+    public void setClientInfo(Properties properties) {
+
     }
 
     public Array createArrayOf(String typeName, Object[] elements) {
@@ -719,12 +739,12 @@ class RestClientConnection implements Connection {
         return null;
     }
 
-    public void setSchema(String schema) {
-
-    }
-
     public String getSchema() {
         return null;
+    }
+
+    public void setSchema(String schema) {
+
     }
 
     public void abort(Executor executor) {

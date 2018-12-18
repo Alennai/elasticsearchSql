@@ -17,30 +17,30 @@ class PrefixLogger extends ExtendedLoggerWrapper {
     private static final WeakHashMap<String, Marker> markers = new WeakHashMap();
     private final Marker marker;
 
+    PrefixLogger(ExtendedLogger logger, String name, String prefix) {
+        super(logger, name, null);
+        String actualPrefix = (prefix == null ? "" : prefix).intern();
+        WeakHashMap var6 = markers;
+        Object actualMarker;
+        synchronized (markers) {
+            Marker maybeMarker = markers.get(actualPrefix);
+            if (maybeMarker == null) {
+                actualMarker = new MarkerManager.Log4jMarker(actualPrefix);
+                markers.put(actualPrefix, (Marker) actualMarker);
+            } else {
+                actualMarker = maybeMarker;
+            }
+        }
+
+        this.marker = (Marker) actualMarker;
+    }
+
     static int markersSize() {
         return markers.size();
     }
 
     public String prefix() {
         return this.marker.getName();
-    }
-
-    PrefixLogger(ExtendedLogger logger, String name, String prefix) {
-        super(logger, name, (MessageFactory)null);
-        String actualPrefix = (prefix == null?"":prefix).intern();
-        WeakHashMap var6 = markers;
-        Object actualMarker;
-        synchronized(markers) {
-            Marker maybeMarker = (Marker)markers.get(actualPrefix);
-            if(maybeMarker == null) {
-                actualMarker = new MarkerManager.Log4jMarker(actualPrefix);
-                markers.put(new String(actualPrefix), (Marker) actualMarker);
-            } else {
-                actualMarker = maybeMarker;
-            }
-        }
-
-        this.marker = (Marker)actualMarker;
     }
 
     public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {

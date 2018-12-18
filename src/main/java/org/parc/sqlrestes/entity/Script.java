@@ -9,23 +9,15 @@ import java.util.Objects;
  * Created by xusiao on 2018/5/4.
  */
 public class Script {
-    public static  String DEFAULT_SCRIPT_LANG = "painless";
-    public static  String DEFAULT_TEMPLATE_LANG = "mustache";
-    public static  String CONTENT_TYPE_OPTION = "content_type";
-    private static  ScriptType DEFAULT_SCRIPT_TYPE;
-    private static  ParseField SCRIPT_PARSE_FIELD;
-    private static  ParseField SOURCE_PARSE_FIELD;
-    private static  ParseField LANG_PARSE_FIELD;
-    private static  ParseField OPTIONS_PARSE_FIELD;
-    private static  ParseField PARAMS_PARSE_FIELD;
-//    private static final ObjectParser<Script.Builder, Void> PARSER;
-    private  ScriptType type=null;
-    private  String lang=null;
-    private  String idOrCode=null;
-    private  Map<String, String> options=new HashMap<>();
-    private Map<String, Object> params=new HashMap<>();
-
-
+    public static String DEFAULT_SCRIPT_LANG = "painless";
+    public static String DEFAULT_TEMPLATE_LANG = "mustache";
+    public static String CONTENT_TYPE_OPTION = "content_type";
+    private static ScriptType DEFAULT_SCRIPT_TYPE;
+    private static ParseField SCRIPT_PARSE_FIELD;
+    private static ParseField SOURCE_PARSE_FIELD;
+    private static ParseField LANG_PARSE_FIELD;
+    private static ParseField OPTIONS_PARSE_FIELD;
+    private static ParseField PARAMS_PARSE_FIELD;
 
     static {
         DEFAULT_SCRIPT_TYPE = ScriptType.INLINE;
@@ -57,29 +49,36 @@ public class Script {
 //        }, XContentParser::map, PARAMS_PARSE_FIELD, ValueType.OBJECT);
     }
 
+    //    private static final ObjectParser<Script.Builder, Void> PARSER;
+    private ScriptType type = null;
+    private String lang = null;
+    private String idOrCode = null;
+    private Map<String, String> options = new HashMap<>();
+    private Map<String, Object> params = new HashMap<>();
+
     public Script(String idOrCode) {
         this(DEFAULT_SCRIPT_TYPE, "painless", idOrCode, Collections.emptyMap(), Collections.emptyMap());
     }
 
     private Script(ScriptType type, String lang, String idOrCode, Map<String, String> options, Map<String, Object> params) {
-        this.type = (ScriptType) Objects.requireNonNull(type);
-        this.idOrCode = (String)Objects.requireNonNull(idOrCode);
-        this.params = Collections.unmodifiableMap((Map)Objects.requireNonNull(params));
-        if(type == ScriptType.INLINE) {
-            this.lang = (String)Objects.requireNonNull(lang);
-            this.options = Collections.unmodifiableMap((Map)Objects.requireNonNull(options));
+        this.type = Objects.requireNonNull(type);
+        this.idOrCode = Objects.requireNonNull(idOrCode);
+        this.params = Collections.unmodifiableMap((Map) Objects.requireNonNull(params));
+        if (type == ScriptType.INLINE) {
+            this.lang = Objects.requireNonNull(lang);
+            this.options = Collections.unmodifiableMap((Map) Objects.requireNonNull(options));
         } else {
-            if(type != ScriptType.STORED) {
+            if (type != ScriptType.STORED) {
 //                throw new IllegalStateException("unknown script type [" + type.getName() + "]");
                 throw new IllegalStateException("unknown script type [ ]");
             }
 
-            if(lang != null) {
+            if (lang != null) {
                 throw new IllegalArgumentException("lang cannot be specified for stored scripts");
             }
 
             this.lang = null;
-            if(options != null) {
+            if (options != null) {
                 throw new IllegalStateException("options cannot be specified for stored scripts");
             }
 
@@ -92,6 +91,7 @@ public class Script {
     public String toString() {
         return "Script{type=" + this.type + ", lang=\'" + this.lang + '\'' + ", idOrCode=\'" + this.idOrCode + '\'' + ", options=" + this.options + ", params=" + this.params + '}';
     }
+
     private static final class Builder {
         private ScriptType type;
         private String lang;
@@ -125,7 +125,7 @@ public class Script {
 //        }
 
         private void setStored(String idOrCode) {
-            if(this.type != null) {
+            if (this.type != null) {
                 this.throwOnlyOneOfType();
             }
 
@@ -150,32 +150,32 @@ public class Script {
         }
 
         private Script build(String defaultLang) {
-            if(this.type == null) {
+            if (this.type == null) {
                 throw new IllegalArgumentException("must specify either [source] for an inline script or [id] for a stored script");
             } else {
-                if(this.type == ScriptType.INLINE) {
-                    if(this.lang == null) {
+                if (this.type == ScriptType.INLINE) {
+                    if (this.lang == null) {
                         this.lang = defaultLang;
                     }
 
-                    if(this.idOrCode == null) {
+                    if (this.idOrCode == null) {
                         throw new IllegalArgumentException("must specify <id> for an inline script");
                     }
 
-                    if(this.options.size() > 1 || this.options.size() == 1 && this.options.get("content_type") == null) {
+                    if (this.options.size() > 1 || this.options.size() == 1 && this.options.get("content_type") == null) {
                         this.options.remove("content_type");
                         throw new IllegalArgumentException("illegal compiler options [" + this.options + "] specified");
                     }
-                } else if(this.type == ScriptType.STORED) {
-                    if(this.lang != null) {
+                } else if (this.type == ScriptType.STORED) {
+                    if (this.lang != null) {
                         throw new IllegalArgumentException("illegally specified <lang> for a stored script");
                     }
 
-                    if(this.idOrCode == null) {
+                    if (this.idOrCode == null) {
                         throw new IllegalArgumentException("must specify <code> for a stored script");
                     }
 
-                    if(!this.options.isEmpty()) {
+                    if (!this.options.isEmpty()) {
                         throw new IllegalArgumentException("field [" + Script.OPTIONS_PARSE_FIELD.getPreferredName() + "] cannot be specified using a stored script");
                     }
 

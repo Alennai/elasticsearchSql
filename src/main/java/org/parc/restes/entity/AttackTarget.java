@@ -9,23 +9,23 @@ package org.parc.restes.entity;
 import java.util.List;
 
 class AttackTarget {
-	private String target;
-	private List<Bucket> buckets;
+    private String target;
+    private List<Bucket> buckets;
 
-	public String getTarget() {
-		return target;
-	}
+    public String getTarget() {
+        return target;
+    }
 
-	public void setTarget(String target) {
-		this.target = target;
-	}
+    public void setTarget(String target) {
+        this.target = target;
+    }
 
-	public List<Bucket> getBuckets() {
-		return buckets;
-	}
+    public List<Bucket> getBuckets() {
+        return buckets;
+    }
 
-	public void setBuckets(List<Bucket> buckets) {
-		this.buckets = buckets;
-	}
+    public void setBuckets(List<Bucket> buckets) {
+        this.buckets = buckets;
+    }
 
 }

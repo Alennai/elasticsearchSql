@@ -53,20 +53,19 @@ public class NestedType {
 
         } else if (parameters.size() == 2) {
             SQLExpr secondParameter = parameters.get(1);
-            if(secondParameter instanceof SQLTextLiteralExpr || secondParameter instanceof SQLIdentifierExpr || secondParameter instanceof SQLPropertyExpr) {
+            if (secondParameter instanceof SQLTextLiteralExpr || secondParameter instanceof SQLIdentifierExpr || secondParameter instanceof SQLPropertyExpr) {
 
                 String pathString = Util.extendedToString(secondParameter);
-                if(pathString.equals(""))
+                if (pathString.equals(""))
                     this.path = null;
                 else
                     this.path = pathString;
                 this.simple = true;
-            }
-            else {
+            } else {
                 this.path = field;
                 Where where = Where.newInstance();
-                new WhereParser(new SqlParser()).parseWhere(secondParameter,where);
-                if(where.getWheres().size() == 0)
+                new WhereParser(new SqlParser()).parseWhere(secondParameter, where);
+                if (where.getWheres().size() == 0)
                     throw new SqlParseException("unable to parse filter where.");
                 this.where = where;
                 simple = false;

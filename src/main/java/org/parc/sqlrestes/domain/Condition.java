@@ -18,71 +18,16 @@ import java.util.Map;
  */
 public class Condition extends Where {
 
-    public enum OPEAR {
-        EQ, GT, LT, GTE, LTE, N, LIKE, NLIKE, IS, ISN, IN, NIN, BETWEEN, NBETWEEN, GEO_INTERSECTS, GEO_BOUNDING_BOX, GEO_DISTANCE, GEO_DISTANCE_RANGE, GEO_POLYGON, GEO_CELL, IN_TERMS, TERM, IDS_QUERY, NESTED_COMPLEX, CHILDREN_COMPLEX, SCRIPT;
-
-        public static Map<String, OPEAR> methodNameToOpear;
-
-        private static BiMap<OPEAR, OPEAR> negatives;
-
-        static {
-            methodNameToOpear = new HashMap<>();
-            methodNameToOpear.put("term", TERM);
-            methodNameToOpear.put("matchterm", TERM);
-            methodNameToOpear.put("match_term", TERM);
-            methodNameToOpear.put("terms", IN_TERMS);
-            methodNameToOpear.put("in_terms", IN_TERMS);
-            methodNameToOpear.put("ids", IDS_QUERY);
-            methodNameToOpear.put("ids_query", IDS_QUERY);
-        }
-
-        static {
-            negatives = HashBiMap.create(7);
-            negatives.put(EQ, N);
-            negatives.put(GT, LTE);
-            negatives.put(LT, GTE);
-            negatives.put(LIKE, NLIKE);
-            negatives.put(IS, ISN);
-            negatives.put(IN, NIN);
-            negatives.put(BETWEEN, NBETWEEN);
-        }
-
-        public OPEAR negative() throws SqlParseException {
-            OPEAR negative = negatives.get(this);
-            negative = negative != null ? negative : negatives.inverse().get(this);
-            if (negative == null) {
-                throw new SqlParseException("OPEAR negative not supported: " + this);
-            }
-            return negative;
-        }
-    }
-
     private String name;
-
     private SQLExpr nameExpr;
-
     private Object value;
-
-    public SQLExpr getNameExpr() {
-        return nameExpr;
-    }
-
-    public SQLExpr getValueExpr() {
-        return valueExpr;
-    }
-
     private SQLExpr valueExpr;
-
     private OPEAR opear;
-
     private Object relationshipType;
-
     private boolean isNested;
     private String nestedPath;
-
     private boolean isChildren;
     private String childType;
-
     public Condition(CONN conn, String field, SQLExpr nameExpr, String condition, Object obj, SQLExpr valueExpr) throws SqlParseException {
         this(conn, field, nameExpr, condition, obj, valueExpr, null);
     }
@@ -90,7 +35,6 @@ public class Condition extends Where {
     public Condition(CONN conn, String field, SQLExpr nameExpr, OPEAR condition, Object obj, SQLExpr valueExpr) throws SqlParseException {
         this(conn, field, nameExpr, condition, obj, valueExpr, null);
     }
-
     public Condition(CONN conn, String name, SQLExpr nameExpr, String oper, Object value, SQLExpr valueExpr, Object relationshipType) throws
             SqlParseException {
         super(conn);
@@ -205,7 +149,6 @@ public class Condition extends Where {
         }
     }
 
-
     public Condition(CONN conn,
                      String name,
                      SQLExpr nameExpr,
@@ -248,6 +191,14 @@ public class Condition extends Where {
         }
     }
 
+    public SQLExpr getNameExpr() {
+        return nameExpr;
+    }
+
+    public SQLExpr getValueExpr() {
+        return valueExpr;
+    }
+
     public String getOpertatorSymbol() throws SqlParseException {
         switch (opear) {
             case EQ:
@@ -271,7 +222,6 @@ public class Condition extends Where {
                 throw new SqlParseException(opear + " is err!");
         }
     }
-
 
     public String getName() {
         return name;
@@ -371,5 +321,44 @@ public class Condition extends Where {
 
         }
         return null;
+    }
+
+    public enum OPEAR {
+        EQ, GT, LT, GTE, LTE, N, LIKE, NLIKE, IS, ISN, IN, NIN, BETWEEN, NBETWEEN, GEO_INTERSECTS, GEO_BOUNDING_BOX, GEO_DISTANCE, GEO_DISTANCE_RANGE, GEO_POLYGON, GEO_CELL, IN_TERMS, TERM, IDS_QUERY, NESTED_COMPLEX, CHILDREN_COMPLEX, SCRIPT;
+
+        public static Map<String, OPEAR> methodNameToOpear;
+
+        private static BiMap<OPEAR, OPEAR> negatives;
+
+        static {
+            methodNameToOpear = new HashMap<>();
+            methodNameToOpear.put("term", TERM);
+            methodNameToOpear.put("matchterm", TERM);
+            methodNameToOpear.put("match_term", TERM);
+            methodNameToOpear.put("terms", IN_TERMS);
+            methodNameToOpear.put("in_terms", IN_TERMS);
+            methodNameToOpear.put("ids", IDS_QUERY);
+            methodNameToOpear.put("ids_query", IDS_QUERY);
+        }
+
+        static {
+            negatives = HashBiMap.create(7);
+            negatives.put(EQ, N);
+            negatives.put(GT, LTE);
+            negatives.put(LT, GTE);
+            negatives.put(LIKE, NLIKE);
+            negatives.put(IS, ISN);
+            negatives.put(IN, NIN);
+            negatives.put(BETWEEN, NBETWEEN);
+        }
+
+        public OPEAR negative() throws SqlParseException {
+            OPEAR negative = negatives.get(this);
+            negative = negative != null ? negative : negatives.inverse().get(this);
+            if (negative == null) {
+                throw new SqlParseException("OPEAR negative not supported: " + this);
+            }
+            return negative;
+        }
     }
 }
