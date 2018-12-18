@@ -54,7 +54,7 @@ public class CurlUtil {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        Collections.sort(indexList, (o1, o2) -> {
+        indexList.sort((o1, o2) -> {
             String index1 = o1.getName();
             String index2 = o2.getName();
             Matcher m1 = ptn1.matcher(index1);

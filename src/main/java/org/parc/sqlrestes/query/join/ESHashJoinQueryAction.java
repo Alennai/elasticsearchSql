@@ -67,7 +67,7 @@ public class ESHashJoinQueryAction extends ESJoinQueryAction {
                 t1Field = new Field(removeAlias(secondField,t1Alias),null);
                 t2Field = new Field(removeAlias(firstField,t2Alias),null);
             }
-            comparisonFields.add(new AbstractMap.SimpleEntry<Field, Field>(t1Field, t2Field));
+            comparisonFields.add(new AbstractMap.SimpleEntry<>(t1Field, t2Field));
         }
         return comparisonFields;
     }

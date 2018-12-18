@@ -40,7 +40,7 @@ class ActionRequestRestExecuter {
             executeJoinRequestAndSendResponse();
         }
 		else if (request instanceof SearchRequest) {
-			client.search((SearchRequest) request, new RestStatusToXContentListener<SearchResponse>(channel));
+			client.search((SearchRequest) request, new RestStatusToXContentListener<>(channel));
 		} else if (requestBuilder instanceof SqlElasticDeleteByQueryRequestBuilder) {
             throw new UnsupportedOperationException("currently not support delete on elastic 2.0.0");
         }

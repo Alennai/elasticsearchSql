@@ -110,7 +110,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
 
     private boolean mbeanRegistered = false;
 
-    private static ThreadLocal<Long> waitNanosLocal = new ThreadLocal<Long>();
+    private static ThreadLocal<Long> waitNanosLocal = new ThreadLocal<>();
 
     private boolean logDifferentThread = true;
 
@@ -629,13 +629,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
 
             validateConnection(conn);
             createError = null;
-        } catch (SQLException ex) {
-            createErrorCount.incrementAndGet();
-            createError = ex;
-            lastCreateError = ex;
-            lastCreateErrorTimeMillis = System.currentTimeMillis();
-            throw ex;
-        } catch (RuntimeException ex) {
+        } catch (SQLException | RuntimeException ex) {
             createErrorCount.incrementAndGet();
             createError = ex;
             lastCreateError = ex;
@@ -1905,7 +1899,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
 
         long currrentNanos = System.nanoTime();
 
-        List<DruidPooledConnection> abandonedList = new ArrayList<DruidPooledConnection>();
+        List<DruidPooledConnection> abandonedList = new ArrayList<>();
 
         synchronized (activeConnections) {
             Iterator<DruidPooledConnection> iter = activeConnections.keySet().iterator();
@@ -1982,7 +1976,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
 
     @Override
     public List<String> getFilterClassNames() {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (Filter filter : filters) {
             names.add(filter.getClass().getName());
         }
@@ -2020,7 +2014,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
     }
 
     public void shrink(boolean checkTime) {
-        final List<DruidConnectionHolder> evictList = new ArrayList<DruidConnectionHolder>();
+        final List<DruidConnectionHolder> evictList = new ArrayList<>();
         try {
             lock.lockInterruptibly();
         } catch (InterruptedException e) {
@@ -2221,14 +2215,14 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
     }
 
     public List<Map<String, Object>> getPoolingConnectionInfo() {
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> list = new ArrayList<>();
         lock.lock();
         try {
             for (int i = 0; i < poolingCount; ++i) {
                 DruidConnectionHolder connHolder = connections[i];
                 Connection conn = connHolder.getConnection();
 
-                Map<String, Object> map = new LinkedHashMap<String, Object>();
+                Map<String, Object> map = new LinkedHashMap<>();
                 map.put("id", System.identityHashCode(conn));
                 map.put("useCount", connHolder.getUseCount());
                 if (connHolder.getLastActiveTimeMillis() > 0) {
@@ -2241,10 +2235,10 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
                 map.put("readoOnly", connHolder.isUnderlyingReadOnly());
 
                 if (connHolder.isPoolPreparedStatements()) {
-                    List<Map<String, Object>> stmtCache = new ArrayList<Map<String, Object>>();
+                    List<Map<String, Object>> stmtCache = new ArrayList<>();
                     PreparedStatementPool stmtPool = connHolder.getStatementPool();
                     for (PreparedStatementHolder stmtHolder : stmtPool.getMap().values()) {
-                        Map<String, Object> stmtInfo = new LinkedHashMap<String, Object>();
+                        Map<String, Object> stmtInfo = new LinkedHashMap<>();
 
                         stmtInfo.put("sql", stmtHolder.getKey().getSql());
                         stmtInfo.put("defaultRowPretch", stmtHolder.getDefaultRowPrefetch());
@@ -2304,7 +2298,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
 
     public Map<String, Object> getStatDataForMBean() {
         try {
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new HashMap<>();
 
             // 0 - 4
             map.put("Name", this.getName());
@@ -2401,7 +2395,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         } finally {
             lock.unlock();
         }
-        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+        Map<String, Object> dataMap = new LinkedHashMap<>();
 
         dataMap.put("Identity", System.identityHashCode(this));
         dataMap.put("Name", this.getName());

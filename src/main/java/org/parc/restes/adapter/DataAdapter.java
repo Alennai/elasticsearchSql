@@ -438,7 +438,7 @@ public class DataAdapter {
     }
 
     public static Map<String, String> json2Map(String string) {
-        Map<String, String> ipFsUsage = new HashMap<String, String>();
+        Map<String, String> ipFsUsage = new HashMap<>();
         JSONObject json = JSONObject.parseObject(string);
         //单个几点会是node吗？
         if (json.containsKey("nodes")) {

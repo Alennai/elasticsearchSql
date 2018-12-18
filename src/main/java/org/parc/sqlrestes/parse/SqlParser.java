@@ -261,8 +261,8 @@ public class SqlParser {
 
     private Map<String, List<SQLSelectOrderByItem>> splitAndFindOrder(SQLOrderBy orderBy, String firstTableAlias, String secondTableAlias) throws SqlParseException {
         Map<String, List<SQLSelectOrderByItem>> aliasToOrderBys = new HashMap<>();
-        aliasToOrderBys.put(firstTableAlias, new ArrayList<SQLSelectOrderByItem>());
-        aliasToOrderBys.put(secondTableAlias, new ArrayList<SQLSelectOrderByItem>());
+        aliasToOrderBys.put(firstTableAlias, new ArrayList<>());
+        aliasToOrderBys.put(secondTableAlias, new ArrayList<>());
         if (orderBy == null) return aliasToOrderBys;
         List<SQLSelectOrderByItem> orderByItems = orderBy.getItems();
         for (SQLSelectOrderByItem orderByItem : orderByItems) {
@@ -316,7 +316,7 @@ public class SqlParser {
         String alias = tableFrom.getAlias();
         fillBasicTableSelectJoin(tableOnJoin, tableFrom, where, orderBys, query);
         tableOnJoin.setConnectedFields(getConnectedFields(conditions, alias));
-        tableOnJoin.setSelectedFields(new ArrayList<Field>(tableOnJoin.getFields()));
+        tableOnJoin.setSelectedFields(new ArrayList<>(tableOnJoin.getFields()));
         tableOnJoin.setAlias(alias);
         tableOnJoin.fillSubQueries();
     }

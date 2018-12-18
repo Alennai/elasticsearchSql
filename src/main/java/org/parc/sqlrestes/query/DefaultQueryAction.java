@@ -95,8 +95,8 @@ public class DefaultQueryAction extends QueryAction {
 	 */
 	public void setFields(List<Field> fields) throws SqlParseException {
 		if (select.getFields().size() > 0) {
-			ArrayList<String> includeFields = new ArrayList<String>();
-			ArrayList<String> excludeFields = new ArrayList<String>();
+			ArrayList<String> includeFields = new ArrayList<>();
+			ArrayList<String> excludeFields = new ArrayList<>();
 
 			for (Field field : fields) {
 				if (field instanceof MethodField) {

@@ -25,7 +25,7 @@ class CaseWhenParser {
     }
 
     public String parse() throws SqlParseException {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (SQLCaseExpr.Item item : caseExpr.getItems()) {
             SQLExpr conditionExpr = item.getConditionExpr();
@@ -54,7 +54,7 @@ class CaseWhenParser {
     }
 
     private String explain(Where where) throws SqlParseException {
-        List<String> codes = new ArrayList<String>();
+        List<String> codes = new ArrayList<>();
         while (where.getWheres().size() == 1) {
             where = where.getWheres().getFirst();
         }
@@ -75,7 +75,7 @@ class CaseWhenParser {
             }
         } else {
             for (Where subWhere : where.getWheres()) {
-                List<String> subCodes = new ArrayList<String>();
+                List<String> subCodes = new ArrayList<>();
                 explainWhere(subCodes, subWhere);
                 String relation = subWhere.getConn().name().equals("AND") ? "&&" : "||";
                 codes.add("(" + Joiner.on(relation).join(subCodes) + ")");

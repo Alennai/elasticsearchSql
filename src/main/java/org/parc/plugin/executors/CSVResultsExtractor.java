@@ -44,7 +44,7 @@ class CSVResultsExtractor {
         if(queryResult instanceof Aggregations){
             List<String> headers = new ArrayList<>();
             List<List<String>> lines = new ArrayList<>();
-            lines.add(new ArrayList<String>());
+            lines.add(new ArrayList<>());
             handleAggregations((Aggregations) queryResult, headers, lines);
 
             List<String> csvLines  = new ArrayList<>();
@@ -115,7 +115,7 @@ class CSVResultsExtractor {
                 }
                 else {
                     currentLineIndex++;
-                    currentLine = new ArrayList<String>(clonedLine);
+                    currentLine = new ArrayList<>(clonedLine);
                     lines.add(currentLine);
                 }
                 currentLine.add(key);

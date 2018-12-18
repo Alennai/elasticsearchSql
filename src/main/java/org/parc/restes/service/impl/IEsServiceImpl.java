@@ -86,7 +86,7 @@ public class IEsServiceImpl implements IEsService {
             ICategory ick = entry.getKey();
             _fields.add(ImmutableMap.of("name", ick.getName(), "order", ick.getOrder(), "fields", entry.getValue()));
         }
-        Collections.sort(_fields, (o1, o2) -> {
+        _fields.sort((o1, o2) -> {
             Object oo1 = o1.get("order");
             Object oo2 = o2.get("order");
             if (oo1 != null && oo2 != null) {
@@ -129,11 +129,7 @@ public class IEsServiceImpl implements IEsService {
                                 _tmp_ic.setName(OTHER_FIELD.getName());
                                 _tmp_ic.setOrder(OTHER_FIELD.getOrder());
                             }
-                            List<IField> fields = map.get(_tmp_ic);
-                            if (fields == null) {
-                                fields = new ArrayList<>();
-                                map.put(_tmp_ic, fields);
-                            }
+                            List<IField> fields = map.computeIfAbsent(_tmp_ic, k -> new ArrayList<>());
                             IField _tmp_i_field = new IField(key, alias, (JSONObject) ppEntry.getValue());
                             _tmp_i_field.setAgg(canAgg);
                             fields.add(_tmp_i_field);

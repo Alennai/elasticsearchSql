@@ -67,7 +67,7 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
                     t2Alias);
         }
         if(firstTableRequest.getOriginalSelect().isOrderdSelect()){
-            Collections.sort(combinedResult, (o1, o2) -> o1.docId() - o2.docId());
+            combinedResult.sort((o1, o2) -> o1.docId() - o2.docId());
 
         }
         return combinedResult;
@@ -76,7 +76,7 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
     private Map<String, Map<String, List<Object>>> initOptimizationStructure() {
         Map<String,Map<String, List<Object>>> optimizationTermsFilterStructure = new HashMap<>();
         for(String comparisonId: this.hashJoinComparisonStructure.getComparisons().keySet()){
-            optimizationTermsFilterStructure.put(comparisonId,new HashMap<String, List<Object>>());
+            optimizationTermsFilterStructure.put(comparisonId, new HashMap<>());
         }
         return optimizationTermsFilterStructure;
     }
@@ -143,7 +143,7 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
                                 this.alreadyMatched.add(combinedId);
                             }
 
-                            Map<String,Object> copiedSource = new HashMap<String,Object>();
+                            Map<String,Object> copiedSource = new HashMap<>();
                             copyMaps(copiedSource,secondTableHit.getSourceAsMap());
                             onlyReturnedFields(copiedSource, secondTableRequest.getReturnedFields(),secondTableRequest.getOriginalSelect().isSelectAll());
 

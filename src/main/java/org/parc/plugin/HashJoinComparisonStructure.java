@@ -17,14 +17,14 @@ class HashJoinComparisonStructure {
         comparisonIDtoComparisonHash = new HashMap<>();
         if(t1ToT2FieldsComparisons == null || t1ToT2FieldsComparisons.size()  == 0){
             String comparisonId = UUID.randomUUID().toString();
-            this.comparisonIDtoComparisonFields.put(comparisonId,new ArrayList<Map.Entry<Field,Field>>());
-            this.comparisonIDtoComparisonHash.put(comparisonId,new HashMap<String, SearchHitsResult>());
+            this.comparisonIDtoComparisonFields.put(comparisonId, new ArrayList<>());
+            this.comparisonIDtoComparisonHash.put(comparisonId, new HashMap<>());
         }
         for (List<Map.Entry<Field,Field>> comparisonFields : t1ToT2FieldsComparisons){
             String comparisonId = UUID.randomUUID().toString();
             //maby from field to List<IDS> ?
             this.comparisonIDtoComparisonFields.put(comparisonId,comparisonFields);
-            this.comparisonIDtoComparisonHash.put(comparisonId, new HashMap<String, SearchHitsResult>());
+            this.comparisonIDtoComparisonHash.put(comparisonId, new HashMap<>());
         }
     }
 
@@ -36,7 +36,7 @@ class HashJoinComparisonStructure {
         HashMap<String, SearchHitsResult> comparisonHash = this.comparisonIDtoComparisonHash.get(comparisonID);
         SearchHitsResult currentSearchHitsResult = comparisonHash.get(comparisonKey);
         if(currentSearchHitsResult == null) {
-            currentSearchHitsResult = new SearchHitsResult(new ArrayList<SearchHit>(),false);
+            currentSearchHitsResult = new SearchHitsResult(new ArrayList<>(),false);
             comparisonHash.put(comparisonKey, currentSearchHitsResult);
         }
         currentSearchHitsResult.getSearchHits().add(hit);

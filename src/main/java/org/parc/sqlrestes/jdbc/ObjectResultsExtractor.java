@@ -44,7 +44,7 @@ public class ObjectResultsExtractor {
         if (queryResult instanceof Aggregations) {
             List<String> headers = new ArrayList<>();
             List<List<Object>> lines = new ArrayList<>();
-            lines.add(new ArrayList<Object>());
+            lines.add(new ArrayList<>());
             handleAggregations((Aggregations) queryResult, headers, lines);
             
             // remove empty line。
@@ -113,7 +113,7 @@ public class ObjectResultsExtractor {
                     firstLine = false;
                 } else {
                     currentLineIndex++;
-                    currentLine = new ArrayList<Object>(clonedLine);
+                    currentLine = new ArrayList<>(clonedLine);
                     lines.add(currentLine);
                 }
                 currentLine.add(key);

@@ -46,7 +46,7 @@ public class ElasticDefaultRestExecutor implements RestExecutor {
             executor.run();
             sendDefaultResponse(executor.getHits(), channel);
         } else if (request instanceof SearchRequest) {
-            client.search((SearchRequest) request, new RestStatusToXContentListener<SearchResponse>(channel));
+            client.search((SearchRequest) request, new RestStatusToXContentListener<>(channel));
         } else if (request instanceof DeleteByQueryRequest) {
 //            requestBuilder.getBuilder().execute(new BulkIndexByScrollResponseContentListener(channel, Maps.newHashMap()));
         } else if (request instanceof GetIndexRequest) {

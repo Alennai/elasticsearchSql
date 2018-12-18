@@ -218,7 +218,7 @@ abstract class Maker {
             break;
         case GEO_POLYGON:
             PolygonFilterParams polygonFilterParams = (PolygonFilterParams) cond.getValue();
-            ArrayList<GeoPoint> geoPoints = new ArrayList<GeoPoint>();
+            ArrayList<GeoPoint> geoPoints = new ArrayList<>();
             for(Point p : polygonFilterParams.getPolygon())
                 geoPoints.add(new GeoPoint(p.getLat(), p.getLon()));
             x = QueryBuilders.geoPolygonQuery(cond.getName(),geoPoints);
