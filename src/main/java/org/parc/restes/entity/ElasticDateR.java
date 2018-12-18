@@ -1,8 +1,3 @@
-/**
- * @author shaco.zhu
- * @email shaco.zhu@dbappsecurity.com.cn
- * Date:2017年7月26日
- */
 package org.parc.restes.entity;
 
 import java.util.Date;

@@ -70,10 +70,10 @@ class SearchResult {
 
 	}
 
-	/**
-	 * 讲es的field域转换为你Object
-	 * 
-	 * @param fields
+	/*
+	  讲es的field域转换为你Object
+
+	  @param fields
 	 * @return
 	 */
 //	private Map<String, Object> toFieldsMap(Map<String, SearchHitField> fields) {

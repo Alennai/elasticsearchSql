@@ -1,8 +1,3 @@
-/**
- * @author shaco.zhu
- * @email shaco.zhu@dbappsecurity.com.cn
- * Date:2017年7月25日
- */
 package org.parc.restes.util;
 
 class CategoryWriter {

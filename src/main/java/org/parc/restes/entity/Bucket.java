@@ -1,8 +1,8 @@
-/** 
- *
- * @author shaco.zhu
- * Date:2017年5月25日下午2:02:08 
- * 
+/*
+
+  @author shaco.zhu
+ * Date:2017年5月25日下午2:02:08
+
  */
 package org.parc.restes.entity;
 

@@ -1,8 +1,3 @@
-/**
- * @author shaco.zhu
- * @email shaco.zhu@dbappsecurity.com.cn
- * Date:2017年7月25日
- */
 package org.parc.restes.service.impl;
 
 import com.alibaba.fastjson.JSON;
@@ -56,12 +51,6 @@ public class IEsServiceImpl implements IEsService {
         client = RestClient.builder(hosts).setMaxRetryTimeoutMillis(10000).build();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.dbapp.cpsysportal.service.ITraceService#categories(java.lang.String)7
-     */
     @Override
     public Field categories(String type, String fileName) {
         Map<String, Field> _tmp = FIELD_GROUP_MAP.get(type);
@@ -164,12 +153,6 @@ public class IEsServiceImpl implements IEsService {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.dbapp.cpsysportal.service.ITraceService#hitsByQuery(java.lang.String)
-     */
     @Override
     public ESResult hitsByQuery(String query, String path) throws Exception {
         logger.info("hitsByQuery" + " POST" + " " + path + " " + query);

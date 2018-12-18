@@ -1,8 +1,3 @@
-/**
- * @author shaco.zhu
- * @email shaco.zhu@dbappsecurity.com.cn
- * Date:2017年8月1日
- */
 package org.parc.restes.util;
 
 import org.slf4j.Logger;

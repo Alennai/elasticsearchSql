@@ -13,7 +13,7 @@ public class ESConstant {
     public static final String INCIDENT_INDEX_MAPPING_POINT = "/xwd-securityevent-incident/_mapping";
 
     /**
-     * @see com.dbapp.cpsysportal.service.IpRepositoryServiceImpl
+     *
      */
     public static final String onlyIp = "onlyIp";
     public static final String lowAddress = "lowAddress";

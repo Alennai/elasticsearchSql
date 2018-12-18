@@ -1,5 +1,5 @@
-/**
- * @author shaco.zhu
+/*
+  @author shaco.zhu
  * Date:2017年5月25日上午9:21:03
  */
 package org.parc.restes.adapter;

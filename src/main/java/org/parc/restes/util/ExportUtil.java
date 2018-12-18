@@ -1,8 +1,3 @@
-/**
- * @author shaco.zhu
- * @email shaco.zhu@dbappsecurity.com.cn
- * Date:2017年8月9日
- */
 package org.parc.restes.util;
 
 import com.alibaba.fastjson.JSONObject;

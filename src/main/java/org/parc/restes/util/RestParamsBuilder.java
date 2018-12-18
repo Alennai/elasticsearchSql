@@ -1,6 +1,6 @@
-/**
- *
- * @author shaco.zhu
+/*
+
+  @author shaco.zhu
  * Date:2017年5月25日下午3:03:33 
  * eg : restParamsBuilder().size(0).must("srcAddress", "127.0.0.1").aggTerms("srcAddress", "5").json()
  */

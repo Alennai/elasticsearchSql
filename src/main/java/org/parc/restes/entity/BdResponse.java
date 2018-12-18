@@ -1,8 +1,3 @@
-/**
- * @author shaco.zhu
- * @email shaco.zhu@dbappsecurity.com.cn
- * Date:2017年6月19日
- */
 package org.parc.restes.entity;
 
 class BdResponse {
