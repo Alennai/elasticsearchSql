@@ -24,23 +24,28 @@ class FastStringReader extends Reader implements CharSequence {
         }
     }
 
+    @Override
     public int length() {
         return this.length;
     }
 
+    @Override
     public char charAt(int index) {
         return this.str.charAt(index);
     }
 
+    @Override
     public CharSequence subSequence(int start, int end) {
         return this.str.subSequence(start, end);
     }
 
+    @Override
     public int read() throws IOException {
         this.ensureOpen();
         return this.next >= this.length ? -1 : this.str.charAt(this.next++);
     }
 
+    @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
         this.ensureOpen();
         if (len == 0) {
@@ -55,6 +60,7 @@ class FastStringReader extends Reader implements CharSequence {
         }
     }
 
+    @Override
     public long skip(long ns) throws IOException {
         this.ensureOpen();
         if (this.next >= this.length) {
@@ -67,15 +73,18 @@ class FastStringReader extends Reader implements CharSequence {
         }
     }
 
+    @Override
     public boolean ready() throws IOException {
         this.ensureOpen();
         return true;
     }
 
+    @Override
     public boolean markSupported() {
         return true;
     }
 
+    @Override
     public void mark(int readAheadLimit) throws IOException {
         if (readAheadLimit < 0) {
             throw new IllegalArgumentException("Read-ahead limit < 0");
@@ -85,15 +94,18 @@ class FastStringReader extends Reader implements CharSequence {
         }
     }
 
+    @Override
     public void reset() throws IOException {
         this.ensureOpen();
         this.next = this.mark;
     }
 
+    @Override
     public void close() {
         this.closed = true;
     }
 
+    @Override
     public String toString() {
         return this.str;
     }

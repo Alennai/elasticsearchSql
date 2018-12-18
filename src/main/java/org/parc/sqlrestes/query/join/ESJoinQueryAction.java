@@ -77,7 +77,9 @@ public abstract class ESJoinQueryAction extends QueryAction {
 
     private void addFieldsToSelectIfMissing(Select select, List<Field> fields) {
         //this means all fields
-        if (select.getFields() == null || select.getFields().size() == 0) return;
+        if (select.getFields() == null || select.getFields().size() == 0) {
+            return;
+        }
 
         List<Field> selectedFields = select.getFields();
         for (Field field : fields) {

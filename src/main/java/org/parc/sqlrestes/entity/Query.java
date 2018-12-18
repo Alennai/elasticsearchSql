@@ -11,6 +11,7 @@ abstract class Query {
 
     protected abstract String toString(String var1);
 
+    @Override
     public final String toString() {
         return this.toString("");
     }
@@ -23,8 +24,10 @@ abstract class Query {
 //        return this;
 //    }
 
+    @Override
     public abstract boolean equals(Object var1);
 
+    @Override
     public abstract int hashCode();
 
     protected final boolean sameClassAs(Object other) {

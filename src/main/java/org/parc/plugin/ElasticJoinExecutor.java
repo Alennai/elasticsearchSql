@@ -66,6 +66,7 @@ public abstract class ElasticJoinExecutor implements ElasticHitsExecutor {
         }
     }
 
+    @Override
     public void run() throws IOException, SqlParseException {
         long timeBefore = System.currentTimeMillis();
         List<SearchHit> combinedSearchHits = innerRun();
@@ -78,6 +79,7 @@ public abstract class ElasticJoinExecutor implements ElasticHitsExecutor {
 
     protected abstract List<SearchHit> innerRun() throws SqlParseException;
 
+    @Override
     public SearchHits getHits() {
         return results;
     }
@@ -92,9 +94,11 @@ public abstract class ElasticJoinExecutor implements ElasticHitsExecutor {
     private Map<String, Object> mapWithAliases(Map<String, Object> source, String alias) {
         Map<String, Object> mapWithAliases = new HashMap<>();
         for (Map.Entry<String, Object> fieldNameToValue : source.entrySet()) {
-            if (!aliasesOnReturn.contains(fieldNameToValue.getKey()))
+            if (!aliasesOnReturn.contains(fieldNameToValue.getKey())) {
                 mapWithAliases.put(alias + "." + fieldNameToValue.getKey(), fieldNameToValue.getValue());
-            else mapWithAliases.put(fieldNameToValue.getKey(), fieldNameToValue.getValue());
+            } else {
+                mapWithAliases.put(fieldNameToValue.getKey(), fieldNameToValue.getValue());
+            }
         }
         return mapWithAliases;
     }
@@ -126,8 +130,12 @@ public abstract class ElasticJoinExecutor implements ElasticHitsExecutor {
             Map<String, Object> currentObject = fieldsMap;
             for (int i = 0; i < path.length - 1; i++) {
                 Object valueFromCurrentMap = currentObject.get(path[i]);
-                if (valueFromCurrentMap == null) return null;
-                if (!Map.class.isAssignableFrom(valueFromCurrentMap.getClass())) return null;
+                if (valueFromCurrentMap == null) {
+                    return null;
+                }
+                if (!Map.class.isAssignableFrom(valueFromCurrentMap.getClass())) {
+                    return null;
+                }
                 currentObject = (Map<String, Object>) valueFromCurrentMap;
             }
             return currentObject.get(path[path.length - 1]);
@@ -140,7 +148,7 @@ public abstract class ElasticJoinExecutor implements ElasticHitsExecutor {
     void addUnmatchedResults(List<SearchHit> combinedResults, Collection<SearchHitsResult> firstTableSearchHits, List<Field> secondTableReturnedFields, int currentNumOfIds, int totalLimit, String t1Alias, String t2Alias) {
         boolean limitReached = false;
         for (SearchHitsResult hitsResult : firstTableSearchHits) {
-            if (!hitsResult.isMatchedWithOtherTable())
+            if (!hitsResult.isMatchedWithOtherTable()) {
                 for (SearchHit hit : hitsResult.getSearchHits()) {
 
                     //todo: decide which id to put or type. or maby its ok this way. just need to doc.
@@ -153,7 +161,10 @@ public abstract class ElasticJoinExecutor implements ElasticHitsExecutor {
                     }
 
                 }
-            if (limitReached) break;
+            }
+            if (limitReached) {
+                break;
+            }
         }
     }
 

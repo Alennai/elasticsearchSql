@@ -479,8 +479,9 @@ public class AggMaker {
     private String gettAggNameFromParamsOrAlias(MethodField field) {
         String alias = field.getAlias();
         for (KVValue kv : field.getParams()) {
-            if (kv.key != null && kv.key.equals("alias"))
+            if (kv.key != null && kv.key.equals("alias")) {
                 alias = kv.value.toString();
+            }
         }
         return alias;
     }
@@ -503,8 +504,9 @@ public class AggMaker {
                     break;
                 case "extended_bounds":
                     String[] bounds = value.split(":");
-                    if (bounds.length == 2)
+                    if (bounds.length == 2) {
                         histogram.extendedBounds(Long.valueOf(bounds[0]), Long.valueOf(bounds[1]));
+                    }
                     break;
                 case "alias":
                 case "nested":

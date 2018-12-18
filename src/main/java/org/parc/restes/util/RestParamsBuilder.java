@@ -72,18 +72,20 @@ public class RestParamsBuilder {
             throws IOException {
         RestParamsBuilder builder = restParamsBuilder();
         List<Param> ps = traceParam.getParams();
-        if (ps != null)
-            for (Param p : ps) {
-                builder.aggTerms(p.getKey(), p.getSize());
-            }
+        if (ps != null) {
+			for (Param p : ps) {
+				builder.aggTerms(p.getKey(), p.getSize());
+			}
+		}
         if (!noTime) {
             if (isTemplate) {
                 builder.timeRangeTemplate("@timestamp");
             } else {
                 String start = traceParam.getStart();
                 String end = traceParam.getEnd();
-                if (start != null && end != null)
-                    builder.timeRange("@timestamp", traceParam.getStart(), traceParam.getEnd());
+                if (start != null && end != null) {
+					builder.timeRange("@timestamp", traceParam.getStart(), traceParam.getEnd());
+				}
             }
             List<String> sorts = traceParam.getSorts();
             if (sorts != null) {
@@ -99,11 +101,13 @@ public class RestParamsBuilder {
             builder.conditions(conditions, getDefaultFieldByType(traceParam.getSaveType()));
         }
         int from = traceParam.getFrom();
-        if (from > 0)
-            builder.from(from);
+        if (from > 0) {
+			builder.from(from);
+		}
         int size = traceParam.getSize();
-        if (size > 0)
-            builder.size(size);
+        if (size > 0) {
+			builder.size(size);
+		}
         return builder;
     }
 
@@ -245,14 +249,18 @@ public class RestParamsBuilder {
         if (!sourceFilter.isEmpty()) {
             xContentBuilder.field("_source", sourceFilter);
         }
-        if (!musts.isEmpty())
-            bool.put("must", musts);
-        if (!shoulds.isEmpty())
-            bool.put("should", shoulds);
-        if (!mustNots.isEmpty())
-            bool.put("must_not", mustNots);
-        if (!bool.isEmpty())
-            xContentBuilder.field("query", term("bool", bool));
+        if (!musts.isEmpty()) {
+			bool.put("must", musts);
+		}
+        if (!shoulds.isEmpty()) {
+			bool.put("should", shoulds);
+		}
+        if (!mustNots.isEmpty()) {
+			bool.put("must_not", mustNots);
+		}
+        if (!bool.isEmpty()) {
+			xContentBuilder.field("query", term("bool", bool));
+		}
         if (!aggs.isEmpty()) {
             Map<String, Map<String, Map<String, Object>>> currentTmp = null;
             Object finalObj = null;
@@ -342,8 +350,9 @@ public class RestParamsBuilder {
     }
 
     private RestParamsBuilder queryString(String query, String default_field) {
-        if (StringUtils.isBlank(query))
-            return this;
+        if (StringUtils.isBlank(query)) {
+			return this;
+		}
         Map<String, Object> queryString = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         data.put("default_field", default_field);

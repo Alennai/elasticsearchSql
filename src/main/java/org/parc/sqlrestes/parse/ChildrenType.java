@@ -21,17 +21,22 @@ public class ChildrenType {
     private boolean simple;
 
     public boolean tryFillFromExpr(SQLExpr expr) throws SqlParseException {
-        if (!(expr instanceof SQLMethodInvokeExpr)) return false;
+        if (!(expr instanceof SQLMethodInvokeExpr)) {
+            return false;
+        }
         SQLMethodInvokeExpr method = (SQLMethodInvokeExpr) expr;
 
         String methodName = method.getMethodName();
 
-        if (!methodName.toLowerCase().equals("children")) return false;
+        if (!methodName.toLowerCase().equals("children")) {
+            return false;
+        }
 
         List<SQLExpr> parameters = method.getParameters();
 
-        if (parameters.size() != 2)
+        if (parameters.size() != 2) {
             throw new SqlParseException("on children object only allowed 2 parameters (type, field)/(type, conditions...) ");
+        }
 
         this.childType = Util.extendedToString(parameters.get(0));
 
@@ -42,8 +47,9 @@ public class ChildrenType {
         } else {
             Where where = Where.newInstance();
             new WhereParser(new SqlParser()).parseWhere(secondParameter, where);
-            if (where.getWheres().size() == 0)
+            if (where.getWheres().size() == 0) {
                 throw new SqlParseException("unable to parse filter where.");
+            }
             this.where = where;
             simple = false;
         }

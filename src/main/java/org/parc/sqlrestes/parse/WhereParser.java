@@ -239,12 +239,13 @@ class WhereParser {
 
                     Condition condition = null;
 
-                    if (isNested)
+                    if (isNested) {
                         condition = new Condition(Where.CONN.valueOf(opear), soExpr.getLeft().toString(), soExpr.getLeft(), Condition.OPEAR.methodNameToOpear.get(methodName), methodParametersValue, soExpr.getRight(), nestedType);
-                    else if (isChildren)
+                    } else if (isChildren) {
                         condition = new Condition(Where.CONN.valueOf(opear), soExpr.getLeft().toString(), soExpr.getLeft(), Condition.OPEAR.methodNameToOpear.get(methodName), methodParametersValue, soExpr.getRight(), childrenType);
-                    else
+                    } else {
                         condition = new Condition(Where.CONN.valueOf(opear), soExpr.getLeft().toString(), soExpr.getLeft(), Condition.OPEAR.methodNameToOpear.get(methodName), methodParametersValue, soExpr.getRight(), null);
+                    }
 
                     where.addWhere(condition);
                     methodAsOpear = true;
@@ -254,11 +255,11 @@ class WhereParser {
             if (!methodAsOpear) {
                 Condition condition = null;
 
-                if (isNested)
+                if (isNested) {
                     condition = new Condition(Where.CONN.valueOf(opear), soExpr.getLeft().toString(), soExpr.getLeft(), soExpr.getOperator().name, parseValue(soExpr.getRight()), soExpr.getRight(), nestedType);
-                else if (isChildren)
+                } else if (isChildren) {
                     condition = new Condition(Where.CONN.valueOf(opear), soExpr.getLeft().toString(), soExpr.getLeft(), soExpr.getOperator().name, parseValue(soExpr.getRight()), soExpr.getRight(), childrenType);
-                else {
+                } else {
                     SQLMethodInvokeExpr sqlMethodInvokeExpr = parseSQLBinaryOpExprWhoIsConditionInWhere(soExpr);
                     if (sqlMethodInvokeExpr == null) {
                         condition = new Condition(Where.CONN.valueOf(opear), soExpr.getLeft().toString(), soExpr.getLeft(), soExpr.getOperator().name, parseValue(soExpr.getRight()), soExpr.getRight(), null);
@@ -297,12 +298,13 @@ class WhereParser {
 
             Condition condition = null;
 
-            if (isNested)
+            if (isNested) {
                 condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, siExpr.isNot() ? "NOT IN" : "IN", parseValue(siExpr.getTargetList()), null, nestedType);
-            else if (isChildren)
+            } else if (isChildren) {
                 condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, siExpr.isNot() ? "NOT IN" : "IN", parseValue(siExpr.getTargetList()), null, childrenType);
-            else
+            } else {
                 condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, siExpr.isNot() ? "NOT IN" : "IN", parseValue(siExpr.getTargetList()), null);
+            }
 
             where.addWhere(condition);
         } else if (expr instanceof SQLBetweenExpr) {
@@ -328,12 +330,13 @@ class WhereParser {
 
             Condition condition = null;
 
-            if (isNested)
+            if (isNested) {
                 condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, between.isNot() ? "NOT BETWEEN" : "BETWEEN", new Object[]{parseValue(between.beginExpr), parseValue(between.endExpr)}, null, nestedType);
-            else if (isChildren)
+            } else if (isChildren) {
                 condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, between.isNot() ? "NOT BETWEEN" : "BETWEEN", new Object[]{parseValue(between.beginExpr), parseValue(between.endExpr)}, null, childrenType);
-            else
+            } else {
                 condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, between.isNot() ? "NOT BETWEEN" : "BETWEEN", new Object[]{parseValue(between.beginExpr), parseValue(between.endExpr)}, null, null);
+            }
 
             where.addWhere(condition);
         } else if (expr instanceof SQLMethodInvokeExpr) {
@@ -366,12 +369,13 @@ class WhereParser {
 
                 Condition condition = null;
 
-                if (isNested)
+                if (isNested) {
                     condition = new Condition(Where.CONN.valueOf(opear), fieldName, null, methodName, spatialParamsObject, null, nestedType);
-                else if (isChildren)
+                } else if (isChildren) {
                     condition = new Condition(Where.CONN.valueOf(opear), fieldName, null, methodName, spatialParamsObject, null, childrenType);
-                else
+                } else {
                     condition = new Condition(Where.CONN.valueOf(opear), fieldName, null, methodName, spatialParamsObject, null, null);
+                }
 
                 where.addWhere(condition);
             } else if (methodName.toLowerCase().equals("nested")) {
@@ -409,8 +413,9 @@ class WhereParser {
 
             Select innerSelect = sqlParser.parseSelect((MySqlSelectQueryBlock) sqlIn.getSubQuery().getQuery());
 
-            if (innerSelect.getFields() == null || innerSelect.getFields().size() != 1)
+            if (innerSelect.getFields() == null || innerSelect.getFields().size() != 1) {
                 throw new SqlParseException("should only have one return field in subQuery");
+            }
 
             SubQueryExpression subQueryExpression = new SubQueryExpression(innerSelect);
 
@@ -435,12 +440,13 @@ class WhereParser {
 
             Condition condition = null;
 
-            if (isNested)
+            if (isNested) {
                 condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, sqlIn.isNot() ? "NOT IN" : "IN", subQueryExpression, null, nestedType);
-            else if (isChildren)
+            } else if (isChildren) {
                 condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, sqlIn.isNot() ? "NOT IN" : "IN", subQueryExpression, null, childrenType);
-            else
+            } else {
                 condition = new Condition(Where.CONN.valueOf(opear), leftSide, null, sqlIn.isNot() ? "NOT IN" : "IN", subQueryExpression, null, null);
+            }
 
             where.addWhere(condition);
         } else {

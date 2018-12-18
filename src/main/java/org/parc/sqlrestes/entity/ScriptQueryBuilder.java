@@ -16,6 +16,7 @@ public class ScriptQueryBuilder extends Query {
         }
     }
 
+    @Override
     public String toString(String field) {
         String buffer = "ScriptQuery(" +
                 this.script +

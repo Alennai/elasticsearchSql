@@ -96,10 +96,11 @@ class FieldMaker {
         List<SQLExpr> params = new ArrayList<>();
 
         String scriptFieldAlias;
-        if (alias == null || alias.equals(""))
+        if (alias == null || alias.equals("")) {
             scriptFieldAlias = binaryExpr.toString();
-        else
+        } else {
             scriptFieldAlias = alias;
+        }
         params.add(new SQLCharExpr(scriptFieldAlias));
 
         Object left = getScriptValue(binaryExpr.getLeft());
@@ -130,8 +131,9 @@ class FieldMaker {
         }
         Where where = Where.newInstance();
         new WhereParser(new SqlParser()).parseWhere(exprToCheck, where);
-        if (where.getWheres().size() == 0)
+        if (where.getWheres().size() == 0) {
             throw new SqlParseException("unable to parse filter where.");
+        }
         List<KVValue> methodParameters = new ArrayList<>();
         methodParameters.add(new KVValue("where", where));
         methodParameters.add(new KVValue("alias", filterAlias + "@FILTER"));
@@ -268,7 +270,9 @@ class FieldMaker {
                     //throw new SqlParseException("only support script/nested as inner functions");
                     MethodField abc = makeMethodField(methodName, mExpr.getParameters(), null, null, tableAlias, false);
                     paramers.add(new KVValue(abc.getParams().get(0).toString(), new SQLCharExpr(abc.getParams().get(1).toString())));
-                } else throw new SqlParseException("only support script/nested/children as inner functions");
+                } else {
+                    throw new SqlParseException("only support script/nested/children as inner functions");
+                }
             } else if (object instanceof SQLCaseExpr) {
                 String scriptCode = new CaseWhenParser((SQLCaseExpr) object, alias, tableAlias).parse();
                 paramers.add(new KVValue("script", new SQLCharExpr(scriptCode)));
@@ -303,9 +307,11 @@ class FieldMaker {
         if (first) {
             List<KVValue> tempParamers = new LinkedList<>();
             for (KVValue temp : paramers) {
-                if (temp.value instanceof SQLExpr)
+                if (temp.value instanceof SQLExpr) {
                     tempParamers.add(new KVValue(temp.key, Util.expr2Object((SQLExpr) temp.value)));
-                else tempParamers.add(new KVValue(temp.key, temp.value));
+                } else {
+                    tempParamers.add(new KVValue(temp.key, temp.value));
+                }
             }
             paramers.clear();
             paramers.addAll(tempParamers);

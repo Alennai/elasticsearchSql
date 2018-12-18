@@ -13,8 +13,9 @@ public class WktToGeoJsonConverter {
     public static String toGeoJson(String wkt) {
         wkt = wkt.toLowerCase();
         int startOfCoordinates = wkt.indexOf("(");
-        if (startOfCoordinates == -1)
+        if (startOfCoordinates == -1) {
             throw new IllegalArgumentException("not valid wkt");
+        }
 
         String wktType = wkt.substring(0, startOfCoordinates).trim();
         wkt = wkt.substring(startOfCoordinates);
@@ -152,8 +153,9 @@ public class WktToGeoJsonConverter {
         for (int i = 0; i < num; i++) {
             int lastClosingBrackets = result.lastIndexOf(")");
             int firstOpenBrackets = result.indexOf("(");
-            if (lastClosingBrackets == -1 || firstOpenBrackets == -1)
+            if (lastClosingBrackets == -1 || firstOpenBrackets == -1) {
                 throw new IllegalArgumentException("not enough brackets");
+            }
             result = result.substring(firstOpenBrackets + 1, lastClosingBrackets);
         }
         return result;

@@ -34,8 +34,9 @@ public class HintFactory {
             return new Hint(HintType.SHARD_SIZE, params.toArray());
         }
 
-        if (hintAsString.equals("! HASH_WITH_TERMS_FILTER"))
+        if (hintAsString.equals("! HASH_WITH_TERMS_FILTER")) {
             return new Hint(HintType.HASH_WITH_TERMS_FILTER, null);
+        }
         if (hintAsString.startsWith("! JOIN_TABLES_LIMIT")) {
             String[] numbers = getParamsFromHint(hintAsString, "! JOIN_TABLES_LIMIT");
             //todo: check if numbers etc..
@@ -140,7 +141,9 @@ public class HintFactory {
 
 
     private static String[] getParamsFromHint(String hint, String prefix) {
-        if (!hint.contains("(")) return null;
+        if (!hint.contains("(")) {
+            return null;
+        }
         String onlyParams = hint.replace(prefix, "").replaceAll("\\s*\\(\\s*", "").replaceAll("\\s*\\,\\s*", ",").replaceAll("\\s*\\)\\s*", "");
         return onlyParams.split(",");
     }

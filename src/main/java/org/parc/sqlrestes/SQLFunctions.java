@@ -209,20 +209,26 @@ public class SQLFunctions {
 
     private static String scriptDeclare(SQLExpr a) {
 
-        if (isProperty(a) || a instanceof SQLNumericLiteralExpr)
+        if (isProperty(a) || a instanceof SQLNumericLiteralExpr) {
             return "";
-        else return Util.expr2Object(a).toString() + ";";
+        } else {
+            return Util.expr2Object(a).toString() + ";";
+        }
     }
 
     private static String extractName(SQLExpr script) {
-        if (isProperty(script)) return "doc['" + script + "'].value";
+        if (isProperty(script)) {
+            return "doc['" + script + "'].value";
+        }
         String scriptStr = Util.expr2Object(script).toString();
         String[] variance = scriptStr.split(";");
         String newScript = variance[variance.length - 1];
         if (newScript.trim().startsWith("def ")) {
             //for now ,if variant is string,then change to double.
             return newScript.substring(4).split("=")[0].trim();
-        } else return scriptStr;
+        } else {
+            return scriptStr;
+        }
     }
 
     //cast(year as int)
@@ -235,7 +241,9 @@ public class SQLFunctions {
             String temp = newScript.substring(4).split("=")[0].trim();
 
             return " if( " + temp + " instanceof String) " + temp + "= Double.parseDouble(" + temp.trim() + "); ";
-        } else return "";
+        } else {
+            return "";
+        }
 
 
     }

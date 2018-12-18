@@ -125,6 +125,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         configFromPropety(System.getProperties());
     }
 
+    @Override
     public void configFromPropety(Properties properties) {
         {
             Boolean value = getBoolean(properties, "druid.testWhileIdle");
@@ -216,22 +217,27 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public boolean isUseGlobalDataSourceStat() {
         return useGlobalDataSourceStat;
     }
 
+    @Override
     public void setUseGlobalDataSourceStat(boolean useGlobalDataSourceStat) {
         this.useGlobalDataSourceStat = useGlobalDataSourceStat;
     }
 
+    @Override
     public String getInitStackTrace() {
         return initStackTrace;
     }
 
+    @Override
     public boolean isResetStatEnable() {
         return resetStatEnable;
     }
 
+    @Override
     public void setResetStatEnable(boolean resetStatEnable) {
         this.resetStatEnable = resetStatEnable;
         if (dataSourceStat != null) {
@@ -239,10 +245,12 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public long getDiscardCount() {
         return discardCount;
     }
 
+    @Override
     public void restart() throws SQLException {
         lock.lock();
         try {
@@ -263,6 +271,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public void resetStat() {
         if (!isResetStatEnable()) {
             return;
@@ -308,14 +317,17 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         resetCount.incrementAndGet();
     }
 
+    @Override
     public long getResetCount() {
         return this.resetCount.get();
     }
 
+    @Override
     public boolean isEnable() {
         return enable;
     }
 
+    @Override
     public void setEnable(boolean enable) {
         lock.lock();
         try {
@@ -329,6 +341,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public void setPoolPreparedStatements(boolean value) {
         if (this.poolPreparedStatements == value) {
             return;
@@ -363,6 +376,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public void setMaxActive(int maxActive) {
         if (this.maxActive == maxActive) {
             return;
@@ -406,6 +420,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
 
     }
 
+    @Override
     @SuppressWarnings("rawtypes")
     public void setConnectProperties(Properties properties) {
         if (properties == null) {
@@ -459,6 +474,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         this.connectProperties = properties;
     }
 
+    @Override
     public void init() throws SQLException {
         if (inited) {
             return;
@@ -667,6 +683,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         this.resetStatEnable = false;
     }
 
+    @Override
     protected void createAndStartDestroyThread() {
         destoryTask = new DestroyTask();
 
@@ -686,6 +703,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         destroyConnectionThread.start();
     }
 
+    @Override
     protected void createAndStartCreatorThread() {
         if (createScheduler == null) {
             String threadName = "Druid-ConnectionPool-Create-" + System.identityHashCode(this);
@@ -793,6 +811,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         LOG.error(errorMessage + "validationQuery not set");
     }
 
+    @Override
     protected void initCheck() throws SQLException {
         if (JdbcUtils.ORACLE.equals(this.dbType)) {
             isOracle = true;
@@ -887,6 +906,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return getConnection(maxWait);
     }
 
+    @Override
     public DruidPooledConnection getConnection(long maxWaitMillis) throws SQLException {
         init();
         return getConnectionDirect(maxWaitMillis);
@@ -902,6 +922,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         throw new UnsupportedOperationException("Not supported by DruidDataSource");
     }
 
+    @Override
     public DruidPooledConnection getConnectionDirect(long maxWaitMillis) throws SQLException {
         int notFullTimeoutRetryCnt = 0;
         for (; ; ) {
@@ -943,6 +964,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
      * @param realConnection
      * @throws SQLException
      */
+    @Override
     public void discardConnection(Connection realConnection) {
         JdbcUtils.close(realConnection);
 
@@ -1055,6 +1077,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return new ElasticSearchDruidPooledConnection(holder);
     }
 
+    @Override
     public void handleConnectionException(DruidPooledConnection pooledConnection, Throwable t) throws SQLException {
         final DruidConnectionHolder holder = pooledConnection.getConnectionHolder();
 
@@ -1108,6 +1131,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
     /**
      * 回收连接
      */
+    @Override
     protected void recycle(DruidPooledConnection pooledConnection) {
         final DruidConnectionHolder holder = pooledConnection.getConnectionHolder();
 
@@ -1210,10 +1234,12 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public long getRecycleErrorCount() {
         return recycleErrorCount.get();
     }
 
+    @Override
     public void clearStatementCache() {
         lock.lock();
         try {
@@ -1229,6 +1255,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
     /**
      * close datasource
      */
+    @Override
     public void close() {
         lock.lock();
         try {
@@ -1295,6 +1322,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public void registerMbean() {
         if (!mbeanRegistered) {
             AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
@@ -1309,6 +1337,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public void unregisterMbean() {
         if (mbeanRegistered) {
             AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
@@ -1319,10 +1348,12 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public boolean isMbeanRegistered() {
         return mbeanRegistered;
     }
 
+    @Override
     void putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
         e.setLastActiveTimeMillis(lastActiveTimeMillis);
         connections[poolingCount] = e;
@@ -1337,6 +1368,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         notEmptySignalCount++;
     }
 
+    @Override
     DruidConnectionHolder takeLast() throws InterruptedException, SQLException {
         try {
             while (poolingCount == 0) {
@@ -1446,14 +1478,17 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return getConnection();
     }
 
+    @Override
     public long getCreateCount() {
         return createCount.get();
     }
 
+    @Override
     public long getDestroyCount() {
         return destroyCount.get();
     }
 
+    @Override
     public long getConnectCount() {
         lock.lock();
         try {
@@ -1463,10 +1498,12 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public long getCloseCount() {
         return closeCount;
     }
 
+    @Override
     public long getConnectErrorCount() {
         return connectErrorCount.get();
     }
@@ -1481,6 +1518,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public int getPoolingPeak() {
         lock.lock();
         try {
@@ -1490,6 +1528,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public Date getPoolingPeakTime() {
         if (poolingPeakTime <= 0) {
             return null;
@@ -1498,10 +1537,12 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return new Date(poolingPeakTime);
     }
 
+    @Override
     public long getRecycleCount() {
         return recycleCount;
     }
 
+    @Override
     public int getActiveCount() {
         lock.lock();
         try {
@@ -1511,6 +1552,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public void logStats() {
         final DruidDataSourceStatLogger statLogger = this.statLogger;
         if (statLogger == null) {
@@ -1522,6 +1564,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         statLogger.log(statValue);
     }
 
+    @Override
     public DruidDataSourceStatValue getStatValueAndReset() {
         DruidDataSourceStatValue value = new DruidDataSourceStatValue();
 
@@ -1612,10 +1655,12 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return value;
     }
 
+    @Override
     public long getRemoveAbandonedCount() {
         return removeAbandonedCount;
     }
 
+    @Override
     protected void put(Connection connection) {
         DruidConnectionHolder holder = null;
         try {
@@ -1659,6 +1704,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public int removeAbandoned() {
         int removeCount = 0;
 
@@ -1722,6 +1768,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return removeCount;
     }
 
+    @Override
     public Reference getReference() {
         final String className = getClass().getName();
         final String factoryName = className + "Factory"; // XXX: not robust
@@ -1743,6 +1790,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return names;
     }
 
+    @Override
     public int getRawDriverMajorVersion() {
         int version = -1;
         if (this.driver != null) {
@@ -1751,6 +1799,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return version;
     }
 
+    @Override
     public int getRawDriverMinorVersion() {
         int version = -1;
         if (this.driver != null) {
@@ -1759,6 +1808,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return version;
     }
 
+    @Override
     public String getProperties() {
         Properties properties = new Properties();
         properties.putAll(connectProperties);
@@ -1773,6 +1823,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         shrink(false);
     }
 
+    @Override
     public void shrink(boolean checkTime) {
         final List<DruidConnectionHolder> evictList = new ArrayList<>();
         try {
@@ -1816,6 +1867,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public int getWaitThreadCount() {
         lock.lock();
         try {
@@ -1825,10 +1877,12 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public long getNotEmptyWaitCount() {
         return notEmptyWaitCount;
     }
 
+    @Override
     public int getNotEmptyWaitThreadCount() {
         lock.lock();
         try {
@@ -1838,6 +1892,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public int getNotEmptyWaitThreadPeak() {
         lock.lock();
         try {
@@ -1847,26 +1902,32 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public long getNotEmptySignalCount() {
         return notEmptySignalCount;
     }
 
+    @Override
     public long getNotEmptyWaitMillis() {
         return notEmptyWaitNanos / (1000 * 1000);
     }
 
+    @Override
     public long getNotEmptyWaitNanos() {
         return notEmptyWaitNanos;
     }
 
+    @Override
     public int getLockQueueLength() {
         return lock.getQueueLength();
     }
 
+    @Override
     public int getActivePeak() {
         return activePeak;
     }
 
+    @Override
     public Date getActivePeakTime() {
         if (activePeakTime <= 0) {
             return null;
@@ -1875,6 +1936,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return new Date(activePeakTime);
     }
 
+    @Override
     public String dump() {
         lock.lock();
         try {
@@ -1884,10 +1946,12 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public long getErrorCount() {
         return this.errorCount.get();
     }
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
 
@@ -1974,6 +2038,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return buf.toString();
     }
 
+    @Override
     public List<Map<String, Object>> getPoolingConnectionInfo() {
         List<Map<String, Object>> list = new ArrayList<>();
         lock.lock();
@@ -2019,6 +2084,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return list;
     }
 
+    @Override
     public void logTransaction(TransactionInfo info) {
         long transactionMillis = info.getEndTimeMillis() - info.getStartTimeMillis();
         if (transactionThresholdMillis > 0 && transactionMillis > transactionThresholdMillis) {
@@ -2044,10 +2110,12 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return dataSourceStat;
     }
 
+    @Override
     public Object clone() {
         return cloneDruidDataSource();
     }
 
+    @Override
     public DruidDataSource cloneDruidDataSource() {
         DruidDataSource x = new DruidDataSource();
 
@@ -2056,6 +2124,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return x;
     }
 
+    @Override
     public Map<String, Object> getStatDataForMBean() {
         try {
             Map<String, Object> map = new HashMap<>();
@@ -2128,6 +2197,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         }
     }
 
+    @Override
     public Map<String, Object> getStatData() {
         final int activeCount;
         final int activePeak;
@@ -2224,18 +2294,22 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return dataMap;
     }
 
+    @Override
     public JdbcSqlStat getSqlStat(int sqlId) {
         return this.getDataSourceStat().getSqlStat(sqlId);
     }
 
+    @Override
     public JdbcSqlStat getSqlStat(long sqlId) {
         return this.getDataSourceStat().getSqlStat(sqlId);
     }
 
+    @Override
     public Map<String, JdbcSqlStat> getSqlStatMap() {
         return this.getDataSourceStat().getSqlStatMap();
     }
 
+    @Override
     public Map<String, Object> getWallStatMap() {
         WallProviderStatValue wallStatValue = getWallStatValue(false);
 
@@ -2246,6 +2320,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return null;
     }
 
+    @Override
     public WallProviderStatValue getWallStatValue(boolean reset) {
         for (Filter filter : this.filters) {
             if (filter instanceof WallFilter) {
@@ -2257,6 +2332,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return null;
     }
 
+    @Override
     public Lock getLock() {
         return lock;
     }
@@ -2277,6 +2353,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return super.isWrapperFor(iface);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) {
         for (Filter filter : this.filters) {
@@ -2293,14 +2370,17 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return super.unwrap(iface);
     }
 
+    @Override
     public boolean isLogDifferentThread() {
         return logDifferentThread;
     }
 
+    @Override
     public void setLogDifferentThread(boolean logDifferentThread) {
         this.logDifferentThread = logDifferentThread;
     }
 
+    @Override
     public DruidPooledConnection tryGetConnection() throws SQLException {
         if (poolingCount == 0) {
             return null;
@@ -2387,6 +2467,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
         return currentCount < toCount && currentCount < this.maxActive;
     }
 
+    @Override
     public boolean isFull() {
         lock.lock();
         try {
@@ -2529,6 +2610,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
             this.setDaemon(true);
         }
 
+        @Override
         public void run() {
             initedLatch.countDown();
 
@@ -2607,6 +2689,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
             this.setDaemon(true);
         }
 
+        @Override
         public void run() {
             initedLatch.countDown();
 
@@ -2656,6 +2739,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
             this.setDaemon(true);
         }
 
+        @Override
         public void run() {
             try {
                 for (; ; ) {

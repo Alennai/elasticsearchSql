@@ -43,8 +43,9 @@ public class CurlUtil {
                         indexList.add(tmpIndex);
                     }
                 }
-                if (line.contains("health"))
+                if (line.contains("health")) {
                     iscontent = true;
+                }
 
             }
             br.close();

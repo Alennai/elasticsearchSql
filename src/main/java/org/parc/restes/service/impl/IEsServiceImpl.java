@@ -100,8 +100,9 @@ public class IEsServiceImpl implements IEsService {
 
     @Override
     public synchronized List<Map<String, Object>> get_field_by_type(String type) throws IOException {
-        if (type == null)
+        if (type == null) {
             type = "search";
+        }
         List<Map<String, Object>> _fields = fields.get(type);
         if (_fields != null && !_fields.isEmpty()) {
             return _fields;
@@ -136,8 +137,9 @@ public class IEsServiceImpl implements IEsService {
                 for (Entry<String, Object> typeEntry : type.entrySet()) {
                     JSONObject tpp = (JSONObject) typeEntry.getValue();
                     JSONObject pp = (JSONObject) tpp.get("properties");
-                    if (pp == null)
+                    if (pp == null) {
                         break;
+                    }
                     for (Entry<String, Object> ppEntry : pp.entrySet()) {
                         String key = ppEntry.getKey();
                         if (!keySet.contains(key)) {
@@ -404,8 +406,9 @@ public class IEsServiceImpl implements IEsService {
         String interval;
         long diff = timeDiff(start, end);
         long splits = diff / interval2Long(originalInterval);
-        if (splits < 120)
+        if (splits < 120) {
             return originalInterval;
+        }
         long oneMinuteTime = 60 * 1000L;
         long oneHourTime = 60 * 60 * 1000L;
         long oneDayTime = 24 * 60 * 60 * 1000L;

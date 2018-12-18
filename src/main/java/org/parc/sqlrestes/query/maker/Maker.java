@@ -228,15 +228,17 @@ abstract class Maker {
             case GEO_POLYGON:
                 PolygonFilterParams polygonFilterParams = (PolygonFilterParams) cond.getValue();
                 ArrayList<GeoPoint> geoPoints = new ArrayList<>();
-                for (Point p : polygonFilterParams.getPolygon())
+                for (Point p : polygonFilterParams.getPolygon()) {
                     geoPoints.add(new GeoPoint(p.getLat(), p.getLon()));
+                }
                 x = QueryBuilders.geoPolygonQuery(cond.getName(), geoPoints);
                 break;
 //        case NIN_TERMS:
             case IN_TERMS:
                 Object[] termValues = (Object[]) value;
-                if (termValues.length == 1 && termValues[0] instanceof SubQueryExpression)
+                if (termValues.length == 1 && termValues[0] instanceof SubQueryExpression) {
                     termValues = ((SubQueryExpression) termValues[0]).getValues();
+                }
                 Object[] termValuesObjects = new Object[termValues.length];
                 for (int i = 0; i < termValues.length; i++) {
                     termValuesObjects[i] = parseTermValue(termValues[i]);
@@ -261,8 +263,9 @@ abstract class Maker {
                 x = QueryBuilders.idsQuery(type).addIds(ids);
                 break;
             case NESTED_COMPLEX:
-                if (!(value instanceof Where))
+                if (!(value instanceof Where)) {
                     throw new SqlParseException("unsupported nested condition");
+                }
 
                 Where whereNested = (Where) value;
                 BoolQueryBuilder nestedFilter = QueryMaker.explan(whereNested);
@@ -270,8 +273,9 @@ abstract class Maker {
                 x = QueryBuilders.nestedQuery(name, nestedFilter, ScoreMode.None);
                 break;
             case CHILDREN_COMPLEX:
-                if (!(value instanceof Where))
+                if (!(value instanceof Where)) {
                     throw new SqlParseException("unsupported nested condition");
+                }
 
                 Where whereChildren = (Where) value;
                 BoolQueryBuilder childrenFilter = QueryMaker.explan(whereChildren);
@@ -307,8 +311,11 @@ abstract class Maker {
 
     private ShapeBuilder getShapeBuilderFromString(String str) throws IOException {
         String json;
-        if (str.contains("{")) json = fixJsonFromElastic(str);
-        else json = WktToGeoJsonConverter.toGeoJson(trimApostrophes(str));
+        if (str.contains("{")) {
+            json = fixJsonFromElastic(str);
+        } else {
+            json = WktToGeoJsonConverter.toGeoJson(trimApostrophes(str));
+        }
 
         return getShapeBuilderFromJson(json);
     }

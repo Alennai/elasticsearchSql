@@ -21,6 +21,7 @@ public class ElasticLexer extends MySqlLexer {
         super(input, inputLength, skipComment);
     }
 
+    @Override
     public void scanIdentifier() {
         final char first = ch;
 

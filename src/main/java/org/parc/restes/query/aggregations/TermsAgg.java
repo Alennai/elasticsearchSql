@@ -43,10 +43,11 @@ public class TermsAgg extends Aggregation {
 
     public TermsAgg orderCount(boolean asc) {
         JSONObject orderObj;
-        if (!asc)
+        if (!asc) {
             orderObj = new JSONObject().fluentPut("_count", "desc");
-        else
+        } else {
             orderObj = new JSONObject().fluentPut("_count", "aes");
+        }
         aggContent.getJSONObject(agg_operator).put("order", orderObj);
         return this;
     }

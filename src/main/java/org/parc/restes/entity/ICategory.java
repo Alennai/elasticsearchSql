@@ -59,14 +59,16 @@ public class ICategory {
                 return false;
             }
             return ic.getOrder() == this.order && ic.getName().equals(this.name);
-        } else
+        } else {
             return super.equals(obj);
+        }
     }
 
     @Override
     public int hashCode() {
-        if (StringUtils.isNotBlank(name))
+        if (StringUtils.isNotBlank(name)) {
             return order + name.hashCode() * 100;
+        }
         return order;
     }
 

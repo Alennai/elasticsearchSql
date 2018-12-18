@@ -69,13 +69,18 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
                 finishedMultiSearches = currentHitsIndex >= hits.length - 1 || currentCombinedResults >= totalLimit;
             }
 
-            if (hits.length < MAX_RESULTS_ON_ONE_FETCH) needScrollForFirstTable = false;
+            if (hits.length < MAX_RESULTS_ON_ONE_FETCH) {
+                needScrollForFirstTable = false;
+            }
 
             if (!finishedWithFirstTable) {
                 if (needScrollForFirstTable)
 //                    firstTableResponse = client.prepareSearchScroll(firstTableResponse.getScrollId()).setScroll(new TimeValue(600000)).get();
+                {
                     firstTableResponse = null;
-                else finishedWithFirstTable = true;
+                } else {
+                    finishedWithFirstTable = true;
+                }
             }
 
         }
@@ -109,9 +114,13 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
                 SearchHit searchHit = getMergedHit(currentCombinedResults, t1Alias, t2Alias, hitFromFirstTable, matchedHit);
                 combinedResults.add(searchHit);
                 currentCombinedResults++;
-                if (currentCombinedResults >= totalLimit) break;
+                if (currentCombinedResults >= totalLimit) {
+                    break;
+                }
             }
-            if (currentCombinedResults >= totalLimit) break;
+            if (currentCombinedResults >= totalLimit) {
+                break;
+            }
 
         }
         return currentCombinedResults;
@@ -133,7 +142,9 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
         for (int i = currentIndex; i < currentIndex + multiSearchMaxSize && i < hits.length; i++) {
             Map<String, Object> hitFromFirstTableAsMap = hits[i].getSourceAsMap();
             Where newWhere = Where.newInstance();
-            if (originalWhere != null) newWhere.addWhere(originalWhere);
+            if (originalWhere != null) {
+                newWhere.addWhere(originalWhere);
+            }
             if (connectedWhere != null) {
                 Where connectedWhereCloned = null;
                 try {
@@ -159,7 +170,9 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
             action.explain();
 //            SearchRequestBuilder secondTableRequest = action.getRequestBuilder();
             Integer secondTableHintLimit = this.nestedLoopsRequest.getSecondTable().getHintLimit();
-            if (secondTableHintLimit != null && secondTableHintLimit <= MAX_RESULTS_ON_ONE_FETCH) ;
+            if (secondTableHintLimit != null && secondTableHintLimit <= MAX_RESULTS_ON_ONE_FETCH) {
+                ;
+            }
 //                secondTableRequest.setSize(secondTableHintLimit);
 //            multiSearchRequest.add(secondTableRequest);
         }
@@ -190,8 +203,9 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
             //scroll request with max.
 //                responseWithHits = scrollOneTimeWithMax(client,tableRequest);
             responseWithHits = null;
-            if (responseWithHits.getHits().getTotalHits() < MAX_RESULTS_ON_ONE_FETCH)
+            if (responseWithHits.getHits().getTotalHits() < MAX_RESULTS_ON_ONE_FETCH) {
                 needScrollForFirstTable = true;
+            }
         }
 
         updateMetaSearchResults(responseWithHits);
@@ -212,16 +226,20 @@ public class NestedLoopsElasticExecutor extends ElasticJoinExecutor {
     }
 
     private void orderConditionRecursive(String t1Alias, String t2Alias, Where where) {
-        if (where == null) return;
+        if (where == null) {
+            return;
+        }
         if (where instanceof Condition) {
             Condition c = (Condition) where;
-            if (!c.getName().startsWith(t2Alias + ".") || !c.getValue().toString().startsWith(t1Alias + "."))
+            if (!c.getName().startsWith(t2Alias + ".") || !c.getValue().toString().startsWith(t1Alias + ".")) {
                 throw new RuntimeException("On NestedLoops currently only supported Ordered conditions (t2.field2 OPEAR t1.field1) , badCondition was:" + c);
+            }
             c.setName(c.getName().replaceFirst(t2Alias + ".", ""));
             c.setValue(c.getValue().toString().replaceFirst(t1Alias + ".", ""));
         } else {
-            for (Where innerWhere : where.getWheres())
+            for (Where innerWhere : where.getWheres()) {
                 orderConditionRecursive(t1Alias, t2Alias, innerWhere);
+            }
         }
     }
 

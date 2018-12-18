@@ -43,6 +43,7 @@ class PrefixLogger extends ExtendedLoggerWrapper {
         return this.marker.getName();
     }
 
+    @Override
     public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {
         assert marker == null;
 

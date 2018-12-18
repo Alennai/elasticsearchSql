@@ -71,8 +71,9 @@ public class ElasticDate {
             return _df.parse(dateStr);
         } catch (ParseException e) {
             long mm = NumberUtils.toLong(dateStr, -1);
-            if (mm > 0)
+            if (mm > 0) {
                 return new Date(mm);
+            }
             logger.error("{} parse faild by  {}", dateStr, e.getMessage());
 
         }

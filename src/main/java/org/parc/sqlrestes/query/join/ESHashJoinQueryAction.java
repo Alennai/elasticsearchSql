@@ -74,7 +74,9 @@ public class ESHashJoinQueryAction extends ESJoinQueryAction {
     private List<List<Map.Entry<Field, Field>>> getComparisonFields(String t1Alias, String t2Alias, Where connectedWhere) throws SqlParseException {
         List<List<Map.Entry<Field, Field>>> comparisonFields = new ArrayList<>();
         //where is AND with lots of conditions.
-        if (connectedWhere == null) return comparisonFields;
+        if (connectedWhere == null) {
+            return comparisonFields;
+        }
         boolean allAnds = true;
         for (Where innerWhere : connectedWhere.getWheres()) {
             if (innerWhere.getConn() == Where.CONN.OR) {
@@ -96,12 +98,13 @@ public class ESHashJoinQueryAction extends ESJoinQueryAction {
 
     private List<Map.Entry<Field, Field>> getComparisonFieldsFromWhere(String t1Alias, String t2Alias, Where where) throws SqlParseException {
         List<Condition> conditions = new ArrayList<>();
-        if (where instanceof Condition)
+        if (where instanceof Condition) {
             conditions.add((Condition) where);
-        else {
+        } else {
             for (Where innerWhere : where.getWheres()) {
-                if (!(innerWhere instanceof Condition))
+                if (!(innerWhere instanceof Condition)) {
                     throw new SqlParseException("if connectedCondition is AND than all inner wheres should be Conditions ");
+                }
                 conditions.add((Condition) innerWhere);
             }
         }

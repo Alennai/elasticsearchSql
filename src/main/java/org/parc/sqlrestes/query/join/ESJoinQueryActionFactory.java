@@ -23,8 +23,9 @@ public class ESJoinQueryActionFactory {
             }
 
         }
-        if (!allEqual)
+        if (!allEqual) {
             return new ESNestedLoopsQueryAction(client, joinSelect);
+        }
 
         boolean useNestedLoopsHintExist = false;
         for (Hint hint : joinSelect.getHints()) {
@@ -33,8 +34,9 @@ public class ESJoinQueryActionFactory {
                 break;
             }
         }
-        if (useNestedLoopsHintExist)
+        if (useNestedLoopsHintExist) {
             return new ESNestedLoopsQueryAction(client, joinSelect);
+        }
 
         return new ESHashJoinQueryAction(client, joinSelect);
 

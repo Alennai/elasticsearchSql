@@ -205,14 +205,18 @@ public class AggregationQueryAction extends QueryAction {
             }
         }
 
-        if (!refrence) ;
+        if (!refrence) {
+            ;
+        }
 //            lastAgg = aggMaker.makeGroupAgg(field);
 
         return lastAgg;
     }
 
     private Aggregation wrapNestedIfNeeded(Aggregation nestedBuilder, boolean reverseNested) {
-        if (!reverseNested) return nestedBuilder;
+        if (!reverseNested) {
+            return nestedBuilder;
+        }
 //        if (reverseNested && !(nestedBuilder instanceof NestedAggregationBuilder)) return nestedBuilder;
         //we need to jump back to root
 //        return Aggregation.reverseNested(nestedBuilder.getName() + "_REVERSED").subAggregation(nestedBuilder);
@@ -287,9 +291,13 @@ public class AggregationQueryAction extends QueryAction {
     }
 
     private boolean insertFilterIfExistsAfter(Aggregation agg, List<Field> groupBy, Aggregation builder, int nextPosition) {
-        if (groupBy.size() <= nextPosition) return false;
+        if (groupBy.size() <= nextPosition) {
+            return false;
+        }
         Field filterFieldCandidate = groupBy.get(nextPosition);
-        if (!(filterFieldCandidate instanceof MethodField)) return false;
+        if (!(filterFieldCandidate instanceof MethodField)) {
+            return false;
+        }
         MethodField methodField = (MethodField) filterFieldCandidate;
         return methodField.getName().toLowerCase().equals("filter");//        builder.subAggregation(aggMaker.makeGroupAgg(filterFieldCandidate).subAggregation(agg));
     }

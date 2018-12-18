@@ -394,7 +394,9 @@ public class MinusExecutor implements ElasticHitsExecutor {
     }
 
     private void parseHintsIfAny(List<Hint> hints) {
-        if (hints == null) return;
+        if (hints == null) {
+            return;
+        }
         for (Hint hint : hints) {
             if (hint.getType() == HintType.MINUS_USE_TERMS_OPTIMIZATION) {
                 Object[] params = hint.getParams();

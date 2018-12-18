@@ -52,8 +52,9 @@ public class DataAdapter {
                 for (Map.Entry<String, Object> typeEntry : type.entrySet()) {
                     JSONObject tpp = (JSONObject) typeEntry.getValue();
                     JSONObject pp = (JSONObject) tpp.get("properties");
-                    if (pp == null)
+                    if (pp == null) {
                         break;
+                    }
                     for (Map.Entry<String, Object> ppEntry : pp.entrySet()) {
                         String key = ppEntry.getKey();
                         if (!keySet.contains(key)) {
@@ -245,16 +246,18 @@ public class DataAdapter {
         for (JSONObject doc : documents) {
             String ip = doc.getString("ip");
             String _cre = doc.getString("credibility");
-            if (StringUtils.isBlank(_cre))
+            if (StringUtils.isBlank(_cre)) {
                 continue;
+            }
             JSONObject cre = JSON.parseObject(_cre);
             JSONObject scene = cre.getJSONObject("dimension_scene");
             Iterator<String> itK = scene.keySet().iterator();
             List<Map<String, Object>> tmp = new ArrayList<>();
             int count = 0;
             while (itK.hasNext()) {
-                if (count > 3)
+                if (count > 3) {
                     break;
+                }
 //                tmp.add(adapterNV(DictionaryCache.fieldByCategory("securityevent", itK.next())));
                 count++;
             }
@@ -299,13 +302,15 @@ public class DataAdapter {
 
     public static List<Bucket> json2SingleField(String json, String name) {
         List<Bucket> buckets = new ArrayList<>();
-        if (StringUtils.isBlank(json))
+        if (StringUtils.isBlank(json)) {
             return buckets;
+        }
         JSONObject jsonObject = JSONObject.parseObject(json);
         JSONObject hits = (JSONObject) jsonObject.get("hits");
         int total = hits.getIntValue("total");
-        if (total == 0)
+        if (total == 0) {
             return buckets;
+        }
         JSONObject aggregations = (JSONObject) jsonObject.get("aggregations");
         JSONObject agg = (JSONObject) aggregations.get(name);
         JSONArray bks = (JSONArray) agg.get("buckets");
@@ -333,8 +338,9 @@ public class DataAdapter {
                     stack.add(key);
                     String _key = jb.getString("key");
                     String _key_2 = stack.peek() + " " + _key;
-                    if (!second.contains(_key_2))
+                    if (!second.contains(_key_2)) {
                         second.add(_key_2);
+                    }
                     if (StringUtils.isNotBlank(source)) {
                         String lasted = stack.peek();
                         if (StringUtils.isBlank(lasted)) {
@@ -393,8 +399,9 @@ public class DataAdapter {
         JSONObject hits = (JSONObject) jsonObject.get("hits");
         int total = hits.getIntValue("total");
         List<Bucket> targets = new ArrayList<>();
-        if (total == 0)
+        if (total == 0) {
             return targets;
+        }
         JSONObject aggregations = jsonObject.getJSONObject("aggregations");
         recursiveDig(aggregations, targets, null);
         return targets;

@@ -211,6 +211,7 @@ class ElasticSqlSelectParser extends SQLSelectParser {
         }
     }
 
+    @Override
     protected void parseGroupBy(SQLSelectQueryBlock queryBlock) {
         SQLSelectGroupByClause groupBy = null;
 
@@ -254,6 +255,7 @@ class ElasticSqlSelectParser extends SQLSelectParser {
         queryBlock.setGroupBy(groupBy);
     }
 
+    @Override
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (identifierEquals("USING")) {
             return tableSource;
@@ -317,10 +319,12 @@ class ElasticSqlSelectParser extends SQLSelectParser {
         accept(Token.RPAREN);
     }
 
+    @Override
     protected MySqlUnionQuery createSQLUnionQuery() {
         return new MySqlUnionQuery();
     }
 
+    @Override
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
         if (lexer.token() == Token.LIMIT) {
             MySqlUnionQuery mysqlUnionQuery = (MySqlUnionQuery) union;

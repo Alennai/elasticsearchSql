@@ -27,19 +27,23 @@ import java.util.Locale;
  */
 class Joda {
     private static final DurationFieldType Quarters = new DurationFieldType("quarters") {
+        @Override
         public DurationField getField(Chronology chronology) {
             return new ScaledDurationField(chronology.months(), Joda.Quarters, 3);
         }
     };
     private static final DateTimeFieldType QuarterOfYear = new DateTimeFieldType("quarterOfYear") {
+        @Override
         public DurationFieldType getDurationType() {
             return Joda.Quarters;
         }
 
+        @Override
         public DurationFieldType getRangeDurationType() {
             return DurationFieldType.years();
         }
 
+        @Override
         public DateTimeField getField(Chronology chronology) {
             return new OffsetDateTimeField(new DividedDateTimeField(new OffsetDateTimeField(chronology.monthOfYear(), -1), Joda.QuarterOfYear, 3), 1);
         }
@@ -409,10 +413,12 @@ class Joda {
             this.hasMilliSecondPrecision = hasMilliSecondPrecision;
         }
 
+        @Override
         public int estimatePrintedLength() {
             return this.hasMilliSecondPrecision ? 19 : 16;
         }
 
+        @Override
         public void printTo(StringBuffer buf, long instant, Chronology chrono, int displayOffset, DateTimeZone displayZone, Locale locale) {
             if (this.hasMilliSecondPrecision) {
                 buf.append(instant - (long) displayOffset);
@@ -422,6 +428,7 @@ class Joda {
 
         }
 
+        @Override
         public void printTo(Writer out, long instant, Chronology chrono, int displayOffset, DateTimeZone displayZone, Locale locale) throws IOException {
             if (this.hasMilliSecondPrecision) {
                 out.write(String.valueOf(instant - (long) displayOffset));
@@ -431,6 +438,7 @@ class Joda {
 
         }
 
+        @Override
         public void printTo(StringBuffer buf, ReadablePartial partial, Locale locale) {
             if (this.hasMilliSecondPrecision) {
                 buf.append(this.getDateTimeMillis(partial));
@@ -440,6 +448,7 @@ class Joda {
 
         }
 
+        @Override
         public void printTo(Writer out, ReadablePartial partial, Locale locale) throws IOException {
             if (this.hasMilliSecondPrecision) {
                 out.append(String.valueOf(this.getDateTimeMillis(partial)));
@@ -468,10 +477,12 @@ class Joda {
             this.hasMilliSecondPrecision = hasMilliSecondPrecision;
         }
 
+        @Override
         public int estimateParsedLength() {
             return this.hasMilliSecondPrecision ? 19 : 16;
         }
 
+        @Override
         public int parseInto(DateTimeParserBucket bucket, String text, int position) {
             boolean isPositive = !text.startsWith("-");
             int firstDotIndex = text.indexOf(46);

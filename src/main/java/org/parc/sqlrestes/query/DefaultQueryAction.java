@@ -72,8 +72,9 @@ public class DefaultQueryAction extends QueryAction {
         if (scrollHint != null) {
             int scrollSize = (Integer) scrollHint.getParams()[0];
             int timeoutInMilli = (Integer) scrollHint.getParams()[1];
-            if (!existsOrderBy)
+            if (!existsOrderBy) {
                 request.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC);
+            }
             request.setScroll(new TimeValue(timeoutInMilli));
             request.setSize(scrollSize);
         }

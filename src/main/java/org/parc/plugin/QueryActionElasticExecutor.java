@@ -52,16 +52,21 @@ public class QueryActionElasticExecutor {
     }
 
     public static Object executeAnyAction(RestClient client, QueryAction queryAction) throws SqlParseException, IOException {
-        if (queryAction instanceof DefaultQueryAction)
+        if (queryAction instanceof DefaultQueryAction) {
             return executeSearchAction((DefaultQueryAction) queryAction);
-        if (queryAction instanceof AggregationQueryAction)
+        }
+        if (queryAction instanceof AggregationQueryAction) {
             return executeAggregationAction((AggregationQueryAction) queryAction);
-        if (queryAction instanceof ESJoinQueryAction)
+        }
+        if (queryAction instanceof ESJoinQueryAction) {
             return executeJoinSearchAction(client, (ESJoinQueryAction) queryAction);
-        if (queryAction instanceof MultiQueryAction)
+        }
+        if (queryAction instanceof MultiQueryAction) {
             return executeMultiQueryAction(client, (MultiQueryAction) queryAction);
-        if (queryAction instanceof DeleteQueryAction)
+        }
+        if (queryAction instanceof DeleteQueryAction) {
             return executeDeleteAction((DeleteQueryAction) queryAction);
+        }
         return null;
     }
 

@@ -28,7 +28,9 @@ public class ElasticUtils {
                 .setScroll(new TimeValue(60000))
                 .setSize(resultSize);
         boolean ordered = originalSelect.isOrderdSelect();
-        if (!ordered) scrollRequest.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC);
+        if (!ordered) {
+            scrollRequest.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC);
+        }
         responseWithHits = scrollRequest.get();
         //on ordered select - not using SCAN , elastic returns hits on first scroll
         //es5.0 elastic always return docs on scan
@@ -41,7 +43,9 @@ public class ElasticUtils {
 
     //use our deserializer instead of results toXcontent because the source field is differnet from sourceAsMap.
     public static String hitsAsStringResult(SearchHits results, MetaSearchResult metaResults) throws IOException {
-        if (results == null) return null;
+        if (results == null) {
+            return null;
+        }
         Object[] searchHits;
         searchHits = new Object[(int) results.getTotalHits()];
         int i = 0;

@@ -27,10 +27,11 @@ public class Histogram extends Aggregation {
     }
 
     public Histogram keyOrder(boolean asc) {
-        if (asc)
+        if (asc) {
             aggContent.getJSONObject(agg_operator).put("order", new JSONObject().fluentPut("_key", "aes"));
-        else
+        } else {
             aggContent.getJSONObject(agg_operator).put("order", new JSONObject().fluentPut("_key", "desc"));
+        }
         return this;
     }
 

@@ -50,7 +50,9 @@ public class RestQueryBuilder {
     private Object setSource(String[] includes) {
         if (includes != null) {
             return includes;
-        } else return new java.util.ArrayList<>();
+        } else {
+            return new java.util.ArrayList<>();
+        }
     }
 
     public void setSize(int size) {
@@ -97,17 +99,19 @@ public class RestQueryBuilder {
     }
 
     public void setIndices(String[] indices) {
-        if (indices != null)
+        if (indices != null) {
             indies = "/" + StringUtils.join(indices, ",");
-        else
+        } else {
             indies = "";
+        }
     }
 
     public void setTypes(String[] typeArr) {
-        if (typeArr != null)
+        if (typeArr != null) {
             types = "/" + StringUtils.join(typeArr, ",");
-        else
+        } else {
             indies = "";
+        }
     }
 
     public String getPath() {

@@ -107,6 +107,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         throw new ParserException("not support token:" + lexer.token());
     }
 
+    @Override
     public SQLExpr primary() {
 
         if (lexer.token() == Token.LBRACE) {
@@ -187,6 +188,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return expr;
     }
 
+    @Override
     public SQLExpr relationalRest(SQLExpr expr) {
         if (identifierEquals("REGEXP")) {
             lexer.nextToken();
@@ -200,6 +202,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return super.relationalRest(expr);
     }
 
+    @Override
     public SQLExpr multiplicativeRest(SQLExpr expr) {
         if (lexer.token() == Token.IDENTIFIER && "MOD".equalsIgnoreCase(lexer.stringVal())) {
             lexer.nextToken();
@@ -213,6 +216,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return super.multiplicativeRest(expr);
     }
 
+    @Override
     public SQLExpr notRationalRest(SQLExpr expr) {
         if (identifierEquals("REGEXP")) {
             lexer.nextToken();
@@ -283,6 +287,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
     }
 
 
+    @Override
     public final SQLExpr primaryRest(SQLExpr expr) {
         if (expr == null) {
             throw new IllegalArgumentException("expr");
@@ -619,10 +624,12 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return expr;
     }
 
+    @Override
     public SQLSelectParser createSelectParser() {
         return new ElasticSqlSelectParser(this);
     }
 
+    @Override
     protected SQLExpr parseInterval() {
         accept(Token.INTERVAL);
 
@@ -655,6 +662,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         }
     }
 
+    @Override
     public SQLColumnDefinition parseColumn() {
         MySqlSQLColumnDefinition column = new MySqlSQLColumnDefinition();
         column.setName(name());
@@ -663,6 +671,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return parseColumnRest(column);
     }
 
+    @Override
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         if (lexer.token() == Token.ON) {
             lexer.nextToken();
@@ -700,6 +709,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return column;
     }
 
+    @Override
     protected SQLDataType parseDataTypeRest(SQLDataType dataType) {
         super.parseDataTypeRest(dataType);
 
@@ -716,6 +726,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return dataType;
     }
 
+    @Override
     public SQLExpr orRest(SQLExpr expr) {
 
         for (; ; ) {
@@ -737,6 +748,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return expr;
     }
 
+    @Override
     public SQLExpr additiveRest(SQLExpr expr) {
         if (lexer.token() == Token.PLUS) {
             lexer.nextToken();
@@ -755,6 +767,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return expr;
     }
 
+    @Override
     public SQLAssignItem parseAssignItem() {
         SQLAssignItem item = new SQLAssignItem();
 
@@ -799,6 +812,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return item;
     }
 
+    @Override
     public SQLName nameRest(SQLName name) {
         if (lexer.token() == Token.VARIANT && "@".equals(lexer.stringVal())) {
             lexer.nextToken();
@@ -867,6 +881,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return primaryKey;
     }
 
+    @Override
     public MySqlUnique parseUnique() {
         accept(Token.UNIQUE);
 
@@ -905,6 +920,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return unique;
     }
 
+    @Override
     public MysqlForeignKey parseForeignKey() {
         accept(Token.FOREIGN);
         accept(Token.KEY);
@@ -971,6 +987,7 @@ public class ElasticSqlExprParser extends SQLExprParser {
         return fk;
     }
 
+    @Override
     protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {
         if (lexer.token() == Token.ORDER) {
             SQLOrderBy orderBy = this.parseOrderBy();

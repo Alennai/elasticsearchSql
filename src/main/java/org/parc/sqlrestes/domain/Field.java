@@ -59,7 +59,9 @@ public class Field implements Cloneable {
     }
 
     public String getNestedPath() {
-        if (this.nested == null) return null;
+        if (this.nested == null) {
+            return null;
+        }
         return this.nested.path;
     }
 
@@ -72,7 +74,9 @@ public class Field implements Cloneable {
     }
 
     public String getChildType() {
-        if (this.children == null) return null;
+        if (this.children == null) {
+            return null;
+        }
         return this.children.childType;
     }
 
@@ -83,12 +87,18 @@ public class Field implements Cloneable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj.getClass() != this.getClass()) return false;
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
         Field other = (Field) obj;
         boolean namesAreEqual = (other.getName() == null && this.name == null)
                 || other.getName().equals(this.name);
-        if (!namesAreEqual) return false;
+        if (!namesAreEqual) {
+            return false;
+        }
         return (other.getAlias() == null && this.alias == null)
                 || other.getAlias().equals(this.alias);
     }

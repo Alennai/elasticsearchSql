@@ -88,6 +88,7 @@ public class Script {
     }
 
 
+    @Override
     public String toString() {
         return "Script{type=" + this.type + ", lang=\'" + this.lang + '\'' + ", idOrCode=\'" + this.idOrCode + '\'' + ", options=" + this.options + ", params=" + this.params + '}';
     }

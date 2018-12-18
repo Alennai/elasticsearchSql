@@ -23,7 +23,9 @@ public class NestedLoopsElasticRequestBuilder extends JoinRequestBuilder {
         Where where = this.connectedWhere;
         QueryBuilder explan = null;
 //        try {
-        if (where != null) ;
+        if (where != null) {
+            ;
+        }
 //                explan = QueryMaker.explan(where,false);
 //        } catch (SqlParseException e) {
 //        }
