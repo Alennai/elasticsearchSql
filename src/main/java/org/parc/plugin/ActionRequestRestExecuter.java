@@ -3,7 +3,6 @@ package org.parc.plugin;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.action.RestStatusToXContentListener;

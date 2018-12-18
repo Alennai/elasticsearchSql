@@ -294,7 +294,7 @@ public class RestParamsBuilder {
 					k = "_id";
 				}
 				//存在srcGeoPoint字段，取后一值
-				if ("srcGeoPoint".equals(k) && conditions.get(i+1).indexOf(":") < 0){
+				if ("srcGeoPoint".equals(k) && !conditions.get(i + 1).contains(":")){
 					v = v + "," + conditions.get(++i);
 				}
 //				v = org.apache.lucene.queryparser.classic.QueryParser.escape(v);

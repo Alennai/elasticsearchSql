@@ -61,8 +61,8 @@ public class DataAdapter {
         JSONArray documents = (JSONArray) hits.get("hits");
         int total = hits.getIntValue("total");
         int size = documents.size();
-        for (int i = 0; i < size; i++) {
-            JSONObject source = (JSONObject) documents.get(i);
+        for (Object document : documents) {
+            JSONObject source = (JSONObject) document;
             JSONObject rs = (JSONObject) source.get("_source");
             rs.put("uuid", source.get("_id"));
             list.add(rs);
@@ -86,8 +86,8 @@ public class DataAdapter {
         int total = hits.getIntValue("total");
         traceParam.setSize(total > 999 ? 1000 : total);
         int size = documents.size();
-        for (int i = 0; i < size; i++) {
-            JSONObject source = (JSONObject) documents.get(i);
+        for (Object document : documents) {
+            JSONObject source = (JSONObject) document;
             updateDocument(source, traceParam);
         }
         return documents;
@@ -157,8 +157,8 @@ public class DataAdapter {
         JSONArray documents = hits.getJSONArray("hits");
         int total = hits.getIntValue("total");
         int size = documents.size();
-        for (int i = 0; i < size; i++) {
-            JSONObject source = (JSONObject) documents.get(i);
+        for (Object document : documents) {
+            JSONObject source = (JSONObject) document;
             JSONObject rs = (JSONObject) source.get("_source");
             rs.put("uuid", source.get("_id"));
             stack.add(rs);
@@ -174,8 +174,8 @@ public class DataAdapter {
         int total = hits.getIntValue("total");
         int size = documents.size();
         Set<String> filter = new HashSet<>();
-        for (int i = 0; i < size; i++) {
-            JSONObject source = (JSONObject) documents.get(i);
+        for (Object document : documents) {
+            JSONObject source = (JSONObject) document;
             JSONObject rs = (JSONObject) source.get("_source");
             rs.put("uuid", source.get("_id"));
             rs.get("destHostName");
@@ -297,8 +297,8 @@ public class DataAdapter {
         JSONObject agg = (JSONObject) aggregations.get(name);
         JSONArray bks = (JSONArray) agg.get("buckets");
         int size = bks.size();
-        for (int i = 0; i < size; i++) {
-            JSONObject source = (JSONObject) bks.get(i);
+        for (Object bk : bks) {
+            JSONObject source = (JSONObject) bk;
             buckets.add(new Bucket(name, source.getString("key"), source.getIntValue("doc_count"), total));
         }
         return buckets;

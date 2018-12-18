@@ -37,12 +37,10 @@ public class Loggers{
         String prefix = null;
         if(prefixes != null && prefixes.length > 0) {
             StringBuilder sb = new StringBuilder();
-            int var4 = prefixes.length;
 
-            for(int var5 = 0; var5 < var4; ++var5) {
-                String prefixX = prefixes[var5];
-                if(prefixX != null) {
-                    if(prefixX.equals(" ")) {
+            for (String prefixX : prefixes) {
+                if (prefixX != null) {
+                    if (prefixX.equals(" ")) {
                         sb.append(" ");
                     } else {
                         sb.append("[").append(prefixX).append("]");

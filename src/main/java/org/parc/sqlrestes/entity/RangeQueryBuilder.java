@@ -399,12 +399,12 @@ public class RangeQueryBuilder {
     protected int doHashCode() {
         String timeZoneId = this.timeZone == null?null:this.timeZone.getID();
         String formatString = this.format == null?null:this.format.format();
-        return Objects.hash(this.fieldName, this.from, this.to, timeZoneId, Boolean.valueOf(this.includeLower), Boolean.valueOf(this.includeUpper), formatString);
+        return Objects.hash(this.fieldName, this.from, this.to, timeZoneId, this.includeLower, this.includeUpper, formatString);
     }
 
     protected boolean doEquals(RangeQueryBuilder other) {
         String timeZoneId = this.timeZone == null?null:this.timeZone.getID();
         String formatString = this.format == null?null:this.format.format();
-        return Objects.equals(this.fieldName, other.fieldName) && Objects.equals(this.from, other.from) && Objects.equals(this.to, other.to) && Objects.equals(timeZoneId, other.timeZone()) && Objects.equals(Boolean.valueOf(this.includeLower), Boolean.valueOf(other.includeLower)) && Objects.equals(Boolean.valueOf(this.includeUpper), Boolean.valueOf(other.includeUpper)) && Objects.equals(formatString, other.format());
+        return Objects.equals(this.fieldName, other.fieldName) && Objects.equals(this.from, other.from) && Objects.equals(this.to, other.to) && Objects.equals(timeZoneId, other.timeZone()) && Objects.equals(this.includeLower, other.includeLower) && Objects.equals(this.includeUpper, other.includeUpper) && Objects.equals(formatString, other.format());
     }
 }

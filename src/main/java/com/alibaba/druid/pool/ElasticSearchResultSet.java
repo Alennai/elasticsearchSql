@@ -82,7 +82,7 @@ class ElasticSearchResultSet implements ResultSet {
 
     @Override
     public float getFloat(int columnIndex) {
-        return ((Float) current.get(columnIndex)).floatValue();
+        return (Float) current.get(columnIndex);
     }
 
     @Override

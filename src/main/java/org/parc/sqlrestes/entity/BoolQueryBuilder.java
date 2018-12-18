@@ -379,11 +379,11 @@ public class BoolQueryBuilder {
 //    }
 
     protected int doHashCode() {
-        return Objects.hash(Boolean.valueOf(this.adjustPureNegative), this.minimumShouldMatch, this.mustClauses, this.shouldClauses, this.mustNotClauses, this.filterClauses);
+        return Objects.hash(this.adjustPureNegative, this.minimumShouldMatch, this.mustClauses, this.shouldClauses, this.mustNotClauses, this.filterClauses);
     }
 
     protected boolean doEquals(BoolQueryBuilder other) {
-        return Objects.equals(Boolean.valueOf(this.adjustPureNegative), Boolean.valueOf(other.adjustPureNegative)) && Objects.equals(this.minimumShouldMatch, other.minimumShouldMatch) && Objects.equals(this.mustClauses, other.mustClauses) && Objects.equals(this.shouldClauses, other.shouldClauses) && Objects.equals(this.mustNotClauses, other.mustNotClauses) && Objects.equals(this.filterClauses, other.filterClauses);
+        return Objects.equals(this.adjustPureNegative, other.adjustPureNegative) && Objects.equals(this.minimumShouldMatch, other.minimumShouldMatch) && Objects.equals(this.mustClauses, other.mustClauses) && Objects.equals(this.shouldClauses, other.shouldClauses) && Objects.equals(this.mustNotClauses, other.mustNotClauses) && Objects.equals(this.filterClauses, other.filterClauses);
     }
 
 //    protected QueryBuilder doRewrite(QueryRewriteContext queryRewriteContext) throws IOException {

@@ -67,7 +67,7 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
                     t2Alias);
         }
         if(firstTableRequest.getOriginalSelect().isOrderdSelect()){
-            combinedResult.sort((o1, o2) -> o1.docId() - o2.docId());
+            combinedResult.sort(Comparator.comparingInt(SearchHit::docId));
 
         }
         return combinedResult;
@@ -304,11 +304,7 @@ public class HashJoinElasticExecutor  extends ElasticJoinExecutor {
     }
 
     private void updateOptimizationData(Map<String, List<Object>> optimizationTermsFilterStructure, Object data, String queryOptimizationKey) {
-        List<Object> values = optimizationTermsFilterStructure.get(queryOptimizationKey);
-        if (values == null) {
-            values = new ArrayList<>();
-            optimizationTermsFilterStructure.put(queryOptimizationKey, values);
-        }
+        List<Object> values = optimizationTermsFilterStructure.computeIfAbsent(queryOptimizationKey, k -> new ArrayList<>());
         if (data instanceof String) {
             //todo: analyzed or not analyzed check..
             data = ((String) data).toLowerCase();

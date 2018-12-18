@@ -187,8 +187,8 @@ public class IEsServiceImpl implements IEsService {
         Response resp = client.performRequest("POST", path, Collections.<String, String>emptyMap(), entity);
         JSONArray documents = DataAdapter.jsonUpdate(EntityUtils.toString(resp.getEntity()), traceParam);
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < documents.size(); i++) {
-            JSONObject source = (JSONObject) documents.get(i);
+        for (Object document : documents) {
+            JSONObject source = (JSONObject) document;
             String _id = source.getString("_id");
             String _type = source.getString("_type");
             result.append(update(((JSONObject) source.get("_source")).toJSONString(), _type, traceParam.getName(), _id, index)).append("\t ;");
@@ -205,8 +205,8 @@ public class IEsServiceImpl implements IEsService {
         JSONObject jsonObject = JSON.parseObject(EntityUtils.toString(resp.getEntity()));
         JSONArray jsonArray = jsonObject.getJSONObject("hits").getJSONArray("hits");
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JSONObject source = (JSONObject) jsonArray.get(i);
+        for (Object o : jsonArray) {
+            JSONObject source = (JSONObject) o;
             String uuid = source.getString("_id");
             String _type = source.getString("_type");
             DataAdapter.updatealarmDoc(source, status);
@@ -270,9 +270,9 @@ public class IEsServiceImpl implements IEsService {
     public boolean indexClose(String indexes) throws Exception {
         if (!indexes.isEmpty()) {
             String[] index = indexes.split(",");
-            for (int i = 0; i < index.length; i++) {
-                if (indexExists(index[i])) {
-                    Response resp = client.performRequest("POST", "/" + index[i]+"/_close");
+            for (String index1 : index) {
+                if (indexExists(index1)) {
+                    Response resp = client.performRequest("POST", "/" + index1 + "/_close");
                 }
             }
             logger.info("关闭 索引" + indexes + "成功");
@@ -284,8 +284,8 @@ public class IEsServiceImpl implements IEsService {
     @Override
     public boolean indexOpen(String indexes) throws Exception {
         String[] index = indexes.split(",");
-        for (int i = 0; i < index.length; i++) {
-            Response resp = client.performRequest("POST", "/" + index[i]+"/_open");
+        for (String index1 : index) {
+            Response resp = client.performRequest("POST", "/" + index1 + "/_open");
         }
         return true;
     }
@@ -351,7 +351,7 @@ public class IEsServiceImpl implements IEsService {
     public String query(String query, String method, String path) throws Exception {
         HttpEntity entity = new NStringEntity(query,
                 ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8")));
-        if (path.indexOf("_count") < 0) {
+        if (!path.contains("_count")) {
             logger.info(method + " " + path + "\t" + query);
         }
         Response resp = client.performRequest(method, path, Collections.<String, String>emptyMap(), entity);

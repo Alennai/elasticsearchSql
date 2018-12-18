@@ -45,8 +45,8 @@ public abstract class Query {
 	public String[] getTypeArr() {
 		List<String> list = new ArrayList<>();
 		From index = null;
-		for (int i = 0; i < from.size(); i++) {
-			index = from.get(i);
+		for (From from1 : from) {
+			index = from1;
 			if (index.getType() != null && index.getType().trim().length() > 0) {
 				list.add(index.getType());
 			}

@@ -24,16 +24,14 @@ class ComperableHitResult {
         List<String> results = new ArrayList<>();
         this.isAllNull = true;
 
-        for(int i = 0 ; i< fieldsOrder.length ;i++){
-            String field = fieldsOrder[i];
-            Object result = Util.deepSearchInMap(hitAsMap,field);
-            if(result == null){
+        for (String field : fieldsOrder) {
+            Object result = Util.deepSearchInMap(hitAsMap, field);
+            if (result == null) {
                 results.add("");
-            }
-            else {
+            } else {
                 this.isAllNull = false;
                 results.add(result.toString());
-                this.flattenMap.put(field,result);
+                this.flattenMap.put(field, result);
             }
         }
         this.comperator = Joiner.on(seperator).join(results);

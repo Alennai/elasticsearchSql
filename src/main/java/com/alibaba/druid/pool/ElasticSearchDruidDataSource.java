@@ -507,7 +507,7 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
                 boolean cacheServerConfigurationSet = false;
                 if (this.connectProperties.containsKey("cacheServerConfiguration")) {
                     cacheServerConfigurationSet = true;
-                } else if (this.jdbcUrl.indexOf("cacheServerConfiguration") != -1) {
+                } else if (this.jdbcUrl.contains("cacheServerConfiguration")) {
                     cacheServerConfigurationSet = true;
                 }
                 if (cacheServerConfigurationSet) {
@@ -1943,9 +1943,9 @@ class ElasticSearchDruidDataSource extends DruidDataSource {
                     buf.append(", open stackTrace\n");
 
                     StackTraceElement[] trace = pooledConnection.getConnectStackTrace();
-                    for (int i = 0; i < trace.length; i++) {
+                    for (StackTraceElement stackTraceElement : trace) {
                         buf.append("\tat ");
-                        buf.append(trace[i].toString());
+                        buf.append(stackTraceElement.toString());
                         buf.append("\n");
                     }
 

@@ -60,13 +60,11 @@ public class ParseField {
             return true;
         } else {
             String[] var3 = this.deprecatedNames;
-            int var4 = var3.length;
 
-            for(int var5 = 0; var5 < var4; ++var5) {
-                String depName = var3[var5];
-                if(fieldName.equals(depName)) {
+            for (String depName : var3) {
+                if (fieldName.equals(depName)) {
                     String msg = "Deprecated field [" + fieldName + "] used, expected [" + this.name + "] instead";
-                    if(this.allReplacedWith != null) {
+                    if (this.allReplacedWith != null) {
                         msg = "Deprecated field [" + fieldName + "] used, replaced by [" + this.allReplacedWith + "]";
                     }
 

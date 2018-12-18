@@ -109,7 +109,7 @@ public class DeprecationLogger {
                 try {
                     ThreadContext next = (ThreadContext)iterator.next();
 //                    next.addResponseHeader("Warning", warningHeaderValue, DeprecationLogger::extractWarningValueFromWarningHeader);
-                } catch (IllegalStateException var9) {
+                } catch (IllegalStateException ignored) {
                 }
             }
         }
@@ -172,26 +172,26 @@ public class DeprecationLogger {
     static {
         WARNING_FORMAT = String.format(Locale.ROOT, "299 Elasticsearch-%s%s-%s ") + "\"%s\" \"%s\"";
         HashMap i = new HashMap();
-        i.put(Long.valueOf(1L), "Mon");
-        i.put(Long.valueOf(2L), "Tue");
-        i.put(Long.valueOf(3L), "Wed");
-        i.put(Long.valueOf(4L), "Thu");
-        i.put(Long.valueOf(5L), "Fri");
-        i.put(Long.valueOf(6L), "Sat");
-        i.put(Long.valueOf(7L), "Sun");
+        i.put(1L, "Mon");
+        i.put(2L, "Tue");
+        i.put(3L, "Wed");
+        i.put(4L, "Thu");
+        i.put(5L, "Fri");
+        i.put(6L, "Sat");
+        i.put(7L, "Sun");
         HashMap moy = new HashMap();
-        moy.put(Long.valueOf(1L), "Jan");
-        moy.put(Long.valueOf(2L), "Feb");
-        moy.put(Long.valueOf(3L), "Mar");
-        moy.put(Long.valueOf(4L), "Apr");
-        moy.put(Long.valueOf(5L), "May");
-        moy.put(Long.valueOf(6L), "Jun");
-        moy.put(Long.valueOf(7L), "Jul");
-        moy.put(Long.valueOf(8L), "Aug");
-        moy.put(Long.valueOf(9L), "Sep");
-        moy.put(Long.valueOf(10L), "Oct");
-        moy.put(Long.valueOf(11L), "Nov");
-        moy.put(Long.valueOf(12L), "Dec");
+        moy.put(1L, "Jan");
+        moy.put(2L, "Feb");
+        moy.put(3L, "Mar");
+        moy.put(4L, "Apr");
+        moy.put(5L, "May");
+        moy.put(6L, "Jun");
+        moy.put(7L, "Jul");
+        moy.put(8L, "Aug");
+        moy.put(9L, "Sep");
+        moy.put(10L, "Oct");
+        moy.put(11L, "Nov");
+        moy.put(12L, "Dec");
         RFC_7231_DATE_TIME = (new DateTimeFormatterBuilder()).parseCaseInsensitive().parseLenient().optionalStart().appendText(ChronoField.DAY_OF_WEEK, i).appendLiteral(", ").optionalEnd().appendValue(ChronoField.DAY_OF_MONTH, 2, 2, SignStyle.NOT_NEGATIVE).appendLiteral(' ').appendText(ChronoField.MONTH_OF_YEAR, moy).appendLiteral(' ').appendValue(ChronoField.YEAR, 4).appendLiteral(' ').appendValue(ChronoField.HOUR_OF_DAY, 2).appendLiteral(':').appendValue(ChronoField.MINUTE_OF_HOUR, 2).optionalStart().appendLiteral(':').appendValue(ChronoField.SECOND_OF_MINUTE, 2).optionalEnd().appendLiteral(' ').appendOffset("+HHMM", "GMT").toFormatter(Locale.getDefault(Locale.Category.FORMAT));
         GMT = ZoneId.of("GMT");
         WARNING_HEADER_PATTERN = Pattern.compile("299 Elasticsearch-\\d+\\.\\d+\\.\\d+(?:-(?:alpha|beta|rc)\\d+)?(?:-SNAPSHOT)?-(?:[a-f0-9]{7}|Unknown) \"((?:\t| |!|[\\x23-\\x5B]|[\\x5D-\\x7E]|[\\x80-\\xFF]|\\\\|\\\\\")*)\" \"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} GMT\"");

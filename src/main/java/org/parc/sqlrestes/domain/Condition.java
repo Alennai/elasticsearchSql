@@ -367,7 +367,7 @@ public class Condition extends Where {
     public Object clone() {
         try {
             return new Condition(this.getConn(), this.getName(), this.getNameExpr(), this.getOpear(), this.getValue(), this.getValueExpr(), this.getRelationshipType());
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
         return null;
